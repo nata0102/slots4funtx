@@ -26,3 +26,5 @@ Route::get('/',['as'=>'login','uses'=>'MainController@index']);
 Route::post('/login', 'MainController@login');
 
 Route::post('/logout', 'MainController@logout');
+
+Route::resource("machines",'MachineController');

@@ -21,6 +21,8 @@ class MachineController extends Controller
             break;
         }
         return $res;
+
+        return view('machines.index',compact('res'));
     }
 
     /**
