@@ -11,7 +11,7 @@
                 <img src="{{asset('/images/logo-black.png')}}" alt="" class="logo-index">
             </div>
 
-            <form method="POST" action="{{ action('login') }}" class="login100-form validate-form">
+            <form method="POST" action="{{ action('MainController@login') }}" class="login100-form validate-form">
                 @csrf
 
 
