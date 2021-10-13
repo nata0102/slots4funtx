@@ -15,7 +15,7 @@ class MainController extends Controller
       return view('main.login');
     }
     else {
-      dd("logeado");
+      return view('main.index');
     }
   }
 
@@ -31,7 +31,7 @@ class MainController extends Controller
     ];
 
     if (Auth::attempt($credentials)) {
-      dd("logeado");
+      return redirect()->action('MainController@index');
     }
     else {
       return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo.']);

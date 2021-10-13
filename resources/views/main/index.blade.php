@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('layouts.layout')
 
 @section('content')
 
@@ -12,7 +12,7 @@
         <div class="row m-t-25">
 
           <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-            <a href="#">
+            <a href="{{action('MachineController@index')}}">
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
