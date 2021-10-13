@@ -336,47 +336,6 @@
 		}
 	</script>
 
-	<script type="text/javascript">
-
-		$("#etiqueta").tagsinput()
-	</script>
-
-	<script type="text/javascript">
-		$(".infoUsuario").click(function(){
-			var name = $(this).attr("data-name");
-			var email = $(this).attr("data-email");
-			var telephone = $(this).attr("data-telephone");
-			var pet = $(this).attr("data-pet");
-
-
-			$("#nombre").html(name);
-			$("#email").html(email);
-			$("#telefono").html(telephone);
-			$("#mascota").html(pet);
-		});
-	</script>
-
-	<script type="text/javascript">
-		$(".reporte").click(function(){
-			var places = $(this).attr("data-places");
-			var notes = $(this).attr("data-notes");
-
-			$("#lugar").html(places);
-			$("#descripcion").html(notes);
-		});
-	</script>
-
-	<script type="text/javascript">
-			var input = document.getElementById('autocomplete');
-		  //var autocomplete = new google.maps.places.Autocomplete(input);
-			var autocomplete = new google.maps.places.Autocomplete(input);
-			 google.maps.event.addListener(autocomplete, 'place_changed', function(){
-					var place = autocomplete.getPlace();
-					document.getElementById('latitud').value = place.geometry.location.lat();
-					document.getElementById('longitud').value = place.geometry.location.lng();
-			 });
-
-	</script>
 
 
 
