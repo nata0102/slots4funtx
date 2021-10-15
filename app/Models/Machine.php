@@ -31,8 +31,4 @@ class Machine extends Model
     	if($game)
     		return $qry->where('game_title','LIKE',"%$game%");
     }
-    public function scopeOwner($qry, $owner){
-    	if($owner)
-    		return $qry->where('owner.value','LIKE',"%$owner%");
-    }
 }

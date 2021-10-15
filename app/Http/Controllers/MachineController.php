@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Machine;
+use App\Models\Part;
 use Illuminate\Support\Facades\DB;
 
 
@@ -23,25 +24,12 @@ class MachineController extends Controller
                $res = $this->searchWithFilters($request->all());
             break;
             default:
-               $res = Machine::with('status','address.client','brand','owner')->where('active',1)->take(20)->get();
+               $res = Machine::with('status','address.client','brand','owner')->where('active',1)->orderBy('id','desc')->take(20)->get();
             break;
         }
         //return $res;
 
         return view('machines.index',compact('res'));
-
-        /*Search
-                        {{ Form::open(['route' => 'machines', 'method' => 'GET', 'class' => 'form-inline-pull-right']) }}
-                            <div class="form-group">
-                                {{ Form::text('name',null, ['class' => 'form-control','placeholder'=> 'Machine']) }}
-                            </div>
-                            <div class="form-group">
-                                <button type="submit", class="btn btn-default">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                    
-                                </button>
-                            </div>
-                        {{ Form::close() }}*/
     }
 
     public function searchWithFilters($params){
@@ -49,7 +37,7 @@ class MachineController extends Controller
         $aux = Machine::with([
             'status' => function ($query) use($params){
                 if($params['status'])
-                    $query->where('value', 'LIKE', "{$params['status']}%");
+                    $query->where('value', 'LIKE', "%{$params['status']}%");
             },
             'address.client',
             'brand' => function($query) use ($params){
@@ -91,7 +79,13 @@ class MachineController extends Controller
      */
     public function create()
     {
-        //
+        $owners =  DB::table('lookups')->where('type','owner_type')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->get();
+        $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
+                    ->select('addresses.*','clients.name')->get();
+        $brands = DB::table('machine_brands')->get();
+        $parts = DB::table('parts')->whereNull('machine_id')->where('active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
+        return view('machines.create',compact('owners','addresses','status','brands','parts'));
     }
 
     /**
@@ -101,8 +95,42 @@ class MachineController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   try{
+            $transaction = DB::transaction(function() use($request){
+                 
+                $arr = $request->except('parts','_token','image');            
+                $parts = $request->only('parts');
+                if($request->image)
+                    $arr['image'] = $this->saveGetNameImage($request->image,'/images/machines/');
+                $machine = Machine::create($arr);
+                if($parts != null){
+                    foreach ($parts as $part) {
+                        $part = Part::findOrFail(intval($part));
+                        $part->machine_id = $machine->id;
+                        $part->save();
+                    }
+                }
+                if ($machine) {
+                    $notification = array(
+                      'message' => 'Machine Saved',
+                      'alert-type' => 'success'
+                    );
+                }else {
+                    $notification = array(
+                      'message' => 'Machine Not Saved',
+                      'alert-type' => 'error'
+                    );
+                }
+                return $notification;
+            });
+        }catch(\Exception $e){
+            $transaction = array(
+              //'message' => 'Machine Not Saved:'.$e->getMessage(),
+                'message' => 'Machine Not Saved:Completa los Campos Requeridos.',
+                'alert-type' => 'error'
+            );
+        }
+        return redirect()->action('MachineController@create')->with($transaction);
     }
 
     /**
