@@ -25,5 +25,9 @@ class Part extends Model
       return $this->hasOne('App\Models\Lookup', 'id', 'lkp_protocol_id');
   }
 
+  public function machine(){
+      return $this->hasOne('App\Models\Mchine', 'id', 'part_id');
+  }
+
 
 }
