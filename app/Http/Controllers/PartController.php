@@ -106,8 +106,11 @@ class PartController extends Controller
      */
     public function edit($id)
     {
-      $part = Part::find($id);
-      return view('parts.edit',compact('part'));
+      $part = DB::table('parts')->where('id',$id)->first();
+      $types =  DB::table('lookups')->where('type','part_type')->get();
+      $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->get();
+      return view('parts.edit',compact('part','types','protocols','status'));
     }
 
     /**
@@ -119,7 +122,49 @@ class PartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $part = Part::find($id);
+      $part->brand = $request->brand;
+      $part->model = $request->model;
+      $part->serial = $request->serial;
+      $part->price = $request->price;
+      $part->weight = $request->weight;
+      $part->active = $request->active;
+
+      $part->lkp_type_id = $request->type;
+      $part->lkp_protocol_id = $request->protocol;
+      $part->lkp_status_id = $request->status;
+
+      $part->description = $request->description;
+
+      if($request->image){
+        $key = '';
+        $pattern = '1234567890abcdefghijklmnopqrstuvwxyz';
+        $max = strlen($pattern)-1;
+        for($i=0;$i < 10;$i++)
+            $key .= $pattern{mt_rand(0,$max)};
+        $key = $key.strtotime(date('Y-m-d H:i:s'));
+
+        $fileName = $key.'.'.$request->file('image')->getClientOriginalExtension();
+        $part->image = $fileName;
+        $request->file('image')->move(
+            public_path().'/images/part/', $fileName
+        );
+      }
+
+      $created = $part->save();
+
+      if ($created) {
+        $notification = array(
+          'message' => 'Pieza editada con exito!',
+          'alert-type' => 'success'
+        );
+      }else {
+        $notification = array(
+          'message' => 'Hubo un error. Intentalo de nuevo',
+          'alert-type' => 'error'
+        );
+      }
+      return redirect()->action('PartController@index')->with($notification);
     }
 
     /**

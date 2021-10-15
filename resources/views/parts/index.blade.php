@@ -9,7 +9,7 @@
         <div class="" id="card-section">
 
           @foreach($parts as $part)
-            <p>{{$part->id}}</p>
+            <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-danger">Editar {{$part->id}}</a>
           @endforeach
 
         </div>
