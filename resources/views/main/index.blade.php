@@ -16,7 +16,7 @@
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
-                  <h4>Maquinas</h4>
+                  <h4>Machines</h4>
                 </div>
               </div>
             </a>
@@ -27,7 +27,7 @@
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
-                  <h4>Piezas</h4>
+                  <h4>Parts</h4>
                 </div>
               </div>
             </a>

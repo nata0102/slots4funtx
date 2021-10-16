@@ -15,7 +15,7 @@ class MainController extends Controller
     if(Auth::guest()){
       return view('main.login');
     }
-    else {
+    else {      
       return view('main.index');
     }
   }

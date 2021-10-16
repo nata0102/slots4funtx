@@ -17,8 +17,13 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-      if (Auth::check() && Auth::user()->lkp_rol_id == 47)
-        return $next($request);
+      if (Auth::check()){
+        $user = Auth::user()->id;
+        $user = User::with('role')->first();
+        if ($user->role->key_value == 'administrator')
+          return $next($request);
+      }
+
       return redirect('/');
 
     }
