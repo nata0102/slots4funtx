@@ -123,10 +123,11 @@ class PartController extends Controller
             //'message' => 'Machine Not Saved:'.$e->getMessage(),
               'message' => 'Oops! there was an error, please try again later.',
               'alert-type' => 'error'
+              );
 
       }
       return back()->with($transaction)->withInput($request->all());
-      
+
 
     }
 
