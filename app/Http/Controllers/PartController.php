@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Part;
 use DB;
 use File;
+use Input;
 
 class PartController extends Controller
 {
@@ -80,7 +81,7 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'type' => 'required',
-        'price' => 'required|numeric',
+        'price' => 'numeric',
       ]);
 
       try{
@@ -115,16 +116,15 @@ class PartController extends Controller
               'alert-type' => 'error'
             );
           }
-          return back()->with($notification);
+          return back()->with($notification)->withInput($request->all());
           });
         }catch(\Exception $e){
           $transaction = array(
             //'message' => 'Machine Not Saved:'.$e->getMessage(),
               'message' => 'Oops! there was an error, please try again later.',
               'alert-type' => 'error'
-          );
 
-
+          return back()->with($transaction)->withInput($request->all());
       }
 
     }
