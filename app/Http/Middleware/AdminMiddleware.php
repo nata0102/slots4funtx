@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
@@ -16,7 +17,7 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-      if (Auth::check() && Auth::user()->lkp_rol_id == 47) 
+      if (Auth::check() && Auth::user()->lkp_rol_id == 47)
         return $next($request);
       return redirect('/');
 

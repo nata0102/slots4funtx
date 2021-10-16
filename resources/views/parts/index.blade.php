@@ -68,7 +68,7 @@
                             <form class="" action="{{action('PartController@destroy',$part->id)}}" method="post">
                               @csrf
                               <input type="hidden" name="_method" value="delete">
-                              <button class="btn btn-link" type="submit" onclick="return confirm('Are you sure to delete this piece?')" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                              <button class="btn btn-link" type="submit" onclick="return confirm('Are you sure to delete this part?')" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                             </form>
                           </div>
                         </div>

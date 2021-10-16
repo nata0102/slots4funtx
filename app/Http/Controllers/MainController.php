@@ -12,7 +12,6 @@ class MainController extends Controller
 {
 
   public function index(){
-  dd(Auth::user()->role());
     if(Auth::guest()){
       return view('main.login');
     }

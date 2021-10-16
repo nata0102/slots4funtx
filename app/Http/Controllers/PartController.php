@@ -41,11 +41,7 @@ class PartController extends Controller
                     $query->where('brand', 'LIKE', "%{$params['brand']}%")
                     ->orWhere('model', 'LIKE', "%{$params['brand']}%")
                     ->orWhere('weight', 'LIKE', "%{$params['brand']}%");
-            },
-            'owner' => function($query) use($params){
-                if($params['owner'])
-                    $query->where('value', 'LIKE', "%{$params['owner']}%");
-            }])->game($params['game'])->where('active',1)->get();
+            }])->where('active',1)->get();
             foreach ($aux as $a) {
                 $b_owner = true;
                 if($params['owner']){
