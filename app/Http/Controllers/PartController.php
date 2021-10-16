@@ -78,38 +78,54 @@ class PartController extends Controller
      */
     public function store(Request $request)
     {
-      $part = new Part;
-      $part->brand = $request->brand;
-      $part->model = $request->model;
-      $part->serial = $request->serial;
-      $part->price = $request->price;
-      $part->weight = $request->weight;
-      $part->active = 1;
+      $this->validate($request, [
+        'type' => 'required',
+        'price' => 'required|numeric',
+      ]);
 
-      $part->lkp_type_id = $request->type;
-      $part->lkp_protocol_id = $request->protocol;
-      $part->lkp_status_id = $request->status;
+      try{
+        $transaction = DB::transaction(function() use($request){
+          $part = new Part;
+          $part->brand = $request->brand;
+          $part->model = $request->model;
+          $part->serial = $request->serial;
+          $part->price = $request->price;
+          $part->weight = $request->weight;
+          $part->active = 1;
 
-      $part->description = $request->description;
+          $part->lkp_type_id = $request->type;
+          $part->lkp_protocol_id = $request->protocol;
+          $part->lkp_status_id = $request->status;
 
-      if($request->image){
-        $part->image = $this->saveGetNameImage($request->image,'/images/part/');
+          $part->description = $request->description;
+
+          if($request->image){
+            $part->image = $this->saveGetNameImage($request->image,'/images/part/');
+          }
+          $created = $part->save();
+          if ($created) {
+            $notification = array(
+              'message' => 'Successful!!',
+              'alert-type' => 'success'
+            );
+            return redirect()->action('PartController@index');
+          }else {
+            $notification = array(
+              'message' => 'Oops! there was an error, please try again later.',
+              'alert-type' => 'error'
+            );
+          }
+          return back()->with($notification);
+          });
+        }catch(\Exception $e){
+          $transaction = array(
+            //'message' => 'Machine Not Saved:'.$e->getMessage(),
+              'message' => 'Oops! there was an error, please try again later.',
+              'alert-type' => 'error'
+          );
+
+
       }
-
-      $created = $part->save();
-
-      if ($created) {
-        $notification = array(
-          'message' => 'Successful!!',
-          'alert-type' => 'success'
-        );
-      }else {
-        $notification = array(
-          'message' => 'Oops! there was an error, please try again later.',
-          'alert-type' => 'error'
-        );
-      }
-      return redirect()->action('PartController@index')->with($notification);
 
     }
 
@@ -148,6 +164,13 @@ class PartController extends Controller
      */
     public function update(Request $request, $id)
     {
+      $this->validate($request, [
+        'type' => 'required',
+        'price' => 'required|numeric',
+      ]);
+
+
+
       $part = Part::find($id);
       $part->brand = $request->brand;
       $part->model = $request->model;

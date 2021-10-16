@@ -48,9 +48,21 @@
                       <td>{{$part->serial}}</td>
                       <td>${{number_format($part->price,'2','.',',')}}</td>
                       <td>{{$part->weight}}</td>
-                      <td>{{$part->type->value}}</td>
+                      @if($part->type->value)
+                      <td>{{$part->type != NULL}}</td>
+                      @else
+                      <td></td>
+                      @endif
+                      @if($part->status != NULL)
                       <td>{{$part->status->value}}</td>
+                      @else
+                      <td></td>
+                      @endif
+                      @if($part->protocol != NULL)
                       <td>{{$part->protocol->value}}</td>
+                      @else
+                      <td></td>
+                      @endif
                       <td>
                         <div class="row" style="margin-right: 0; margin-left: 0;">
                           <div class="col-4" style="padding: 0;">
