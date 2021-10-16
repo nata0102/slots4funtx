@@ -124,8 +124,9 @@ class PartController extends Controller
               'message' => 'Oops! there was an error, please try again later.',
               'alert-type' => 'error'
 
-          return back()->with($transaction)->withInput($request->all());
       }
+      return back()->with($transaction)->withInput($request->all());
+      
 
     }
 
