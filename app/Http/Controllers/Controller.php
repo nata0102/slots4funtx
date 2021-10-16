@@ -23,4 +23,5 @@ class Controller extends BaseController
         $image->move(public_path().$path, $fileName);
         return $fileName;
     }
+
 }

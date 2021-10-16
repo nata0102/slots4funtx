@@ -11,7 +11,7 @@ class Part extends Model
 
 	protected $fillable = ['id', 'brand', 'model', 'serial', 'price', 'weight', 'image', 'description', 'lkp_type_id', 'lkp_status_id', 'lkp_protocol_id'];
 
-  //protected $guarded = ['id', 'brand', 'model', 'serial', 'price', 'weight', 'image', 'description','created_at', 'updated_at'];
+  protected $guarded = ['id', 'brand', 'model', 'serial', 'price', 'weight', 'image', 'description','created_at', 'updated_at'];
 
   public function type(){
       return $this->hasOne('App\Models\Lookup', 'id', 'lkp_type_id');
@@ -26,7 +26,7 @@ class Part extends Model
   }
 
   public function machine(){
-      return $this->hasOne('App\Models\Mchine', 'id', 'part_id');
+      return $this->hasOne('App\Models\Machine', 'id', 'part_id');
   }
 
 

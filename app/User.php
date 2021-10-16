@@ -45,8 +45,13 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
+
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function role(){
+        return $this->hasOne('App\Models\Lookup','id','lkp_rol_id');
     }
 }

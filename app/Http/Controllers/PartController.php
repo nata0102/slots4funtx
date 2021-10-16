@@ -14,10 +14,58 @@ class PartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+      switch($request->option){
+          case 'all':
+             $parts = $this->searchWithFilters($request->all());
+
+          break;
+          default:
+             $parts = Part::all();
+          break;
+      }
       $parts = Part::all();
       return view('parts.index',compact('parts'));
+    }
+
+    public function searchWithFilters($params){
+        $res = [];
+        $aux = Part::with([
+            'status' => function ($query) use($params){
+                if($params['status'])
+                    $query->where('value', 'LIKE', "%{$params['status']}%");
+            },
+            'brand' => function($query) use ($params){
+                if($params['brand'])
+                    $query->where('brand', 'LIKE', "%{$params['brand']}%")
+                    ->orWhere('model', 'LIKE', "%{$params['brand']}%")
+                    ->orWhere('weight', 'LIKE', "%{$params['brand']}%");
+            },
+            'owner' => function($query) use($params){
+                if($params['owner'])
+                    $query->where('value', 'LIKE', "%{$params['owner']}%");
+            }])->game($params['game'])->where('active',1)->get();
+            foreach ($aux as $a) {
+                $b_owner = true;
+                if($params['owner']){
+                    if($a->owner == null)
+                        $b_owner = false;
+                }
+                $b_status = true;
+                if($params['status']){
+                    if($a->status == null)
+                        $b_status = false;
+                }
+                $b_brand = true;
+                if($params['brand']){
+                    if($a->brand == null)
+                        $b_brand = false;
+                }
+                if($b_owner == true && $b_status == true && $b_brand == true)
+                    array_push($res,$a);
+            }
+        return $res;
     }
 
     /**
@@ -74,12 +122,12 @@ class PartController extends Controller
 
       if ($created) {
         $notification = array(
-          'message' => 'Pieza añadida con exito!',
+          'message' => 'Successful!!',
           'alert-type' => 'success'
         );
       }else {
         $notification = array(
-          'message' => 'Hubo un error. Intentalo de nuevo',
+          'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
       }
@@ -137,30 +185,22 @@ class PartController extends Controller
       $part->description = $request->description;
 
       if($request->image){
-        $key = '';
-        $pattern = '1234567890abcdefghijklmnopqrstuvwxyz';
-        $max = strlen($pattern)-1;
-        for($i=0;$i < 10;$i++)
-            $key .= $pattern{mt_rand(0,$max)};
-        $key = $key.strtotime(date('Y-m-d H:i:s'));
-
-        $fileName = $key.'.'.$request->file('image')->getClientOriginalExtension();
-        $part->image = $fileName;
-        $request->file('image')->move(
-            public_path().'/images/part/', $fileName
-        );
+        if($part->image){
+          unlink(public_path().'/images/part/'.$part->image);
+        }
+        $part->image = $this->saveGetNameImage($request->image,'/images/part/');
       }
 
       $created = $part->save();
 
       if ($created) {
         $notification = array(
-          'message' => 'Pieza editada con exito!',
+          'message' => 'Successful!!',
           'alert-type' => 'success'
         );
       }else {
         $notification = array(
-          'message' => 'Hubo un error. Intentalo de nuevo',
+          'message' => 'Oops! there was an error, please try again later',
           'alert-type' => 'error'
         );
       }
@@ -175,6 +215,20 @@ class PartController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $part = Part::find($id);
+        $part->active = 0;
+        $destroy = $part->save();
+        if ($destroy) {
+          $notification = array(
+            'message' => 'Successful!!',
+            'alert-type' => 'success'
+          );
+        }else {
+          $notification = array(
+            'message' => 'Oops! there was an error, please try again later',
+            'alert-type' => 'error'
+          );
+        }
+        return redirect()->action('PartController@index')->with($notification);
     }
 }

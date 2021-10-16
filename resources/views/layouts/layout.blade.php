@@ -65,6 +65,18 @@
 	<!-- styles -->
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/adminstyles.css') }} ">
 
+	<style media="screen">
+		.table th, .table td {
+			padding: 5px;
+		}
+		.table td a{
+			padding: 0;
+		}
+		.table-bordered {
+		  border: 1px solid #ddd !important;
+		}
+	</style>
+
 </head>
 <body class="animsition">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -134,10 +146,10 @@
 					                    <a href="{{ action('MainController@index') }}">Dashboard</a>
 					                </li>
 													<li>
-															<a href="{{action('MachineController@index')}}">Maquinas</a>
+															<a href="{{action('MachineController@index')}}">Machines</a>
 													</li>
 													<li>
-															<a href="{{action('PartController@index')}}">Piezas</a>
+															<a href="{{action('PartController@index')}}">Parts</a>
 													</li>
 		                </ul>
 		            </div>
@@ -159,10 +171,10 @@
 			                    <a href="{{ action('MainController@index') }}">Dashboard</a>
 			                </li>
 											<li>
-													<a href="{{action('MachineController@index')}}">Maquinas</a>
+													<a href="{{action('MachineController@index')}}">Machines</a>
 											</li>
 											<li>
-													<a href="{{action('PartController@index')}}">Piezas</a>
+													<a href="{{action('PartController@index')}}">Parts</a>
 											</li>
 
 			            </ul>
@@ -334,6 +346,122 @@
 			CKEDITOR.config.width = 'auto';
 			CKEDITOR.replace('description-ckeditor');
 		}
+	</script>
+
+	<script>
+		$("body").on("click",".input_img",function(){
+
+
+			var inp = $(this).attr("data-id");
+			var img = $(this).attr("data-id2");
+
+			var i2 = $(document.getElementById(inp)).attr("data-id2");
+
+			document.getElementById(inp).click();
+
+
+			var defimg = $(document.getElementById(img)).attr("src");
+
+			document.getElementById(inp).onchange = function (evt) {
+
+				var tgt = evt.target || window.event.srcElement,
+					files = tgt.files;
+
+				// FileReader support
+				if (FileReader && files && files.length) {
+					var fr = new FileReader();
+					fr.onload = function () {
+						document.getElementById(img).src = fr.result;
+
+
+						ResizeImage(inp,i2);
+					}
+					fr.readAsDataURL(files[0]);
+				}
+				else {
+					$(document.getElementById(img)).attr('src','https://app.ecovit.com.mx/images/interface.png');
+
+				}
+			}
+
+		});
+
+
+		function ResizeImage(inp, i2) {
+			var filesToUploads = document.getElementById(inp).files;
+			var file = filesToUploads[0];
+			if (file) {
+
+				var reader = new FileReader();
+				// Set the image once loaded into file reader
+				reader.onload = function(e) {
+
+					var img = document.createElement("img");
+					img.src = e.target.result;
+
+					var canvas = document.createElement("canvas");
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(img, 0, 0);
+
+					var MAX_WIDTH = 1000;
+					var MAX_HEIGHT = 1000;
+					var width = img.width;
+					var height = img.height;
+
+					if (width > height) {
+						if (width > MAX_WIDTH) {
+							height *= MAX_WIDTH / width;
+							width = MAX_WIDTH;
+						}
+					} else {
+						if (height > MAX_HEIGHT) {
+							width *= MAX_HEIGHT / height;
+							height = MAX_HEIGHT;
+						}
+					}
+					canvas.width = width;
+					canvas.height = height;
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(img, 0, 0, width, height);
+
+					dataurl = canvas.toDataURL(file.type);
+					dataurlJPG = canvas.toDataURL('image/jpeg');
+					var resizedImage = dataURLToBlob(dataurlJPG);
+
+
+
+					$(document.getElementById(i2)).val(dataurlJPG);
+
+
+
+				}
+				reader.readAsDataURL(file);
+
+			}
+
+		}
+
+		var dataURLToBlob = function(dataURL) {
+			var BASE64_MARKER = ';base64,';
+			if (dataURL.indexOf(BASE64_MARKER) == -1) {
+				var parts = dataURL.split(',');
+				var contentType = parts[0].split(':')[1];
+				var raw = parts[1];
+				return new Blob([raw], {type: contentType});
+			}
+			var parts = dataURL.split(BASE64_MARKER);
+			var contentType = parts[0].split(':')[1];
+			var raw = window.atob(parts[1]);
+			var rawLength = raw.length;
+			var uInt8Array = new Uint8Array(rawLength);
+			for (var i = 0; i < rawLength; ++i) {
+				uInt8Array[i] = raw.charCodeAt(i);
+			}
+			return new Blob([uInt8Array], {type: contentType});
+		}
+
+
+
 	</script>
 
 

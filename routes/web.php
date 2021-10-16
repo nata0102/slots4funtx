@@ -26,5 +26,7 @@ Route::get('/',['as'=>'login','uses'=>'MainController@index']);
 Route::post('/login', 'MainController@login');
 Route::post('/logout', 'MainController@logout');
 
+Route::group(['middleware' => ['auth','admin']], function() {
   Route::resource("machines",'MachineController');
   Route::resource("parts",'PartController');
+});
