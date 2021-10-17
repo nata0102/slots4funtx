@@ -5,7 +5,8 @@
     <div class="main-content">
         <div class="section__content section__content--p30">
             <div class="container-fluid">
-
+                <div class="card" id="card-section">
+                <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 <form method="GET" action="{{ route('machines.index') }}">
                     <div class="input-group mb-5">            
                         <input class="form-control" type="text" name="game" autofocus placeholder="Game Title">
@@ -21,10 +22,8 @@
                         </button>
                     </div>
                 </form>      
-
-                <a href="{{action('MachineController@create')}}" class="btn btn-info">+</a>
-
-                <table id="example" class="table table-striped table-bordered" style="width:100%;margin-top: 10px">
+                <div class=" table-responsive table-striped table-bordered" >
+                <table id="example" class="table " style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
                         	<th>Game Title</th>
@@ -35,6 +34,7 @@
                             <th>Business</th>
                             <th>Status</th>
                             <th>Machine Brand</th>
+                            <th>Date Sale</th>
                             <th>Date Sale</th>
                             <!--<th>Active</th>-->
                         </tr>
@@ -68,6 +68,32 @@
                                 <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}} lbs.</td>
                             @endif
                             <td>{{$r->date_sale}}</td>
+                            <td>
+                                <div class="row" style="margin-right: 0; margin-left: 0;">
+                                  <div class="col-4" style="padding: 0;">
+                                    <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
+                                  </div>
+                                  <div class="col-4" style="padding: 0;">
+                                    <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                                  </div>
+                                  <div class="col-4" style="padding: 0;">
+                                    <form class="" action="{{action('MachineController@destroy',$r->id)}}" method="post">
+                                      @csrf
+                                      <input type="hidden" name="_method" value="delete">
+                                      <button class="btn btn-link" type="submit" onclick="return confirm('Are you sure to delete this part?')" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                                        <div class="modal-body">
+                                            @csrf
+                                            @method('DELETE')
+                                            <h5 class="text-center">Are you sure you want to delete {{ $r->game_title }} ?</h5>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger">Yes, Delete Project</button>
+                                        </div>
+                                    </form>
+                                  </div>
+                                </div>
+                            </td>
                             <!--@if($r->active == 1)
                                 <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" checked disabled></div></td>
                             @else
@@ -77,8 +103,50 @@
                         @endforeach           
                     </tbody>
                 </table>
+                                </div>
+
+                </div>
             </div>
         </div>
     </div>
 
 @stop
+
+
+@section('js')
+    <script src="sweetalert2.all.min.js"></script>
+    const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+})
+
+swalWithBootstrapButtons.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel!',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    swalWithBootstrapButtons.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+    )
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Cancelled',
+      'Your imaginary file is safe :)',
+      'error'
+    )
+  }
+})
+@endsection
