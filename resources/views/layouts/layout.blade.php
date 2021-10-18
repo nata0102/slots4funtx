@@ -273,27 +273,27 @@
 	<!-- main -->
 	<script src="{{ asset('adminjs/main.js') }}"></script>
 	<!-- Sweet Alert -->
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
-		$('body').on('click','delete-alert',function(){
+		$('body').on('click','.delete-alert',function(event){
 			console.log("clilclcl");
+		  url = $(this).attr('data-action');
+			console.log(url);
 			swal({
-		            title: "Are you sure!",
-		            type: "error",
-		            confirmButtonClass: "btn-danger",
-		            confirmButtonText: "Yes!",
-		            showCancelButton: true,
-		        },
-		        function() {
-		            $.ajax({
-		                type: "POST",
-		                url: "{{url('/destroy')}}",
-		                data: {id:id},
-		                success: function (data) {
-		                              //
-		                    }         
-		            });
-		    });
+					title: 'Are you sure?',
+					text: 'This record and it`s details will be permanantly deleted!',
+					icon: 'warning',
+					buttons: ["Cancel", "Yes!"],
+			}).then(function(value) {
+				$.ajax({
+						type: "POST",
+						url: url,
+						data: {id:id},
+						success: function (data) {
+							//
+						}
+				});
+			});
 		});
 	</script>
 	<!-- javscripts -->
