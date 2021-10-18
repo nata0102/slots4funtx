@@ -94,12 +94,15 @@ class MachineController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {   try{
-            $transaction = DB::transaction(function() use($request){
-                 
-                $arr = $request->except('parts','_token','image');            
-                $parts = $request->only('parts');
+    public function store(Request $request){  
+        try{
+            $transaction = DB::transaction(function() use($request){  
+                $this->validate($request, [
+                    'game_title' => 'required',
+                    'lkp_owner_id' => 'required'
+                ]);               
+                $arr = $request->except('parts_ids','_token','image');            
+                $parts = $request->parts_ids;
                 if($request->image)
                     $arr['image'] = $this->saveGetNameImage($request->image,'/images/machines/');
                 $machine = Machine::create($arr);
@@ -112,25 +115,35 @@ class MachineController extends Controller
                 }
                 if ($machine) {
                     $notification = array(
-                      'message' => 'Machine Saved',
+                      'message' => 'Successful!!',
                       'alert-type' => 'success'
                     );
                 }else {
                     $notification = array(
-                      'message' => 'Machine Not Saved',
+                      'message' => 'Oops! there was an error, please try again later.',
                       'alert-type' => 'error'
                     );
                 }
                 return $notification;
             });
+
+            return redirect()->action('MachineController@index')->with($transaction);
         }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();
+            $pos = strpos($message, 'machines.serial');            
+            if ($pos != false) 
+                $cad = "The Serial must be unique.";
+            $pos = strpos($message, 'machines.inventory');            
+            if ($pos != false) 
+                $cad = "The Inventory must be unique.";            
             $transaction = array(
-              //'message' => 'Machine Not Saved:'.$e->getMessage(),
-                'message' => 'Machine Not Saved:Completa los Campos Requeridos.',
-                'alert-type' => 'error'
+                'message' => $cad,
+                'alert-type' => 'error' 
             );
         }
-        return redirect()->action('MachineController@create')->with($transaction);
+
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**
@@ -175,6 +188,30 @@ class MachineController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $transaction = DB::transaction(function() use($id){
+
+                /*$->active = 0;
+                $destroy = $part->save();
+                if ($destroy) {
+                  $notification = array(
+                    'message' => 'Successful!!',
+                    'alert-type' => 'success'
+                  );
+                }else {
+                  $notification = array(
+                    'message' => 'Oops! there was an error, please try again later',
+                    'alert-type' => 'error'
+                  );
+                }
+                return redirect()->action('MachineController@index')->with($notification);*/
+            });
+        }catch(\Exception $e){
+            $transaction = array(
+              //'message' => 'Machine Not Saved:'.$e->getMessage(),
+                'message' => 'Machine Not Saved:Completa los Campos Requeridos.',
+                'alert-type' => 'error'
+            );
+        }
     }
 }
