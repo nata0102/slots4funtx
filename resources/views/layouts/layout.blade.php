@@ -277,18 +277,22 @@
 	<script>
 		$('body').on('click','.delete-alert',function(event){
 			console.log("clilclcl");
-		  url = $(this).attr('data-action');
+		  var url = $(this).attr('data-action');
+			var to = $("#token").val();
 			console.log(url);
 			swal({
-					title: 'Are you sure?',
-					text: 'This record and it`s details will be permanantly deleted!',
-					icon: 'warning',
-					buttons: ["Cancel", "Yes!"],
-			}).then(function(value) {
+				title: "Are you sure!",
+					type: "error",
+					confirmButtonClass: "btn-danger",
+					confirmButtonText: "Yes!",
+					showCancelButton: true,
+				},
+			function() {
 				$.ajax({
-						type: "POST",
+						type: "DELETE",
+						headers:{"X-CSRF-TOKEN": to},
 						url: url,
-						data: {id:id},
+						data: {},
 						success: function (data) {
 							//
 						}

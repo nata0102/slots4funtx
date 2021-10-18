@@ -136,7 +136,8 @@ class PartController extends Controller
      */
     public function show($id)
     {
-        //
+      $part = Part::find($id);
+      return view('parts.show',compact('part'));
     }
 
     /**

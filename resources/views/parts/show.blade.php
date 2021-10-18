@@ -17,7 +17,7 @@
 
           <p><b>Weight: </b>{{$part->weight}}</p>
 
-          <p><b>Type: </b>
+          <p><b>Type: </b> 
           @if($part->type != NULL)
             {{$part->type->value}}
           @endif
