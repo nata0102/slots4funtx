@@ -109,26 +109,23 @@ class PartController extends Controller
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
-            return redirect()->action('PartController@index');
+            return redirect()->action('PartController@index')->with($notification);
           }else {
             $notification = array(
               'message' => 'Oops! there was an error, please try again later.',
               'alert-type' => 'error'
             );
+            return back()->with($notification)->withInput($request->all());
           }
-          return back()->with($notification)->withInput($request->all());
-          });
-        }catch(\Exception $e){
-          $transaction = array(
-            //'message' => 'Machine Not Saved:'.$e->getMessage(),
-              'message' => 'Oops! there was an error, please try again later.',
-              'alert-type' => 'error'
-              );
-
+        });
+      }catch(\Exception $e){
+        $transaction = array(
+        //'message' => 'Machine Not Saved:'.$e->getMessage(),
+          'message' => 'Oops! there was an error, please try again later.',
+          'alert-type' => 'error'
+        );
       }
       return back()->with($transaction)->withInput($request->all());
-
-
     }
 
     /**
@@ -171,42 +168,37 @@ class PartController extends Controller
         'price' => 'required|numeric',
       ]);
 
-
-
       $part = Part::find($id);
       $part->brand = $request->brand;
       $part->model = $request->model;
       $part->serial = $request->serial;
       $part->price = $request->price;
       $part->weight = $request->weight;
-
       $part->lkp_type_id = $request->type;
       $part->lkp_protocol_id = $request->protocol;
       $part->lkp_status_id = $request->status;
-
       $part->description = $request->description;
-
       if($request->image){
         if($part->image){
           unlink(public_path().'/images/part/'.$part->image);
         }
         $part->image = $this->saveGetNameImage($request->image,'/images/part/');
       }
-
       $created = $part->save();
-
       if ($created) {
         $notification = array(
           'message' => 'Successful!!',
           'alert-type' => 'success'
         );
+        return redirect()->action('PartController@index')->with($notification);
       }else {
         $notification = array(
           'message' => 'Oops! there was an error, please try again later',
           'alert-type' => 'error'
         );
+        return back()->with($notification);
       }
-      return redirect()->action('PartController@index')->with($notification);
+
     }
 
     /**
