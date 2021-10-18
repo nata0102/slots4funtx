@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Machine;
+use App\Models\MachineHistory;
 use App\Models\Part;
+use App\Models\PercentagePriceMachine;
 use Illuminate\Support\Facades\DB;
 
 
@@ -124,12 +126,15 @@ class MachineController extends Controller
                       'alert-type' => 'error'
                     );
                 }
+                $arr_history = ['machine_id' => $machine->id,'address_id'=>$machine->address_id,
+                    'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,'type_price'=> null,'type_price_amount'=>null];
+                MachineHistory::create($arr_history);
                 return $notification;
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';
+            $cad = 'Oops! there was an error, please try again later.'.$e->getMessage();
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            
             if ($pos != false) 

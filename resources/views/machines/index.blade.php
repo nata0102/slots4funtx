@@ -2,6 +2,8 @@
 
 @section('content')
     
+    
+
     <div class="main-content">
         <div class="section__content section__content--p30">
             <div class="container-fluid">
@@ -21,7 +23,8 @@
                             <span class="glyphicon glyphicon-search"></span>        
                         </button>
                     </div>
-                </form>      
+                </form>    
+
                 <div class=" table-responsive table-striped table-bordered" >
                 <table id="example" class="table " style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
@@ -77,20 +80,7 @@
                                     <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                   </div>
                                   <div class="col-4" style="padding: 0;">
-                                    <form class="" action="{{action('MachineController@destroy',$r->id)}}" method="post">
-                                      @csrf
-                                      <input type="hidden" name="_method" value="delete">
-                                      <button class="btn btn-link" type="submit" onclick="return confirm('Are you sure to delete this part?')" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
-                                        <div class="modal-body">
-                                            @csrf
-                                            @method('DELETE')
-                                            <h5 class="text-center">Are you sure you want to delete {{ $r->game_title }} ?</h5>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-danger">Yes, Delete Project</button>
-                                        </div>
-                                    </form>
+                                    <button class="delete-alert btn btn-link" type="button" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                                   </div>
                                 </div>
                             </td>
@@ -103,50 +93,9 @@
                         @endforeach           
                     </tbody>
                 </table>
-                                </div>
-
+                </div>
                 </div>
             </div>
         </div>
     </div>
-
 @stop
-
-
-@section('js')
-    <script src="sweetalert2.all.min.js"></script>
-    const swalWithBootstrapButtons = Swal.mixin({
-  customClass: {
-    confirmButton: 'btn btn-success',
-    cancelButton: 'btn btn-danger'
-  },
-  buttonsStyling: false
-})
-
-swalWithBootstrapButtons.fire({
-  title: 'Are you sure?',
-  text: "You won't be able to revert this!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Yes, delete it!',
-  cancelButtonText: 'No, cancel!',
-  reverseButtons: true
-}).then((result) => {
-  if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire(
-      'Deleted!',
-      'Your file has been deleted.',
-      'success'
-    )
-  } else if (
-    /* Read more about handling dismissals below */
-    result.dismiss === Swal.DismissReason.cancel
-  ) {
-    swalWithBootstrapButtons.fire(
-      'Cancelled',
-      'Your imaginary file is safe :)',
-      'error'
-    )
-  }
-})
-@endsection

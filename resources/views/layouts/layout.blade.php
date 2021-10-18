@@ -272,6 +272,30 @@
 	<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
 	<!-- main -->
 	<script src="{{ asset('adminjs/main.js') }}"></script>
+	<!-- Sweet Alert -->
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		$('body').on('click','delete-alert',function(){
+			console.log("clilclcl");
+			swal({
+		            title: "Are you sure!",
+		            type: "error",
+		            confirmButtonClass: "btn-danger",
+		            confirmButtonText: "Yes!",
+		            showCancelButton: true,
+		        },
+		        function() {
+		            $.ajax({
+		                type: "POST",
+		                url: "{{url('/destroy')}}",
+		                data: {id:id},
+		                success: function (data) {
+		                              //
+		                    }         
+		            });
+		    });
+		});
+	</script>
 	<!-- javscripts -->
 	<script src="{{ asset('adminjs/adminscripts.js') }}"></script>
 
