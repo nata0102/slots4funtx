@@ -228,7 +228,7 @@ class PartController extends Controller
           $image = '';
           $part->active = 0;
           if($part->image)
-            $image = $part->image
+            $image = $part->image;
           $destroy = $part->save();
           if ($destroy) {
             if($image != ''){
