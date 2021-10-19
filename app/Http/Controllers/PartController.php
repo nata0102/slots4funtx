@@ -81,11 +81,12 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'type' => 'required',
-        'price' => 'numeric',
+        'price' => 'numeric|nullable',
+        'weight' => 'numeric|nullable',
       ]);
 
       try{
-        $transaction = DB::transaction(function() use($request){
+        return DB::transaction(function() use($request){
           $part = new Part;
           $part->brand = $request->brand;
           $part->model = $request->model;
@@ -93,13 +94,10 @@ class PartController extends Controller
           $part->price = $request->price;
           $part->weight = $request->weight;
           $part->active = 1;
-
           $part->lkp_type_id = $request->type;
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
-
           $part->description = $request->description;
-
           if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }
@@ -119,12 +117,12 @@ class PartController extends Controller
           }
         });
       }catch(\Exception $e){
-        $transaction = array(
+        $notification = array(
           'message' => 'Machine Not Saved:'.$e->getMessage(),
           //'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
-        return back()->with($transaction)->withInput($request->all());
+        return back()->with($notification)->withInput($request->all());
       }
     }
 
@@ -169,14 +167,13 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'type' => 'required',
-        'price' => 'numeric',
+        'price' => 'numeric|nullable',
+        'weight' => 'numeric|nullable',
       ]);
 
-
       try{
-        $transaction = DB::transaction(function() use($request){
-          $part = Part::find($request->id);
-
+        return DB::transaction(function() use($request, $id){
+          $part = Part::find($id);
           $part->brand = $request->brand;
           $part->model = $request->model;
           $part->serial = $request->serial;
@@ -186,24 +183,19 @@ class PartController extends Controller
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
           $part->description = $request->description;
-
           if($request->image){
             if($part->image != NULL){
               unlink(public_path().'/images/part/'.$part->image);
             }
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }
-
           $created = $part->save();
-
           if ($created) {
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
-
             return redirect()->action('PartController@index')->with($notification);
-
           }else {
             $notification = array(
               'message' => 'Oops! there was an error, please try again later.',
@@ -218,9 +210,8 @@ class PartController extends Controller
           //'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
+        return back()->with($transaction)->withInput($request->all());
       }
-      return back()->with($transaction)->withInput($request->all());
-
     }
 
     /**
@@ -231,8 +222,8 @@ class PartController extends Controller
      */
     public function destroy($id)
     {
-      /*try{
-        $transaction = DB::transaction(function() use($id){*/
+      try{
+        return DB::transaction(function() use($id){
           $part = Part::find($id);
           $part->active = 0;
           $destroy = $part->save();
@@ -241,10 +232,10 @@ class PartController extends Controller
           }else {
             return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
           }
-      /*  });
+      });
       }catch(\Exception $e){
         return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
-      }*/
+      }
 
     }
 }
