@@ -10,6 +10,7 @@
           <form class="" action="{{action('PartController@update',$part->id)}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="id" value="{{$part->id}}">
 
             <div class="row">
 

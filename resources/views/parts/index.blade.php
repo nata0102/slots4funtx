@@ -10,13 +10,13 @@
 
           <form method="GET" action="{{action('PartController@index')}}">
               <div class="input-group mb-5">
-                  <input class="form-control" type="text" name="type" autofocus placeholder="Type">
+                  <input class="form-control" type="text" name="type" value="{{$_GET['type']}}" placeholder="Type">
 
-                  <input class="form-control" type="text" name="model" autofocus placeholder="Model">
+                  <input class="form-control" type="text" name="model" value="{{$_GET['model']}}" placeholder="Model">
 
-                  <input class="form-control" type="text" name="status" autofocus placeholder="Status">
+                  <input class="form-control" type="text" name="status" value="{{$_GET['status']}}" placeholder="Status">
 
-                  <input class="form-control" type="text" name="brand" autofocus placeholder="Brand">
+                  <input class="form-control" type="text" name="brand" value="{{$_GET['brand']}}" placeholder="Brand">
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>
                       <span class="glyphicon glyphicon-search"></span>
@@ -48,8 +48,8 @@
                       <td>{{$part->serial}}</td>
                       <td>${{number_format($part->price,'2','.',',')}}</td>
                       <td>{{$part->weight}}</td>
-                      @if($part->type->value)
-                      <td>{{$part->type != NULL}}</td>
+                      @if($part->type != NULL)
+                      <td>{{$part->type->value}}</td>
                       @else
                       <td></td>
                       @endif
@@ -72,7 +72,7 @@
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                           </div>
                           <div class="col-4" style="padding: 0;">
-                            <button class="delete-alert btn btn-link" type="button" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>                            
+                            <button class="delete-alert btn btn-link" type="button" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                           </div>
                         </div>
 

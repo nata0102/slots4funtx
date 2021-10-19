@@ -18,44 +18,45 @@ class PartController extends Controller
     public function index(Request $request)
     {
       switch($request->option){
-          case 'all':
-             $parts = $this->searchWithFilters($request->all());
-          break;
-          default:
-             $parts = Part::where('active',1)->orderBy('id','desc')->take(20)->get();
-          break;
+        case 'all':
+          $parts = $this->searchWithFilters($request->all());
+        break;
+        default:
+          $parts = Part::where('active',1)->orderBy('id','desc')->take(20)->get();
+        break;
       }
+
       return view('parts.index',compact('parts'));
     }
 
     public function searchWithFilters($params){
-        $res = [];
-        $aux = Part::with([
-            'status' => function ($query) use($params){
-                if($params['status'])
-                    $query->where('value', 'LIKE', "%{$params['status']}%");
-            },
-            'brand' => function($query) use ($params){
-                if($params['brand'])
-                    $query->where('brand', 'LIKE', "%{$params['brand']}%")
-                    ->orWhere('model', 'LIKE', "%{$params['brand']}%")
-                    ->orWhere('weight', 'LIKE', "%{$params['brand']}%");
-            }])->where('active',1)->get();
-            foreach ($aux as $a) {
-                $b_status = true;
-                if($params['status']){
-                    if($a->status == null)
-                        $b_status = false;
-                }
-                $b_brand = true;
-                if($params['brand']){
-                    if($a->brand == null)
-                        $b_brand = false;
-                }
-                if($b_status == true && $b_brand == true)
-                    array_push($res,$a);
-            }
-        return $res;
+      $res = [];
+      $aux = Part::with([
+        'status' => function ($query) use($params){
+          if($params['status'])
+            $query->where('value', 'LIKE', "%{$params['status']}%");
+        },
+        'type' => function($query) use ($params){
+          if($params['type'])
+            $query->where('value', 'LIKE', "%{$params['type']}%");
+        }])->orWhere('model',$params['model'])->orWhere('brand',$params['brand'])->where('active',1)->get();
+        foreach ($aux as $a) {
+          $b_status = true;
+          if($params['status']){
+            if($a->status == null)
+              $b_status = false;
+          }
+          $b_type = true;
+          if($params['type']){
+            if($a->type == null)
+              $b_type = false;
+          }
+          if($b_status == true && $b_type == true){
+            if($a['active'] == 1)
+            array_push($res,$a);
+          }
+        }
+      return $res;
     }
 
     /**
@@ -120,8 +121,8 @@ class PartController extends Controller
         });
       }catch(\Exception $e){
         $transaction = array(
-        //'message' => 'Machine Not Saved:'.$e->getMessage(),
-          'message' => 'Oops! there was an error, please try again later.',
+          'message' => 'Machine Not Saved:'.$e->getMessage(),
+          //'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
       }
@@ -137,7 +138,10 @@ class PartController extends Controller
     public function show($id)
     {
       $part = Part::find($id);
-      return view('parts.show',compact('part'));
+      $types =  DB::table('lookups')->where('type','part_type')->get();
+      $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->get();
+      return view('parts.show',compact('part','types','protocols','status'));
     }
 
     /**
@@ -166,13 +170,14 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'type' => 'required',
-        'price' => 'required|numeric',
+        'price' => 'numeric',
       ]);
+
 
       try{
         $transaction = DB::transaction(function() use($request){
+          $part = Part::find($request->id);
 
-          $part = Part::find($id);
           $part->brand = $request->brand;
           $part->model = $request->model;
           $part->serial = $request->serial;
@@ -182,22 +187,29 @@ class PartController extends Controller
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
           $part->description = $request->description;
+
+
+
           if($request->image){
-            if($part->image){
+            if($part->image != NULL){
               unlink(public_path().'/images/part/'.$part->image);
             }
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }
+
           $created = $part->save();
+
           if ($created) {
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
+
             return redirect()->action('PartController@index')->with($notification);
+
           }else {
             $notification = array(
-              'message' => 'Oops! there was an error, please try again later',
+              'message' => 'Oops! there was an error, please try again later.',
               'alert-type' => 'error'
             );
             return back()->with($notification)->withInput($request->all());
@@ -205,8 +217,8 @@ class PartController extends Controller
         });
       }catch(\Exception $e){
         $transaction = array(
-        //'message' => 'Machine Not Saved:'.$e->getMessage(),
-          'message' => 'Oops! there was an error, please try again later.',
+          'message' => 'Machine Not Saved:'.$e->getMessage(),
+          //'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
       }
@@ -223,7 +235,7 @@ class PartController extends Controller
     public function destroy($id)
     {
       try{
-        $transaction = DB::transaction(function() use($request){
+        $transaction = DB::transaction(function() use($id){
           $part = Part::find($id);
           $image = '';
           $part->active = 0;
