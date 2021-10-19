@@ -25,15 +25,15 @@
             <table id="table" class="table " style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
-                      <th style="width:150px; text-align: center;">Brand</th>
-                      <th style="width:150px; text-align: center;">Model</th>
-                      <th style="width:150px; text-align: center;">Serial</th>
+                      <th style="width:100px; text-align: center;">Brand</th>
+                      <th style="width:100px; text-align: center;">Model</th>
+                      <th style="width:100px; text-align: center;">Serial</th>
                       <th style="width:100px; text-align: center;">Price</th>
                       <th style="width:100px; text-align: center;">Weight</th>
-                      <th style="width:150px; text-align: center;">Type</th>
+                      <th style="width:100px; text-align: center;">Type</th>
                       <th style="width:150px; text-align: center;">Status</th>
-                      <th style="width:150px; text-align: center;">Protocol</th>
-                    	<th style="width:109px; text-align: center;"></th>
+                      <th style="width:100px; text-align: center;">Protocol</th>
+                    	<th style="width:112px; text-align: center;"></th>
                     </tr>
                 </thead>
                 <tbody>
