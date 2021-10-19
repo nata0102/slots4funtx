@@ -126,15 +126,13 @@ class MachineController extends Controller
                       'alert-type' => 'error'
                     );
                 }
-                $arr_history = ['machine_id' => $machine->id,'address_id'=>$machine->address_id,
-                    'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,'type_price'=> null,'type_price_amount'=>null];
-                MachineHistory::create($arr_history);
+                $this->insertMachineHistory($machine);
                 return $notification;
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.'.$e->getMessage();
+            $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            
             if ($pos != false) 
@@ -170,8 +168,37 @@ class MachineController extends Controller
      */
     public function edit($id)
     {
-        //
+        $machine = Machine::findOrFail($id);
+        $owners =  DB::table('lookups')->where('type','owner_type')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->get();
+        $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
+                    ->select('addresses.*','clients.name')->get();
+        $brands = DB::table('machine_brands')->get();
+        $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
+        $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->get();
+        $parts_ids = [];
+        foreach ($parts_on_machine as $p_machine )
+            array_push($parts_ids,(string) $p_machine->id);
+        
+        return view('machines.edit',compact('owners','addresses','status','brands','parts','machine','parts_ids'));   
     }
+
+    public function updateMachineParts($parts, $machine_id){
+        $parts_machine = Part::where('machine_id',$machine_id)->get(); 
+        foreach ($parts_machine as $p_machine) {
+            if ($parts == null || !in_array((string)$p_machine->id, $parts)){
+                $p_machine->machine_id = null;
+                $p_machine->save();                     
+            }                
+        }
+        if($parts != null){
+            foreach ($parts as $part){
+                $part = Part::findOrFail(intval($part));
+                $part->machine_id = $machine_id;
+                $part->save();
+            }
+        }
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -182,7 +209,55 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            $transaction = DB::transaction(function() use($request, $id){  
+                $this->validate($request, [
+                    'game_title' => 'required',
+                    'lkp_owner_id' => 'required'
+                ]); 
+                $arr = $request->except('parts_ids','_token','image','_method');            
+                $parts = $request->parts_ids;
+                $this->updateMachineParts($parts, $id);
+                $machine = Machine::findOrFail($id);
+                if($request->image){
+                    $arr['image'] = $this->saveGetNameImage($request->image,'/images/machines/');
+                    if($machine->image != null)
+                        unlink(public_path().'/images/machines/'.$machine->image);
+                }
+                $machine->update($arr);
+                $machine->save();
+                $this->insertMachineHistory($machine);
+                if ($machine) {
+                    $notification = array(
+                      'message' => 'Successful!!',
+                      'alert-type' => 'success'
+                    );
+                }else {
+                    $notification = array(
+                      'message' => 'Oops! there was an error, please try again later.',
+                      'alert-type' => 'error'
+                    );
+                }
+                return $notification;
+            }); 
+
+            return redirect()->action('MachineController@index')->with($transaction);
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();
+            $pos = strpos($message, 'machines.serial');            
+            if ($pos != false) 
+                $cad = "The Serial must be unique.";
+            $pos = strpos($message, 'machines.inventory');            
+            if ($pos != false) 
+                $cad = "The Inventory must be unique.";            
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error' 
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());           
     }
 
     /**
@@ -194,29 +269,20 @@ class MachineController extends Controller
     public function destroy($id)
     {
         try{
-            $transaction = DB::transaction(function() use($id){
-
-                /*$->active = 0;
-                $destroy = $part->save();
-                if ($destroy) {
-                  $notification = array(
-                    'message' => 'Successful!!',
-                    'alert-type' => 'success'
-                  );
-                }else {
-                  $notification = array(
-                    'message' => 'Oops! there was an error, please try again later',
-                    'alert-type' => 'error'
-                  );
-                }
-                return redirect()->action('MachineController@index')->with($notification);*/
+            $transaction = DB::transaction(function() use ($id){
+                Part::where('machine_id',$id)->update(['active'=>0]);
+                $machine = Machine::findOrFail($id);
+                $machine->active = 0;
+                if($machine->save()){
+                    //FALTA EL active
+                   $this->insertMachineHistory($machine);
+                   return response()->json(200);
+                }else
+                   return response()->json(422);
             });
+            return $transaction;
         }catch(\Exception $e){
-            $transaction = array(
-              //'message' => 'Machine Not Saved:'.$e->getMessage(),
-                'message' => 'Machine Not Saved:Completa los Campos Requeridos.',
-                'alert-type' => 'error'
-            );
+            return response()->json(422);
         }
     }
 }

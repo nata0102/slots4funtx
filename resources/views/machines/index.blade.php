@@ -19,8 +19,7 @@
 
                         <input class="form-control" name="brand" autofocus placeholder="Brand">
                     
-                        <button type="submit" class="btn btn-default" name="option" value="all">Search
-                            <span class="glyphicon glyphicon-search"></span>        
+                        <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>        
                         </button>
                     </div>
                 </form>    
@@ -38,7 +37,7 @@
                             <th>Status</th>
                             <th>Machine Brand</th>
                             <th>Date Sale</th>
-                            <th>Date Sale</th>
+                            <th></th>
                             <!--<th>Active</th>-->
                         </tr>
                     </thead>
