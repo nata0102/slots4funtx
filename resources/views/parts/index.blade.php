@@ -10,13 +10,10 @@
 
           <form method="GET" action="{{action('PartController@index')}}">
               <div class="input-group mb-5">
-                  <input class="form-control" type="text" name="type" value="{{$_GET['type']}}" placeholder="Type">
-
-                  <input class="form-control" type="text" name="model" value="{{$_GET['model']}}" placeholder="Model">
-
-                  <input class="form-control" type="text" name="status" value="{{$_GET['status']}}" placeholder="Status">
-
-                  <input class="form-control" type="text" name="brand" value="{{$_GET['brand']}}" placeholder="Brand">
+                  <input class="form-control" type="text" name="type" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}" placeholder="Type">
+                  <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
+                  <input class="form-control" type="text" name="status" value="{{ isset($_GET['status']) ? $_GET['status'] : '' }}" placeholder="Status">
+                  <input class="form-control" type="text" name="brand" value="{{ isset($_GET['brand']) ? $_GET['brand'] : '' }}" placeholder="Brand">
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>
                       <span class="glyphicon glyphicon-search"></span>
@@ -25,7 +22,7 @@
           </form>
 
           <div class=" table-responsive table-striped table-bordered" style="font-size: 14px;">
-            <table id="example" class="table " style="width: 100%; table-layout: fixed;">
+            <table id="table" class="table " style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
                       <th style="width:150px; text-align: center;">Brand</th>
@@ -33,35 +30,34 @@
                       <th style="width:150px; text-align: center;">Serial</th>
                       <th style="width:100px; text-align: center;">Price</th>
                       <th style="width:100px; text-align: center;">Weight</th>
-
                       <th style="width:150px; text-align: center;">Type</th>
                       <th style="width:150px; text-align: center;">Status</th>
                       <th style="width:150px; text-align: center;">Protocol</th>
-                    	<th style="width:150px; text-align: center;"></th>
+                    	<th style="width:109px; text-align: center;"></th>
                     </tr>
                 </thead>
                 <tbody>
                 	@foreach($parts as $part)
-                    <tr>
+                    <tr id="row-{{$part->id}}">
                       <td>{{$part->brand}}</td>
                       <td>{{$part->model}}</td>
                       <td>{{$part->serial}}</td>
                       <td>${{number_format($part->price,'2','.',',')}}</td>
                       <td>{{$part->weight}}</td>
                       @if($part->type != NULL)
-                      <td>{{$part->type->value}}</td>
+                        <td>{{$part->type->value}}</td>
                       @else
-                      <td></td>
+                        <td></td>
                       @endif
                       @if($part->status != NULL)
-                      <td>{{$part->status->value}}</td>
+                        <td>{{$part->status->value}}</td>
                       @else
-                      <td></td>
+                        <td></td>
                       @endif
                       @if($part->protocol != NULL)
-                      <td>{{$part->protocol->value}}</td>
+                        <td>{{$part->protocol->value}}</td>
                       @else
-                      <td></td>
+                        <td></td>
                       @endif
                       <td>
                         <div class="row" style="margin-right: 0; margin-left: 0;">
@@ -72,10 +68,9 @@
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                           </div>
                           <div class="col-4" style="padding: 0;">
-                            <button class="delete-alert btn btn-link" type="button" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                            <button class="delete-alert btn btn-link" type="button" data-row="#row-{{$part->id}}" data-table="#table" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                           </div>
                         </div>
-
                       </td>
                     </tr>
                     @endforeach

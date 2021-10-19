@@ -274,10 +274,14 @@
 	<!-- main -->
 	<script src="{{ asset('adminjs/main.js') }}"></script>
 	<!-- Sweet Alert -->
+	<!-- javscripts -->
+	<script src="{{ asset('adminjs/adminscripts.js') }}"></script>
 
 	<script>
 		$('body').on('click','.delete-alert',function(event){
-		  var url = $(this).attr('data-action');
+			var url = $(this).attr('data-action');
+			var row = $(this).attr('data-row');
+		  var table = $(this).attr('data-table');
 			var to = $("#token").val();
 
 			Swal.fire({
@@ -291,22 +295,34 @@
 			}).then((result) => {
 			  if (result.isConfirmed) {
 					$.ajax({
-						type: "DELETE",
+						type: "POST",
 						headers:{"X-CSRF-TOKEN": to},
 						url: url,
 						dataType: 'json',
+						data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": "DELETE"
+            },
 						success: function(data) {
 							Swal.fire(
 							 'Deleted!',
 							 'Your file has been deleted.',
 							 'success'
 						 	);
-							location.reload();
+							//location.reload();
+							$(table).load(" "+table);
+							//document.getElementById(row).remove();
 						},
-						error: function(){
+						error: function(reject){
+							if( reject.status === 422 ) {
+        	      var errors = $.parseJSON(reject.responseText);
+                $.each(errors, function (key, val) {
+                  message = val;
+                });
+              }
 							Swal.fire(
 							 'Error!',
-							 'Oops! there was an error, please try again later...',
+							 message,
 							 'error'
 						 	);
 						},
@@ -315,8 +331,6 @@
 			});
 		});
 	</script>
-	<!-- javscripts -->
-	<script src="{{ asset('adminjs/adminscripts.js') }}"></script>
 
 
 	<script >

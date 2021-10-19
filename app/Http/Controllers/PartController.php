@@ -25,7 +25,6 @@ class PartController extends Controller
           $parts = Part::where('active',1)->orderBy('id','desc')->take(20)->get();
         break;
       }
-
       return view('parts.index',compact('parts'));
     }
 
@@ -125,8 +124,8 @@ class PartController extends Controller
           //'message' => 'Oops! there was an error, please try again later.',
           'alert-type' => 'error'
         );
+        return back()->with($transaction)->withInput($request->all());
       }
-      return back()->with($transaction)->withInput($request->all());
     }
 
     /**
@@ -188,8 +187,6 @@ class PartController extends Controller
           $part->lkp_status_id = $request->status;
           $part->description = $request->description;
 
-
-
           if($request->image){
             if($part->image != NULL){
               unlink(public_path().'/images/part/'.$part->image);
@@ -234,26 +231,20 @@ class PartController extends Controller
      */
     public function destroy($id)
     {
-      try{
-        $transaction = DB::transaction(function() use($id){
+      /*try{
+        $transaction = DB::transaction(function() use($id){*/
           $part = Part::find($id);
-          $image = '';
           $part->active = 0;
-          if($part->image)
-            $image = $part->image;
           $destroy = $part->save();
           if ($destroy) {
-            if($image != ''){
-              unlink(public_path().'/images/part/'.$image);
-            }
-            return response()->json(200);
+            return response()->json(array('success' => true), 200);
           }else {
-            return response()->json(422);
+            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
           }
-        });
+      /*  });
       }catch(\Exception $e){
-        return response()->json(422);
-      }
+        return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+      }*/
 
     }
 }
