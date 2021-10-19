@@ -72,11 +72,7 @@
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                           </div>
                           <div class="col-4" style="padding: 0;">
-                            <form class="" action="{{action('PartController@destroy',$part->id)}}" method="post">
-                              @csrf
-                              <input type="hidden" name="_method" value="delete">
-                              <button class="btn btn-link" type="submit" onclick="return confirm('Are you sure to delete this part?')" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
-                            </form>
+                            <button class="delete-alert btn btn-link" type="button" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>                            
                           </div>
                         </div>
 

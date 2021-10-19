@@ -269,34 +269,49 @@
 	<script src="{{ asset('adminjs/charts.min.js') }}"></script>
 
 	<!-- CKEditor -->
+	<script src="{{ asset('js/sweetalert.js') }}"></script>
 	<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
 	<!-- main -->
 	<script src="{{ asset('adminjs/main.js') }}"></script>
 	<!-- Sweet Alert -->
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 	<script>
 		$('body').on('click','.delete-alert',function(event){
-			console.log("clilclcl");
 		  var url = $(this).attr('data-action');
 			var to = $("#token").val();
-			console.log(url);
-			swal({
-				title: "Are you sure!",
-					type: "error",
-					confirmButtonClass: "btn-danger",
-					confirmButtonText: "Yes!",
-					showCancelButton: true,
-				},
-			function() {
-				$.ajax({
+
+			Swal.fire({
+			  title: 'Are you sure?',
+			  text: "You won't be able to revert this!",
+			  icon: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+			  if (result.isConfirmed) {
+					$.ajax({
 						type: "DELETE",
 						headers:{"X-CSRF-TOKEN": to},
 						url: url,
-						data: {},
-						success: function (data) {
-							//
-						}
-				});
+						dataType: 'json',
+						success: function(data) {
+							Swal.fire(
+							 'Deleted!',
+							 'Your file has been deleted.',
+							 'success'
+						 	);
+							location.reload();
+						},
+						error: function(){
+							Swal.fire(
+							 'Error!',
+							 'Oops! there was an error, please try again later...',
+							 'error'
+						 	);
+						},
+					});
+			  }
 			});
 		});
 	</script>
