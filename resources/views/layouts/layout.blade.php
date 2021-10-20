@@ -330,17 +330,53 @@
 			  }
 			});
 		});
-	</script>
 
+		$('body').on('click','.back-button',function(event){
+			var url = $(this).attr('data-action');
+			var message = $(this).attr('data-message');
+			Swal.fire({
+			  title: 'Are you sure?',
+			  text: message,			  
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Yes'
+			}).then((result) => {
+			  if (result.isConfirmed) {
+					window.location.href = url;
+					let timerInterval
+					Swal.fire({
+					  title: 'Going back!',
+					  html: 'going back to the previous page.',
+					  timer: 2000,
+					  timerProgressBar: true,
+					  didOpen: () => {
+					    Swal.showLoading()
+					    const b = Swal.getHtmlContainer().querySelector('b')
+					    timerInterval = setInterval(() => {
+					      b.textContent = Swal.getTimerLeft()
+					    }, 100)
+					  },
+					  willClose: () => {
+					    clearInterval(timerInterval)
+					  }
+					}).then((result) => {
+					  /* Read more about handling dismissals below */
+					  if (result.dismiss === Swal.DismissReason.timer) {
+					    console.log('I was closed by the timer')
+					  }
+					})
+			  }
+			});
+		});
+	</script>
 
 	<script >
 		$("[data-toggle=tooltip]").tooltip();
 	</script>
 
-
 	<script >
 		@if(Session::has('message'))
-
 			var type = "{{ Session::get('alert-type', 'info') }}";
 			switch(type){
 				case 'info':
@@ -358,10 +394,8 @@
 					toastr.error("{{ Session::get('message') }}","{{ Session::get('title') }}");
 				break;
 			}
-
 		@endif
 	</script>
-
 
 	<script>
 		if ( $('[type="date"]').prop('type') != 'date' ) {
@@ -371,12 +405,10 @@
 		}
 	</script>
 
-
 	<script >
 		$(document).ready(function() {
 			$('#DT').DataTable({
-                "pageLength": 200,
-
+                "pageLength": 100,
 				"language": {
 					"lengthMenu": "Mostrar _MENU_ registros por pagina",
 					"zeroRecords": "No se encontraron resultados en su busqueda",
@@ -397,74 +429,46 @@
 	</script>
 
 	<script>
-		si = document.getElementById('description-ckeditor');
-		if(si){
-			CKEDITOR.config.height = 200;
-			CKEDITOR.config.width = 'auto';
-			CKEDITOR.replace('description-ckeditor');
-		}
-	</script>
-
-	<script>
 		$("body").on("click",".input_img",function(){
-
-
 			var inp = $(this).attr("data-id");
 			var img = $(this).attr("data-id2");
-
 			var i2 = $(document.getElementById(inp)).attr("data-id2");
-
 			document.getElementById(inp).click();
-
-
 			var defimg = $(document.getElementById(img)).attr("src");
-
 			document.getElementById(inp).onchange = function (evt) {
-
 				var tgt = evt.target || window.event.srcElement,
 					files = tgt.files;
-
 				// FileReader support
 				if (FileReader && files && files.length) {
 					var fr = new FileReader();
 					fr.onload = function () {
 						document.getElementById(img).src = fr.result;
-
-
 						ResizeImage(inp,i2);
 					}
 					fr.readAsDataURL(files[0]);
 				}
 				else {
 					$(document.getElementById(img)).attr('src','https://app.ecovit.com.mx/images/interface.png');
-
 				}
 			}
-
 		});
-
 
 		function ResizeImage(inp, i2) {
 			var filesToUploads = document.getElementById(inp).files;
 			var file = filesToUploads[0];
 			if (file) {
-
 				var reader = new FileReader();
 				// Set the image once loaded into file reader
 				reader.onload = function(e) {
-
 					var img = document.createElement("img");
 					img.src = e.target.result;
-
 					var canvas = document.createElement("canvas");
 					var ctx = canvas.getContext("2d");
 					ctx.drawImage(img, 0, 0);
-
 					var MAX_WIDTH = 1000;
 					var MAX_HEIGHT = 1000;
 					var width = img.width;
 					var height = img.height;
-
 					if (width > height) {
 						if (width > MAX_WIDTH) {
 							height *= MAX_WIDTH / width;
@@ -480,22 +484,13 @@
 					canvas.height = height;
 					var ctx = canvas.getContext("2d");
 					ctx.drawImage(img, 0, 0, width, height);
-
 					dataurl = canvas.toDataURL(file.type);
 					dataurlJPG = canvas.toDataURL('image/jpeg');
 					var resizedImage = dataURLToBlob(dataurlJPG);
-
-
-
 					$(document.getElementById(i2)).val(dataurlJPG);
-
-
-
 				}
 				reader.readAsDataURL(file);
-
 			}
-
 		}
 
 		var dataURLToBlob = function(dataURL) {
@@ -516,9 +511,6 @@
 			}
 			return new Blob([uInt8Array], {type: contentType});
 		}
-
-
-
 	</script>
 
 

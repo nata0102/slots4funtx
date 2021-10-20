@@ -6,9 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-
-
-          <input type="hidden" name="_method" value="PUT">
+          <a href="{{action('PartController@index')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           <div class="row">
 
@@ -61,7 +59,7 @@
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
-                <label for="">Type*</label>
+                <label for="">Type</label>
                 <select class="form-control" name="type" disabled>
                   <option value=""></option>
                   @foreach($types as $type)
@@ -93,17 +91,10 @@
               <div class="form-group">
                 <label for="">Description</label>
                 <textarea name="description" class="form-control" rows="8" cols="80" style="width: 100%; height:  5rem;" disabled>{{$part->description}}</textarea>
-                @error('description')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
               </div>
             </div>
 
           </div>
-
-
 
         </div>
       </div>

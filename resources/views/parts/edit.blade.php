@@ -7,6 +7,8 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
+          <button data-action="{{action('PartController@index')}}" data-message="Changes will not be saved!" class=" back-button btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></button>
+
           <form class="" action="{{action('PartController@update',$part->id)}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="_method" value="PUT">
@@ -93,7 +95,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Type*</label>
+                  <label for="">Type <span style="color:red">*</span></label>
                   <select class="form-control @error('type') is-invalid @enderror input100" name="type" required>
                     <option value=""></option>
                     @foreach($types as $type)

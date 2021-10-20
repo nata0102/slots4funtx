@@ -29,32 +29,13 @@ class PartController extends Controller
     }
 
     public function searchWithFilters($params){
-      $res = [];
-      $aux = Part::with([
-        'status' => function ($query) use($params){
-          if($params['status'])
-            $query->where('value', 'LIKE', "%{$params['status']}%");
-        },
-        'type' => function($query) use ($params){
-          if($params['type'])
-            $query->where('value', 'LIKE', "%{$params['type']}%");
-        }])->orWhere('model',$params['model'])->orWhere('brand',$params['brand'])->where('active',1)->get();
-        foreach ($aux as $a) {
-          $b_status = true;
-          if($params['status']){
-            if($a->status == null)
-              $b_status = false;
-          }
-          $b_type = true;
-          if($params['type']){
-            if($a->type == null)
-              $b_type = false;
-          }
-          if($b_status == true && $b_type == true){
-            if($a['active'] == 1)
-            array_push($res,$a);
-          }
-        }
+      $res = Part::whereHas(
+        'status', function($q) use($params){
+          $q->where('value', 'LIKE', "%{$params['status']}%");
+      })->whereHas(
+        'type', function($q) use($params){
+          $q->where('value', 'LIKE', "%{$params['type']}%");
+      })->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('active',1)->get();
       return $res;
     }
 
@@ -83,6 +64,7 @@ class PartController extends Controller
         'type' => 'required',
         'price' => 'numeric|nullable',
         'weight' => 'numeric|nullable',
+        'serial' => 'unique:parts,serial|nullable',
       ]);
 
       try{
@@ -117,12 +99,15 @@ class PartController extends Controller
           }
         });
       }catch(\Exception $e){
-        $notification = array(
-          'message' => 'Machine Not Saved:'.$e->getMessage(),
-          //'message' => 'Oops! there was an error, please try again later.',
-          'alert-type' => 'error'
+        $message = $e->getMessage();
+        $pos = strpos($message, 'part.serial');
+        if ($pos != false)
+            $cad = "The Serial must be unique.";
+        $transaction = array(
+            'message' => $cad,
+            'alert-type' => 'error'
         );
-        return back()->with($notification)->withInput($request->all());
+        return back()->with($transaction)->withInput($request->all());
       }
     }
 
@@ -169,6 +154,7 @@ class PartController extends Controller
         'type' => 'required',
         'price' => 'numeric|nullable',
         'weight' => 'numeric|nullable',
+        'serial' => 'nullable|unique:parts,serial,'.$id,
       ]);
 
       try{
@@ -204,13 +190,17 @@ class PartController extends Controller
             return back()->with($notification)->withInput($request->all());
           }
         });
-      }catch(\Exception $e){
+      }catch(\Exception $e){$cad = 'Oops! there was an error, please try again later.';
+        $message = $e->getMessage();
+        $pos = strpos($message, 'part.serial');
+        if ($pos != false)
+            $cad = "The Serial must be unique.";
         $transaction = array(
-          'message' => 'Machine Not Saved:'.$e->getMessage(),
-          //'message' => 'Oops! there was an error, please try again later.',
-          'alert-type' => 'error'
+            'message' => $cad,
+            'alert-type' => 'error'
         );
         return back()->with($transaction)->withInput($request->all());
+
       }
     }
 
