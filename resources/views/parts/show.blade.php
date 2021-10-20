@@ -83,6 +83,13 @@
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
+                <label for="">Machine</label>
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->machine->game_title}} - {{$part->machine->serial}}">
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="form-group">
                 <label for="">Image @if($part->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif</label>
               </div>
             </div>

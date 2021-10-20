@@ -336,7 +336,7 @@
 			var message = $(this).attr('data-message');
 			Swal.fire({
 			  title: 'Are you sure?',
-			  text: message,			  
+			  text: message,
 			  showCancelButton: true,
 			  confirmButtonColor: '#3085d6',
 			  cancelButtonColor: '#d33',
@@ -347,7 +347,7 @@
 					let timerInterval
 					Swal.fire({
 					  title: 'Going back!',
-					  html: 'going back to the previous page.',
+					  html: 'Going back to the previous page.',
 					  timer: 2000,
 					  timerProgressBar: true,
 					  didOpen: () => {

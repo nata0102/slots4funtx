@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Part;
+use App\Models\Machine;
 use DB;
 use File;
 use Input;
@@ -22,7 +23,7 @@ class PartController extends Controller
           $parts = $this->searchWithFilters($request->all());
         break;
         default:
-          $parts = Part::where('active',1)->orderBy('id','desc')->take(20)->get();
+          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine')->take(20)->get();
         break;
       }
       return view('parts.index',compact('parts'));
@@ -49,7 +50,8 @@ class PartController extends Controller
       $types =  DB::table('lookups')->where('type','part_type')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->get();
-      return view('parts.create',compact('types','protocols','status'));
+      $machines = Machine::where('active',1)->orderBy('serial')->get();
+      return view('parts.create',compact('types','protocols','status','machines'));
     }
 
     /**
@@ -80,6 +82,7 @@ class PartController extends Controller
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
           $part->description = $request->description;
+          $part->machine_id = $request->machine_id;
           if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }
@@ -123,6 +126,8 @@ class PartController extends Controller
       $types =  DB::table('lookups')->where('type','part_type')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->get();
+      $part = Part::where('id',$id)->with('machine')->first();
+
       return view('parts.show',compact('part','types','protocols','status'));
     }
 
@@ -138,7 +143,9 @@ class PartController extends Controller
       $types =  DB::table('lookups')->where('type','part_type')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->get();
-      return view('parts.edit',compact('part','types','protocols','status'));
+      $machines = Machine::where('active',1)->orderBy('serial')->get();
+      $part = Part::where('id',$id)->with('machine')->first();
+      return view('parts.edit',compact('part','types','protocols','status','machines'));
     }
 
     /**
@@ -169,6 +176,7 @@ class PartController extends Controller
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
           $part->description = $request->description;
+          $part->machine_id = $request->machine_id;
           if($request->image){
             if($part->image != NULL){
               unlink(public_path().'/images/part/'.$part->image);
@@ -200,7 +208,6 @@ class PartController extends Controller
             'alert-type' => 'error'
         );
         return back()->with($transaction)->withInput($request->all());
-
       }
     }
 

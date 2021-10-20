@@ -26,7 +26,7 @@ class Part extends Model
   }
 
   public function machine(){
-      return $this->hasOne('App\Models\Machine', 'id', 'part_id');
+      return $this->hasOne('App\Models\Machine', 'id', 'machine_id');
   }
 
 

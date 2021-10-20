@@ -21,19 +21,20 @@
               </div>
           </form>
 
-          <div class=" table-responsive table-striped table-bordered" style="font-size: 14px;">
-            <table id="table" class="table " style="width: 100%; table-layout: fixed;">
+          <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0;">
+            <table id="table" class="table" style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
                       <th style="width:100px; text-align: center;">Brand</th>
                       <th style="width:100px; text-align: center;">Model</th>
                       <th style="width:100px; text-align: center;">Serial</th>
-                      <th style="width:100px; text-align: center;">Price</th>
-                      <th style="width:100px; text-align: center;">Weight</th>
+                      <th style="width:85px; text-align: center;">Price</th>
+                      <th style="width:70px; text-align: center;">Weight</th>
                       <th style="width:100px; text-align: center;">Type</th>
-                      <th style="width:150px; text-align: center;">Status</th>
-                      <th style="width:100px; text-align: center;">Protocol</th>
-                    	<th style="width:112px; text-align: center;"></th>
+                      <th style="width:135px; text-align: center;">Status</th>
+                      <th style="width:150px; text-align: center;">Protocol</th>
+                      <th style="width:175px; text-align: center;">Machine</th>
+                    	<th style="width:125px; text-align: center;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,11 @@
                       @endif
                       @if($part->protocol != NULL)
                         <td>{{$part->protocol->value}}</td>
+                      @else
+                        <td></td>
+                      @endif
+                      @if($part->machine_id != NULL)
+                        <td>{{$part->machine->game_title}} - {{$part->machine->serial}}</td>
                       @else
                         <td></td>
                       @endif

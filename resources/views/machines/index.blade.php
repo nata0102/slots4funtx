@@ -1,8 +1,8 @@
 @extends('layouts.layout')
 
 @section('content')
-    
-    
+
+
 
     <div class="main-content">
         <div class="section__content section__content--p30">
@@ -10,26 +10,26 @@
                 <div class="card" id="card-section">
                 <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 <form method="GET" action="{{ route('machines.index') }}">
-                    <div class="input-group mb-5">            
+                    <div class="input-group mb-5">
                         <input class="form-control" type="text" name="game" autofocus placeholder="Game Title">
-                    
+
                         <input class="form-control" name="owner" autofocus placeholder="Owner Type (Mine/Service)">
 
                         <input class="form-control" name="status" autofocus placeholder="Status">
 
                         <input class="form-control" name="brand" autofocus placeholder="Brand">
-                    
-                        <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>        
+
+                        <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
                     </div>
-                </form>    
+                </form>
 
                 <div class=" table-responsive table-striped table-bordered" >
                 <table id="example" class="table " style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
                         	<th>Game Title</th>
-                        	<th>Owner Type</th>    
+                        	<th>Owner Type</th>
                         	<th>Serial</th>
                         	<th>Inventory</th>
                             <th>Client</th>
@@ -58,15 +58,15 @@
                             @else
                                 <td>{{$r->address->client->name}}</td>
                                 <td>{{$r->address->name_address}}</td>
-                            @endif  
+                            @endif
                             @if($r->status == null)
                                 <td></td>
-                            @else              
+                            @else
                                 <td>{{$r->status->value}}</td>
                             @endif
                             @if($r->brand == null)
                                 <td></td>
-                            @else 
+                            @else
                                 <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}} lbs.</td>
                             @endif
                             <td>{{$r->date_sale}}</td>
@@ -88,8 +88,8 @@
                             @else
                                 <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" disabled></div></td>
                             @endif-->
-                        </tr> 
-                        @endforeach           
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 </div>
