@@ -26,6 +26,10 @@ class Machine extends Model
         return $this->hasOne('App\Models\MachineBrand', 'id', 'machine_brand_id');
     }
 
+    public function parts(){
+        return $this->hasMany('App\Models\Part', 'machine_id', 'id');
+    }
+
     //Query Scopes
     public function scopeGame($qry, $game){
     	if($game)

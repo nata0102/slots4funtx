@@ -11,13 +11,13 @@
                 <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 <form method="GET" action="{{ route('machines.index') }}">
                     <div class="input-group mb-5">
-                        <input class="form-control" type="text" name="game" autofocus placeholder="Game Title">
+                        <input class="form-control" type="text" name="game" autofocus placeholder="Game Title" value="{{ isset($_GET['game']) ? $_GET['game'] : '' }}">
 
-                        <input class="form-control" name="owner" autofocus placeholder="Owner Type (Mine/Service)">
+                        <input class="form-control" name="owner" autofocus placeholder="Owner Type (Mine/Service)" value="{{ isset($_GET['owner']) ? $_GET['owner'] : '' }}">
 
-                        <input class="form-control" name="status" autofocus placeholder="Status">
+                        <input class="form-control" name="status" autofocus placeholder="Status" value="{{ isset($_GET['status']) ? $_GET['status'] : '' }}">
 
-                        <input class="form-control" name="brand" autofocus placeholder="Brand">
+                        <input class="form-control" name="brand" autofocus placeholder="Brand" value="{{ isset($_GET['brand']) ? $_GET['brand'] : '' }}">
 
                         <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\MachineHistory;
 
 
@@ -27,20 +27,36 @@ class Controller extends BaseController
         return $fileName;
     }
 
-    public function insertMachineHistory($machine){
-        ////FALTA type_price Y type_price_amount Y active    y el owner   
+    public function insertMachineHistory($arr_id){      
+        if(is_numeric($arr_id))
+            $machine = Machine::with('owner')->findOrFail($arr_id);
+        else
+            $machine = $arr_id;
+        $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')->where('machine_id',$machine->id)
+            ->select('percentage_price_machine.*','lookups.value')->first();
+
         $band = false;
         $history = MachineHistory::where('machine_id',$machine->id)->orderBy('id','desc')->first();
         if($history == null)
             $band = true;
         else{
-            if($machine->address_id != $history->address_id || $machine->lkp_status_id != $history->lkp_status_id || $machine->machine_sold_id != $history->machine_sold_id /*||
-                $machine->active != $history->active*/)
+            if($machine->address_id != $history->address_id || $machine->lkp_status_id != $history->lkp_status_id || $machine->machine_sold_id != $history->machine_sold_id ||
+                $machine->active != $history->active || $machine->owner->value != $history->owner_type)
                 $band = true;
+            if($price_machine != null){
+                if($history->type_price != $price_machine->value || 
+                   $history->type_price_amount != $price_machine->amount)
+                    $band = true;
+            }
         }
         if($band){
             $arr_history = ['machine_id' => $machine->id,'address_id'=>$machine->address_id,
-                'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,'type_price'=> null,'type_price_amount'=>null,'created_at'=>date('Y-m-d H:i:s')];
+                'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,'type_price'=> null,'type_price_amount'=>null, 'active'=>$machine->active,
+                'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s')];
+            if($price_machine != null){
+                $arr_history['type_price'] = $price_machine->value;
+                $arr_history['type_price_amount'] = $price_machine->amount;
+            }
             MachineHistory::create($arr_history);
         }
     }

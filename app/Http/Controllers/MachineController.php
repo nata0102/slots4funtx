@@ -157,7 +157,8 @@ class MachineController extends Controller
      */
     public function show($id)
     {
-        //
+        $machine = Machine::with('status','address.client','brand','owner','parts.type')->findOrFail($id);
+        return view('machines.show',compact('machine'));
     }
 
     /**
@@ -274,7 +275,6 @@ class MachineController extends Controller
                 $machine = Machine::findOrFail($id);
                 $machine->active = 0;
                 if($machine->save()){
-                    //FALTA EL active
                    $this->insertMachineHistory($machine);
                    return response()->json(200);
                 }else
