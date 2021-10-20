@@ -36,7 +36,7 @@ class PartController extends Controller
       })->whereHas(
         'type', function($q) use($params){
           $q->where('value', 'LIKE', "%{$params['type']}%");
-      })->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('active',1)->get();
+      })->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('active',$params['active'])->get();
       return $res;
     }
 
@@ -92,6 +92,13 @@ class PartController extends Controller
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
+
+            ///historial de pieza
+            DB::insert('insert into part_history (part_id, lkp_status_id, machine_id, created_at, active) values (?,?,?,?,?)', [$part->id, $part->lkp_status_id, $part->machine_id,date('Y-m-d'),1]);
+
+
+
+
             return redirect()->action('PartController@index')->with($notification);
           }else {
             $notification = array(
@@ -178,7 +185,7 @@ class PartController extends Controller
           $part->description = $request->description;
           $part->machine_id = $request->machine_id;
           if($request->image){
-            if($part->image != NULL){
+            if($part->image != NULL && file_exists(public_path().'/images/part/'.$part->image)){
               unlink(public_path().'/images/part/'.$part->image);
             }
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
@@ -198,8 +205,9 @@ class PartController extends Controller
             return back()->with($notification)->withInput($request->all());
           }
         });
-      }catch(\Exception $e){$cad = 'Oops! there was an error, please try again later.';
+      }catch(\Exception $e){
         $message = $e->getMessage();
+        $cad = 'Oops! there was an error, please try again later.';
         $pos = strpos($message, 'part.serial');
         if ($pos != false)
             $cad = "The Serial must be unique.";
@@ -225,6 +233,25 @@ class PartController extends Controller
           $part->active = 0;
           $destroy = $part->save();
           if ($destroy) {
+            return response()->json(array('success' => true), 200);
+          }else {
+            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+          }
+      });
+      }catch(\Exception $e){
+        return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+      }
+    }
+
+    public function active($id)
+    {
+      try{
+        return DB::transaction(function() use($id){
+          $part = Part::find($id);
+          if($part->active == 0)
+            $part->active = 1;
+          $update = $part->save();
+          if ($update) {
             return response()->json(array('success' => true), 200);
           }else {
             return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);

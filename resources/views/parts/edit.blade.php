@@ -132,7 +132,11 @@
                   <label for="">Machine</label>
                   <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
                   @foreach($machines as $machine)
+                    @if($part->machine_id != NULL)
                     <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->game_title}} - {{$machine->serial}}</option>
+                    @else
+                    <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->game_title}} - {{$machine->serial}}</option>
+                    @endif
                   @endforeach
                   </select>
                 </div>
@@ -142,7 +146,7 @@
                 <div class="form-group">
                   <label for="">Image @if($part->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
                   <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
-                    @if($part->image)
+                    @if($part->image && file_exists(public_path().'/images/part/'.$part->image))
                     <img src="{{asset('/images/part')}}/{{$part->image}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
                     @else
                     <img src="{{asset('/images/interface.png')}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">

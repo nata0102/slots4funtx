@@ -8,14 +8,14 @@
         <div class="card" id="card-section">
           <div class="input-group mb-2">
             <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
-            <div class="" style="position: absolute; right: 90px; margin: 10px 0;">
-              <label for="check-active"><input type="checkbox" class="check-active" name="" value="1" id="check-active"> Inactive</label>
 
-
-            </div>
           </div>
 
           <form method="GET" action="{{action('PartController@index')}}">
+              <div class="" style="position: absolute; right: 90px; margin: 10px 0; top: 13px;">
+                <input type="hidden" name="active" value="{{ isset($_GET['active']) ? $_GET['active'] : '1' }}" id="check-input">
+                <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
+              </div>
               <div class="input-group mb-5">
                   <input class="form-control" type="text" name="type" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}" placeholder="Type">
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
@@ -77,12 +77,20 @@
                           <div class="col-4" style="padding: 0;">
                             <a href="{{action('PartController@show',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                           </div>
-                          <div class="col-4" style="padding: 0;">
+
+                          <div class="col-4 active" style="padding: 0;">
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                           </div>
-                          <div class="col-4" style="padding: 0;">
-                            <button class="delete-alert btn btn-link" type="button" data-row="#row-{{$part->id}}" data-table="#table" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+
+                          <div class="col-4 active" style="padding: 0;">
+                            <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                           </div>
+
+                          <div hidden class="col-8 inactive" style="padding: 0;">
+                            <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this part?" data-message2="Activated" data-message3="Activated part." data-method="PUT" data-action="{{action('PartController@active',$part->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
+                          </div>
+
+
                         </div>
                       </td>
                     </tr>

@@ -277,100 +277,6 @@
 	<!-- javscripts -->
 	<script src="{{ asset('adminjs/adminscripts.js') }}"></script>
 
-	<script>
-		$('body').on('click','.delete-alert',function(event){
-			var url = $(this).attr('data-action');
-			var row = $(this).attr('data-row');
-		  var table = $(this).attr('data-table');
-			var to = $("#token").val();
-
-			Swal.fire({
-			  title: 'Are you sure?',
-			  text: "You won't be able to revert this!",
-			  icon: 'warning',
-			  showCancelButton: true,
-			  confirmButtonColor: '#3085d6',
-			  cancelButtonColor: '#d33',
-			  confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-			  if (result.isConfirmed) {
-					$.ajax({
-						type: "POST",
-						headers:{"X-CSRF-TOKEN": to},
-						url: url,
-						dataType: 'json',
-						data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": "DELETE"
-            },
-						success: function(data) {
-							Swal.fire(
-							 'Deleted!',
-							 'Your file has been deleted.',
-							 'success'
-						 	);
-							//location.reload();
-							$(table).load(" "+table);
-							//document.getElementById(row).remove();
-						},
-						error: function(reject){
-							if( reject.status === 422 ) {
-        	      var errors = $.parseJSON(reject.responseText);
-                $.each(errors, function (key, val) {
-                  message = val;
-                });
-              }
-							Swal.fire(
-							 'Error!',
-							 message,
-							 'error'
-						 	);
-						},
-					});
-			  }
-			});
-		});
-
-		$('body').on('click','.back-button',function(event){
-			var url = $(this).attr('data-action');
-			var message = $(this).attr('data-message');
-			Swal.fire({
-			  title: 'Are you sure?',
-			  text: message,
-			  showCancelButton: true,
-			  confirmButtonColor: '#3085d6',
-			  cancelButtonColor: '#d33',
-			  confirmButtonText: 'Yes'
-			}).then((result) => {
-			  if (result.isConfirmed) {
-					window.location.href = url;
-					let timerInterval
-					Swal.fire({
-					  title: 'Going back!',
-					  html: 'Going back to the previous page.',
-					  timer: 2000,
-					  timerProgressBar: true,
-					  didOpen: () => {
-					    Swal.showLoading()
-					    const b = Swal.getHtmlContainer().querySelector('b')
-					    timerInterval = setInterval(() => {
-					      b.textContent = Swal.getTimerLeft()
-					    }, 100)
-					  },
-					  willClose: () => {
-					    clearInterval(timerInterval)
-					  }
-					}).then((result) => {
-					  /* Read more about handling dismissals below */
-					  if (result.dismiss === Swal.DismissReason.timer) {
-					    console.log('I was closed by the timer')
-					  }
-					})
-			  }
-			});
-		});
-	</script>
-
 	<script >
 		$("[data-toggle=tooltip]").tooltip();
 	</script>
@@ -429,6 +335,58 @@
 	</script>
 
 	<script>
+
+		function checkclic()
+		{
+			if (document.getElementById('check-active').checked){
+				$(document.getElementById('check-input')).attr('value',0);
+		  } else {
+				$(document.getElementById('check-input')).attr('value',1);
+		  }
+		}
+
+		function check(){
+			check = $(document.getElementById('check-input')).attr('value');
+			if(check == 0){
+				$(document.getElementById('check-active')).attr('checked','');
+			}
+
+			if (document.getElementById('check-active').checked)
+		  {
+				arr = document.getElementsByClassName('active');
+				if(arr.length > 0){
+					for (var i = 0; i < arr.length; i++) {
+						arr[i].setAttribute('hidden','');
+					}
+				}
+				arr = document.getElementsByClassName('inactive');
+				if(arr.length > 0){
+					for (var i = 0; i < arr.length; i++) {
+						arr[i].removeAttribute('hidden');
+					}
+				}
+		  } else {
+				arr = document.getElementsByClassName('inactive');
+				if(arr.length > 0){
+					for (var i = 0; i < arr.length; i++) {
+						arr[i].setAttribute('hidden','');
+					}
+				}
+
+				arr = document.getElementsByClassName('active');
+				if(arr.length > 0){
+					for (var i = 0; i < arr.length; i++) {
+						arr[i].removeAttribute('hidden');
+					}
+				}
+		  }
+		}
+
+		$(document).ready(function() {
+			check();
+		});
+
+
 		$("body").on("click",".input_img",function(){
 			var inp = $(this).attr("data-id");
 			var img = $(this).attr("data-id2");
@@ -511,6 +469,107 @@
 			}
 			return new Blob([uInt8Array], {type: contentType});
 		}
+	</script>
+
+
+	<script>
+		$('body').on('click','.delete-alert',function(event){
+			var url = $(this).attr('data-action');
+			var table = $(this).attr('data-table');
+			var reload = $(this).attr('data-reload');
+
+			var method = $(this).attr('data-method');
+			var message1 = $(this).attr('data-message1');
+			var message2 = $(this).attr('data-message2');
+		  var message3 = $(this).attr('data-message3');
+			var to = $("#token").val();
+
+			Swal.fire({
+			  title: 'Are you sure?',
+			  text: message1,
+			  icon: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Yes!'
+			}).then((result) => {
+			  if (result.isConfirmed) {
+					$.ajax({
+						type: "POST",
+						headers:{"X-CSRF-TOKEN": to},
+						url: url,
+						dataType: 'json',
+						data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": method
+            },
+						success: function(data) {
+							Swal.fire(
+							 message2,
+							 message3,
+							 'success'
+						 	);
+							$(table).load(" "+table);
+
+						},
+						complete: function () {
+							setTimeout(() => {
+								check = $(document.getElementById('check-input')).attr('value');
+								if(check == 0){
+									$(document.getElementById('check-active')).attr('checked','');
+								}
+
+								if (document.getElementById('check-active').checked)
+							  {
+									arr = document.getElementsByClassName('active');
+									if(arr.length > 0){
+										for (var i = 0; i < arr.length; i++) {
+											arr[i].setAttribute('hidden','');
+										}
+									}
+									arr = document.getElementsByClassName('inactive');
+									if(arr.length > 0){
+										for (var i = 0; i < arr.length; i++) {
+											arr[i].removeAttribute('hidden');
+										}
+									}
+							  } else {
+									arr = document.getElementsByClassName('inactive');
+									if(arr.length > 0){
+										for (var i = 0; i < arr.length; i++) {
+											arr[i].setAttribute('hidden','');
+										}
+									}
+
+									arr = document.getElementsByClassName('active');
+									if(arr.length > 0){
+										for (var i = 0; i < arr.length; i++) {
+											arr[i].removeAttribute('hidden');
+										}
+									}
+							  }
+							},1500);
+
+            },
+						error: function(reject){
+							if( reject.status === 422 ) {
+        	      var errors = $.parseJSON(reject.responseText);
+                $.each(errors, function (key, val) {
+                  message = val;
+                });
+              }
+							Swal.fire(
+							 'Error!',
+							 message,
+							 'error'
+						 	);
+						},
+					});
+			  }
+			});
+		});
+
+
 	</script>
 
 
