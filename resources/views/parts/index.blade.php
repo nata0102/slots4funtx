@@ -6,7 +6,14 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
+          <div class="input-group mb-2">
+            <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
+            <div class="" style="position: absolute; right: 90px; margin: 10px 0;">
+              <label for="check-active"><input type="checkbox" class="check-active" name="" value="1" id="check-active"> Inactive</label>
+
+
+            </div>
+          </div>
 
           <form method="GET" action="{{action('PartController@index')}}">
               <div class="input-group mb-5">
