@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-          <button data-action="{{action('PartController@index')}}" data-message="Changes will not be saved!" class=" back-button btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></button>
+          <a href="{{action('PartController@index')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           <form class="" action="{{action('PartController@update',$part->id)}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
