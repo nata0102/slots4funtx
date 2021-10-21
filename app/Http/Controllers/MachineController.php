@@ -30,7 +30,6 @@ class MachineController extends Controller
             break;
         }
         //return $res;
-
         return view('machines.index',compact('res'));
     }
 
@@ -51,7 +50,7 @@ class MachineController extends Controller
             'owner' => function($query) use($params){
                 if($params['owner'])
                     $query->where('value', 'LIKE', "%{$params['owner']}%");
-            }])->game($params['game'])->where('active',1)->get();
+            }])->game($params['game'])->where('active',$params['active'])->get();
             foreach ($aux as $a) {
                 $b_owner = true;
                 if($params['owner']){
@@ -283,6 +282,24 @@ class MachineController extends Controller
             return $transaction;
         }catch(\Exception $e){
             return response()->json(422);
+        }
+    }
+
+    public function active($id)
+    {
+        try{
+            return DB::transaction(function() use ($id){
+                $res = Machine::findOrFail($id);
+                $res->active = 1;
+                $update = $res->save();
+                Part::where('machine_id',$id)->update(['active'=>1]);
+                if ($update) 
+                    return response()->json(array('success' => true), 200);
+                else 
+                    return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);                
+            });
+        }catch(\Exception $e){
+            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
         }
     }
 }
