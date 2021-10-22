@@ -94,10 +94,7 @@ class PartController extends Controller
             );
 
             ///historial de pieza
-            DB::insert('insert into part_history (part_id, lkp_status_id, machine_id, created_at, active) values (?,?,?,?,?)', [$part->id, $part->lkp_status_id, $part->machine_id,date('Y-m-d'),1]);
-
-
-
+            $this->insertPartHistory($part->id);
 
             return redirect()->action('PartController@index')->with($notification);
           }else {
@@ -134,7 +131,6 @@ class PartController extends Controller
       $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->get();
       $part = Part::where('id',$id)->with('machine')->first();
-
       return view('parts.show',compact('part','types','protocols','status'));
     }
 
@@ -192,6 +188,8 @@ class PartController extends Controller
           }
           $created = $part->save();
           if ($created) {
+            ///historial de pieza
+            $this->insertPartHistory($part->id);
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
@@ -207,7 +205,7 @@ class PartController extends Controller
         });
       }catch(\Exception $e){
         $message = $e->getMessage();
-        $cad = 'Oops! there was an error, please try again later.';
+        $cad = 'Oops! there was an error, please try again later.' .$message;
         $pos = strpos($message, 'part.serial');
         if ($pos != false)
             $cad = "The Serial must be unique.";
@@ -233,6 +231,7 @@ class PartController extends Controller
           $part->active = 0;
           $destroy = $part->save();
           if ($destroy) {
+            $this->insertPartHistory($part->id);
             return response()->json(array('success' => true), 200);
           }else {
             return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
@@ -252,6 +251,7 @@ class PartController extends Controller
             $part->active = 1;
           $update = $part->save();
           if ($update) {
+            $this->insertPartHistory($part->id);
             return response()->json(array('success' => true), 200);
           }else {
             return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
@@ -262,4 +262,5 @@ class PartController extends Controller
       }
 
     }
+
 }

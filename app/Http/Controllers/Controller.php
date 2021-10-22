@@ -8,6 +8,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 use App\Models\MachineHistory;
+use App\Models\PartHistory;
+use App\Models\Part;
 
 
 class Controller extends BaseController
@@ -27,7 +29,7 @@ class Controller extends BaseController
         return $fileName;
     }
 
-    public function insertMachineHistory($arr_id){      
+    public function insertMachineHistory($arr_id){
         if(is_numeric($arr_id))
             $machine = Machine::with('owner')->findOrFail($arr_id);
         else
@@ -44,7 +46,7 @@ class Controller extends BaseController
                 $machine->active != $history->active || $machine->owner->value != $history->owner_type)
                 $band = true;
             if($price_machine != null){
-                if($history->type_price != $price_machine->value || 
+                if($history->type_price != $price_machine->value ||
                    $history->type_price_amount != $price_machine->amount)
                     $band = true;
             }
@@ -61,4 +63,47 @@ class Controller extends BaseController
         }
     }
 
+    public function insertPartHistory($id){
+      $part = Part::where('id',$id)->with('machine')->with('status')->first();
+      $history = PartHistory::where('part_id',$id)->with('machine')->with('status')->orderBy('id','desc')->first();
+      $status = false;
+      $machine = false;
+      $active = false;
+      $new = false;
+      if($history){
+        //checamos si ya tiene un status asignado
+        if($history->lkp_status_id == NULL){
+          $status = $part->lkp_status_id == NULL ? false : true;
+        }
+        else {
+          if($part->lkp_status_id != NULL)
+            $status = $part->status->id == $history->status->id ? false : true;
+        }
+        //checamos si ya tiene una maquina asignada
+        if($history->machine_id == NULL){
+          $machine = $part->machine_id == NULL ? false : true;
+        }else {
+          if($part->machine_id != NULL)
+            $machine = $part->machine->id == $history->machine->id ? false : true;
+        }
+        //checamo si activo o desactivo la pieza
+        $active = $part->active != $history->active ? true : false;
+
+        if($machine || $status || $active){
+          $new = true;
+        }
+      }
+      else {
+        $new = true;
+      }
+      if($new){
+        $history = new PartHistory;
+        $history->part_id = $part->id;
+        $history->lkp_status_id = $part->lkp_status_id;
+        $history->machine_id = $part->machine_id;
+        $history->active = $part->active;
+        $history->created_at = date('Y-m-d H:i:s');
+        $history->save();
+      }
+    }
 }
