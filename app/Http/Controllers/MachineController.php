@@ -133,7 +133,7 @@ class MachineController extends Controller
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
-        }catch(\Exception $e){return $e->getMessage();
+        }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            
@@ -197,10 +197,10 @@ class MachineController extends Controller
         }
         if($parts != null){
             foreach ($parts as $part){
-                $part = Part::findOrFail(intval($part));
+                $part = Part::findOrFail($part);
                 $part->machine_id = $machine_id;
                 $part->save();
-                $this->insertPartHistory(intval($part));
+                $this->insertPartHistory($part->id);
             }
         }
     }   

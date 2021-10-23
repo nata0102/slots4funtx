@@ -61,8 +61,9 @@ class Controller extends BaseController
         }
     }
 
-    public function insertPartHistory($id){
+    public function insertPartHistory($id){print_r($id);
       $part = Part::where('id',$id)->with('machine')->with('status')->first();
+      print_r($part);
       $history = PartHistory::where('part_id',$id)->with('machine')->with('status')->orderBy('id','desc')->first();
       $status = false;
       $machine = false;
@@ -96,7 +97,10 @@ class Controller extends BaseController
       }
       if($new){
         $history = new PartHistory;
+        print_r("tre");
         $history->part_id = $part->id;
+                print_r("cuatro");
+
         $history->lkp_status_id = $part->lkp_status_id;
         $history->machine_id = $part->machine_id;
         $history->active = $part->active;
