@@ -151,6 +151,10 @@
 													<li>
 															<a href="{{action('PartController@index')}}">Parts</a>
 													</li>
+
+								<li>
+									<a href="{{action('LookupController@index')}}">Configuration</a>
+								</li>
 		                </ul>
 		            </div>
 		        </nav>

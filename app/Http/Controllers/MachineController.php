@@ -29,7 +29,6 @@ class MachineController extends Controller
                $res = Machine::with('status','address.client','brand','owner')->where('active',1)->orderBy('id','desc')->take(20)->get();
             break;
         }
-        //return $res;
         return view('machines.index',compact('res'));
     }
 
@@ -51,25 +50,25 @@ class MachineController extends Controller
                 if($params['owner'])
                     $query->where('value', 'LIKE', "%{$params['owner']}%");
             }])->game($params['game'])->where('active',$params['active'])->get();
-            foreach ($aux as $a) {
-                $b_owner = true;
-                if($params['owner']){
-                    if($a->owner == null)
-                        $b_owner = false;
-                }
-                $b_status = true;
-                if($params['status']){
-                    if($a->status == null)
-                        $b_status = false;
-                }
-                $b_brand = true;
-                if($params['brand']){
-                    if($a->brand == null)
-                        $b_brand = false;
-                }
-                if($b_owner == true && $b_status == true && $b_brand == true)
-                    array_push($res,$a);
+        foreach ($aux as $a) {
+            $b_owner = true;
+            if($params['owner']){
+                if($a->owner == null)
+                    $b_owner = false;
             }
+            $b_status = true;
+            if($params['status']){
+                if($a->status == null)
+                    $b_status = false;
+            }
+            $b_brand = true;
+            if($params['brand']){
+                if($a->brand == null)
+                    $b_brand = false;
+            }
+            if($b_owner == true && $b_status == true && $b_brand == true)
+                array_push($res,$a);
+        }
         return $res;
     }
 
@@ -100,7 +99,10 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request){  
                 $this->validate($request, [
                     'game_title' => 'required',
-                    'lkp_owner_id' => 'required'
+                    'lkp_owner_id' => 'required',
+                    'serial' => 'unique:machines,serial|nullable',
+                    'inventory' => 'unique:machines,inventory|nullable',
+
                 ]);               
                 $arr = $request->except('parts_ids','_token','image');            
                 $parts = $request->parts_ids;
@@ -112,6 +114,7 @@ class MachineController extends Controller
                         $part = Part::findOrFail(intval($part));
                         $part->machine_id = $machine->id;
                         $part->save();
+                        $this->insertPartHistory(intval($part));
                     }
                 }
                 if ($machine) {
@@ -188,7 +191,8 @@ class MachineController extends Controller
         foreach ($parts_machine as $p_machine) {
             if ($parts == null || !in_array((string)$p_machine->id, $parts)){
                 $p_machine->machine_id = null;
-                $p_machine->save();                     
+                $p_machine->save();  
+                $this->insertPartHistory($p_machine->id);                   
             }                
         }
         if($parts != null){
@@ -196,6 +200,7 @@ class MachineController extends Controller
                 $part = Part::findOrFail(intval($part));
                 $part->machine_id = $machine_id;
                 $part->save();
+                $this->insertPartHistory(intval($part));
             }
         }
     }   
@@ -213,7 +218,9 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request, $id){  
                 $this->validate($request, [
                     'game_title' => 'required',
-                    'lkp_owner_id' => 'required'
+                    'lkp_owner_id' => 'required',
+                    'serial' => 'nullable|unique:machines,serial,'.$id,
+                    'inventory' => 'nullable|unique:machines,inventory,'.$id,
                 ]); 
                 $arr = $request->except('parts_ids','_token','image','_method');            
                 $parts = $request->parts_ids;
@@ -271,6 +278,10 @@ class MachineController extends Controller
         try{
             $transaction = DB::transaction(function() use ($id){
                 Part::where('machine_id',$id)->update(['active'=>0]);
+                $parts = Part::where('machine_id',$id)->get();
+                foreach ($parts as $part) 
+                    $this->insertPartHistory($part->id);
+
                 $machine = Machine::findOrFail($id);
                 $machine->active = 0;
                 if($machine->save()){
@@ -293,6 +304,10 @@ class MachineController extends Controller
                 $res->active = 1;
                 $update = $res->save();
                 Part::where('machine_id',$id)->update(['active'=>1]);
+                $parts = Part::where('machine_id',$id)->get();
+                foreach ($parts as $part) 
+                    $this->insertPartHistory($part->id);
+                
                 if ($update) 
                     return response()->json(array('success' => true), 200);
                 else 

@@ -20,8 +20,29 @@ class LookupController extends Controller
             case 'type':
                 $res = Lookup::where('type',$request->type)->orderBy('value')->get();
             break;
+            default:
+                $res = $this->searchWithFilters($request->all());
+            break;
         }
-        return $res;
+        return view('lookups.index',compact('res'));
+    }
+
+    public function indexList(){
+        $qry = "select tab1.*, l2.id, l2.value from(select l.key_value as p_key_value, value as p_value
+                from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2
+                where l2.type = tab1.p_key_value;";
+        return DB::select($qry);
+    }
+
+    public function searchWithFilters($params){
+        $qry = "select tab1.*, l2.id, l2.value from(select l.key_value as p_key_value, value as p_value
+                from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
+        if (array_key_exists('type', $params))
+            $qry .= " and tab1.p_key_value like '%".$params['type']."%'";
+        if (array_key_exists('value', $params))
+            $qry .= " and l2.value like '%".$params['value']."%'";
+        $qry .= " order by p_value, value;";
+        return DB::select($qry);
     }
 
     /**
@@ -31,7 +52,8 @@ class LookupController extends Controller
      */
     public function create()
     {
-        //
+        $configuration =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->get();
+        return view('lookups.create',compact('configuration'));
     }
 
     /**
