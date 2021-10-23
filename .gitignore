@@ -1,7 +1,10 @@
 /node_modules
-/public/hot
-/public/storage
-/public/images/machine
+/public_html/hot
+/public_html/storage
+/public_html/images/machines
+/public_html/images/machine
+/public_html/images/part
+/public_html/images/profiles
 /storage/*.key
 /vendor
 .env

@@ -46,7 +46,7 @@
                 </thead>
                 <tbody>
                 	@foreach($parts as $part)
-                    <tr id="row-{{$part->id}}">
+                    <tr>
                       <td>{{$part->brand}}</td>
                       <td>{{$part->model}}</td>
                       <td>{{$part->serial}}</td>

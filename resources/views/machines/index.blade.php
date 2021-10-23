@@ -6,9 +6,9 @@
         <div class="section__content section__content--p30">
             <div class="container-fluid">
                 <div class="card" id="card-section">
-                
+
                 <div class="input-group mb-2">
-                    <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>                    
+                    <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 </div>
 
                 <form method="GET" action="{{action('MachineController@index')}}">
@@ -34,17 +34,17 @@
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                        	<th>Game Title</th>
-                        	<th>Owner Type</th>
-                        	<th>Serial</th>
-                        	<th>Inventory</th>
-                            <th>Client</th>
-                            <th>Business</th>
-                            <th>Status</th>
-                            <th>Machine Brand</th>
-                            <th>Date Sale</th>
-                            <th></th>
-                            <!--<th>Active</th>-->
+                        	<th style="width:100px; text-align: center;">Game Title</th>
+                        	<th style="width:100px; text-align: center;">Owner Type</th>
+                        	<th style="width:100px; text-align: center;">Serial</th>
+                        	<th style="width:100px; text-align: center;">Inventory</th>
+                          <th style="width:100px; text-align: center;">Client</th>
+                          <th style="width:150px; text-align: center;">Business</th>
+                          <th style="width:150px; text-align: center;">Status</th>
+                          <th style="width:100px; text-align: center;">Machine Brand</th>
+                          <th style="width:175px; text-align: center;">Date Sale</th>
+                          <th style="width:125px; text-align: center;"></th>
+                          <!--<th>Active</th>-->
                         </tr>
                     </thead>
                     <tbody>
