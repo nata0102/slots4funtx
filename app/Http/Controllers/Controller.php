@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MachineHistory;
 use App\Models\PartHistory;
 use App\Models\Part;
+use App\Models\Machine;
 
 
 class Controller extends BaseController

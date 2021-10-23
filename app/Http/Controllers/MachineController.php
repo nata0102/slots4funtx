@@ -133,7 +133,7 @@ class MachineController extends Controller
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
-        }catch(\Exception $e){
+        }catch(\Exception $e){return $e->getMessage();
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            
