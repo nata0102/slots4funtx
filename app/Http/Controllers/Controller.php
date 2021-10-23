@@ -29,11 +29,8 @@ class Controller extends BaseController
         return $fileName;
     }
 
-    public function insertMachineHistory($arr_id){
-        if(is_numeric($arr_id))
-            $machine = Machine::with('owner')->findOrFail($arr_id);
-        else
-            $machine = $arr_id;
+    public function insertMachineHistory($id){
+        $machine = Machine::with('owner')->findOrFail($id);
         $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')->where('machine_id',$machine->id)
             ->select('percentage_price_machine.*','lookups.value')->first();
 

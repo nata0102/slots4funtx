@@ -128,7 +128,7 @@ class MachineController extends Controller
                       'alert-type' => 'error'
                     );
                 }
-                $this->insertMachineHistory($machine);
+                $this->insertMachineHistory($machine->id);
                 return $notification;
             });
 
@@ -233,7 +233,7 @@ class MachineController extends Controller
                 }
                 $machine->update($arr);
                 $machine->save();
-                $this->insertMachineHistory($machine);
+                $this->insertMachineHistory($id);
                 if ($machine) {
                     $notification = array(
                       'message' => 'Successful!!',
@@ -285,7 +285,7 @@ class MachineController extends Controller
                 $machine = Machine::findOrFail($id);
                 $machine->active = 0;
                 if($machine->save()){
-                   $this->insertMachineHistory($machine);
+                   $this->insertMachineHistory($id);
                    return response()->json(200);
                 }else
                    return response()->json(422);
@@ -302,7 +302,8 @@ class MachineController extends Controller
             return DB::transaction(function() use ($id){
                 $res = Machine::findOrFail($id);
                 $res->active = 1;
-                $update = $res->save();
+                $res->save();
+                $this->insertMachineHistory($id);
                 Part::where('machine_id',$id)->update(['active'=>1]);
                 $parts = Part::where('machine_id',$id)->get();
                 foreach ($parts as $part) 
