@@ -95,15 +95,14 @@ class MachineController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){  
+        $this->validate($request, [
+            'game_title' => 'required',
+            'lkp_owner_id' => 'required',
+            'serial' => 'unique:machines,serial|nullable',
+            'inventory' => 'unique:machines,inventory|nullable'
+        ]);    
         try{
-            $transaction = DB::transaction(function() use($request){  
-                $this->validate($request, [
-                    'game_title' => 'required',
-                    'lkp_owner_id' => 'required',
-                    'serial' => 'unique:machines,serial|nullable',
-                    'inventory' => 'unique:machines,inventory|nullable',
-
-                ]);               
+            $transaction = DB::transaction(function() use($request){                             
                 $arr = $request->except('parts_ids','_token','image');            
                 $parts = $request->parts_ids;
                 if($request->image)
@@ -214,14 +213,14 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'game_title' => 'required',
+            'lkp_owner_id' => 'required',
+            'serial' => 'nullable|unique:machines,serial,'.$id,
+            'inventory' => 'nullable|unique:machines,inventory,'.$id,
+        ]); 
         try{
-            $transaction = DB::transaction(function() use($request, $id){  
-                $this->validate($request, [
-                    'game_title' => 'required',
-                    'lkp_owner_id' => 'required',
-                    'serial' => 'nullable|unique:machines,serial,'.$id,
-                    'inventory' => 'nullable|unique:machines,inventory,'.$id,
-                ]); 
+            $transaction = DB::transaction(function() use($request, $id){                  
                 $arr = $request->except('parts_ids','_token','image','_method');            
                 $parts = $request->parts_ids;
                 $this->updateMachineParts($parts, $id);

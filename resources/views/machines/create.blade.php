@@ -16,6 +16,11 @@
                 <div class="form-group">
                   <label for="">Game Title <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('game_title') is-invalid @enderror input100" name="game_title" value="{{old('game_title')}}" required="">
+                  @error('game_title')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
@@ -28,6 +33,11 @@
                         <option value="{{$owner->id}}"  {{ old('lkp_owner_id') == $owner->id ? 'selected' : '' }}>{{$owner->value}}</option>
                       @endforeach
                   </select>
+                  @error('lkp_owner_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
@@ -47,6 +57,11 @@
                 <div class="form-group">
                   <label for="">Serial</label>
                   <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}">
+                  @error('serial')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
@@ -54,6 +69,11 @@
                 <div class="form-group">
                   <label for="">Inventory</label>
                   <input type="text" class="form-control @error('inventory') is-invalid @enderror input100" name="inventory" value="{{old('inventory')}}">
+                  @error('inventory')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
