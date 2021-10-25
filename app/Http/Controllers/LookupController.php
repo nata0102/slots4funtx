@@ -27,20 +27,21 @@ class LookupController extends Controller
         return view('lookups.index',compact('res'));
     }
 
-    public function indexList(){
-        $qry = "select tab1.*, l2.id, l2.value from(select l.key_value as p_key_value, value as p_value
-                from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2
-                where l2.type = tab1.p_key_value;";
-        return DB::select($qry);
-    }
-
     public function searchWithFilters($params){
         $qry = "select tab1.*, l2.id, l2.value from(select l.key_value as p_key_value, value as p_value
                 from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
         if (array_key_exists('type', $params))
-            $qry .= " and tab1.p_key_value like '%".$params['type']."%'";
+            $qry .= " and tab1.p_value like '%".$params['type']."%'";
         if (array_key_exists('value', $params))
             $qry .= " and l2.value like '%".$params['value']."%'";
+        if(!array_key_exists('active', $params))
+            $qry .= " and l2.active = 1";
+        else{
+            if($params['active'] == null || $params['active'] == "")
+                $qry .= " and l2.active = 1";
+            else
+                $qry .= " and l2.active = ".$params['active'];
+        }
         $qry .= " order by p_value, value;";
         return DB::select($qry);
     }
@@ -52,8 +53,31 @@ class LookupController extends Controller
      */
     public function create()
     {
-        $configuration =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->get();
-        return view('lookups.create',compact('configuration'));
+        $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->get();
+        return view('lookups.create',compact('types'));
+    }
+
+    public function getKeyValue($cadena){
+        $cadena = str_replace(" ", "_", $cadena);
+        $cadena = strtolower($cadena);
+        //Reemplazamos la A y a
+        $cadena = str_replace(array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),array('A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a'),$cadena);
+ 
+        //Reemplazamos la E y e
+        $cadena = str_replace(array('É', 'È', 'Ê', 'Ë', 'é', 'è', 'ë', 'ê'),array('E', 'E', 'E', 'E', 'e', 'e', 'e', 'e'),$cadena );
+ 
+        //Reemplazamos la I y i
+        $cadena = str_replace(array('Í', 'Ì', 'Ï', 'Î', 'í', 'ì', 'ï', 'î'),array('I', 'I', 'I', 'I', 'i', 'i', 'i', 'i'),$cadena );
+ 
+        //Reemplazamos la O y o
+        $cadena = str_replace(array('Ó', 'Ò', 'Ö', 'Ô', 'ó', 'ò', 'ö', 'ô'),array('O', 'O', 'O', 'O', 'o', 'o', 'o', 'o'),$cadena );
+ 
+        //Reemplazamos la U y u
+        $cadena = str_replace(array('Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'ü', 'û'),array('U', 'U', 'U', 'U', 'u', 'u', 'u', 'u'),$cadena );
+ 
+        //Reemplazamos la N, n, C y c
+        $cadena = str_replace(array('Ñ', 'ñ', 'Ç', 'ç'),array('N', 'n', 'C', 'c'),$cadena);
+        return $cadena;
     }
 
     /**
@@ -64,10 +88,44 @@ class LookupController extends Controller
      */
     public function store(Request $request)
     {
-        $transaction = DB::transaction(function() use($request){         
-            return Lookup::create($request->all());
-        });
-        return $transaction;
+        try{
+            $transaction = DB::transaction(function() use ($request){  
+                $arr = $request->except('_token'); 
+                $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->get();
+                if(count($validation)==0){
+                    $arr['key_value'] = $this->getKeyValue($arr['value']);  
+                    $lookup = Lookup::create($arr);
+                    if ($lookup) {
+                        $notification = array(
+                          'message' => 'Successful!!',
+                          'alert-type' => 'success'
+                        );
+                    }else {
+                        $notification = array(
+                          'message' => 'Oops! there was an error, please try again later.',
+                          'alert-type' => 'error'
+                        );
+                    }
+                    return redirect()->action('LookupController@index')->with($notification);
+                }else{
+                    $notification = array(
+                      'message' => 'Value must be unique.',
+                      'alert-type' => 'error'
+                    );
+                    return back()->with($notification)->withInput($request->all());
+                }
+            });
+
+            return $transaction;            
+        }catch(\Exception $e){return $e->getMessage();
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();          
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error' 
+            );
+        }
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**
@@ -101,12 +159,46 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transaction = DB::transaction(function() use($request,$id){  
-            $res = Lookup::findOrFail($id);
-            $res->fill($request->all());
-            $res->save();
-        });
-        return $transaction;
+        try{
+            $transaction = DB::transaction(function() use ($request, $id){  
+                $arr = $request->except('_token','_method'); 
+                $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->whereNotIn('id',[$id])->get();
+                if(count($validation)==0){
+                    $res = Lookup::findOrFail($id);
+                    $key_value = $this->getKeyValue($arr['value']);  
+                    $res->update(['value'=>$arr['value'], 'key_value'=>$key_value]);
+                    $res->save();
+                    if ($res) {
+                        $notification = array(
+                          'message' => 'Successful!!',
+                          'alert-type' => 'success'
+                        );
+                    }else {
+                        $notification = array(
+                          'message' => 'Oops! there was an error, please try again later.',
+                          'alert-type' => 'error'
+                        );
+                    }
+                    return redirect()->action('LookupController@index')->with($notification);
+                }else{
+                    $notification = array(
+                      'message' => 'Value must be unique.',
+                      'alert-type' => 'error'
+                    );
+                    return back()->with($notification)->withInput($request->all());
+                }
+            });
+
+            return $transaction;            
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();          
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error' 
+            );
+        }
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**
@@ -117,6 +209,18 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $transaction = DB::transaction(function() use ($id){                
+                $Lookup = Lookup::findOrFail($id);
+                $Lookup->active = $Lookup->active == 0 ? 1 : 0;
+                if($Lookup->save())
+                    return response()->json(200);
+                else
+                    return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
+            });
+            return $transaction;
+        }catch(\Exception $e){
+            return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
+        }    
     }
 }

@@ -398,6 +398,16 @@
 			check();
 		});
 
+		$("body").on("click",".lookup_edit",function(){
+			var url = $(this).attr("data-href");
+			var value = $(this).attr("data-value");
+			var type = $(this).attr("data-type");
+
+			$(document.getElementById("update-lookup")).attr("action",url);
+			$(document.getElementById("lookup-value")).attr("value",value);
+			$(document.getElementById("p_key_value")).attr("value",type);
+		});
+
 		$("body").on("click",".input_img",function(){
 			var inp = $(this).attr("data-id");
 			var img = $(this).attr("data-id2");

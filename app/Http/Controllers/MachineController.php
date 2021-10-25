@@ -275,46 +275,23 @@ class MachineController extends Controller
     public function destroy($id)
     {
         try{
-            $transaction = DB::transaction(function() use ($id){
-                Part::where('machine_id',$id)->update(['active'=>0]);
-                $parts = Part::where('machine_id',$id)->get();
-                foreach ($parts as $part) 
-                    $this->insertPartHistory($part->id);
-
+            $transaction = DB::transaction(function() use ($id){                
                 $machine = Machine::findOrFail($id);
-                $machine->active = 0;
+                $machine->active = $machine->active == 0 ? 1 : 0;
                 if($machine->save()){
-                   $this->insertMachineHistory($id);
-                   return response()->json(200);
+                    $this->insertMachineHistory($id);
+                    Part::where('machine_id',$id)->update(['active' => $machine->active]);
+                    $parts = Part::where('machine_id',$id)->get();
+                    foreach ($parts as $part) 
+                        $this->insertPartHistory($part->id);
+                    return response()->json(200);
                 }else
-                   return response()->json(422);
+                    return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
+//return response()->json(422);
             });
             return $transaction;
-        }catch(\Exception $e){
-            return response()->json(422);
-        }
-    }
-
-    public function active($id)
-    {
-        try{
-            return DB::transaction(function() use ($id){
-                $res = Machine::findOrFail($id);
-                $res->active = 1;
-                $res->save();
-                $this->insertMachineHistory($id);
-                Part::where('machine_id',$id)->update(['active'=>1]);
-                $parts = Part::where('machine_id',$id)->get();
-                foreach ($parts as $part) 
-                    $this->insertPartHistory($part->id);
-                
-                if ($update) 
-                    return response()->json(array('success' => true), 200);
-                else 
-                    return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);                
-            });
-        }catch(\Exception $e){
-            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+        }catch(\Exception $e){return $e->getMessage();
+            return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
         }
     }
 }
