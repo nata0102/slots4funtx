@@ -103,7 +103,7 @@
 																		<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
 																</div>
 																<div class="content">
-																		<a class="js-acc-btn" href="#">Nombre</a>
+																		<a class="js-acc-btn" href="#"></a>
 																</div>
 																<div class="account-dropdown js-dropdown">
 																		<div class="info clearfix">
@@ -116,7 +116,7 @@
 																						<h5 class="name">
 																								<a href="#"></a>
 																						</h5>
-																						<span class="email"></span>
+																						<span class="email">{{ Auth::user()->email }}</span>
 																				</div>
 																		</div>
 																		<div class="account-dropdown__body">
@@ -141,20 +141,21 @@
 		        <nav class="navbar-mobile">
 		            <div class="container-fluid">
 		                <ul class="navbar-mobile__list list-unstyled">
-		                    <li>
-													<li>
-					                    <a href="{{ action('MainController@index') }}">Dashboard</a>
-					                </li>
-													<li>
-															<a href="{{action('MachineController@index')}}">Machines</a>
-													</li>
-													<li>
-															<a href="{{action('PartController@index')}}">Parts</a>
-													</li>
-
-								<li>
-									<a href="{{action('LookupController@index')}}">Configuration</a>
-								</li>
+												<li>
+				                    <a href="{{ action('MainController@index') }}">Dashboard</a>
+				                </li>
+												<li>
+														<a href="{{action('MachineController@index')}}">Machines</a>
+												</li>
+												<li>
+														<a href="{{action('PartController@index')}}">Parts</a>
+												</li>
+												<li>
+														<a href="{{action('MachineBrandController@index')}}">Machine Brands</a>
+												</li>
+												<li>
+													<a href="{{action('LookupController@index')}}">Configuration</a>
+												</li>
 		                </ul>
 		            </div>
 		        </nav>
@@ -180,7 +181,12 @@
 											<li>
 													<a href="{{action('PartController@index')}}">Parts</a>
 											</li>
-
+											<li>
+													<a href="{{action('MachineBrandController@index')}}">Machine Brands</a>
+											</li>
+											<li>
+												<a href="{{action('LookupController@index')}}">Configuration</a>
+											</li>
 			            </ul>
 			        </nav>
 			    </div>
@@ -215,7 +221,7 @@
 				                                            <h5 class="name">
 				                                                <a href="#">NOMBRE</a>
 				                                            </h5>
-				                                            <span class="email">EMAIL</span>
+				                                            <span class="email">{{ Auth::user()->email }}</span>
 				                                        </div>
 				                                    </div>
 				                                    <div class="account-dropdown__body">
@@ -351,36 +357,38 @@
 
 		function check(){
 			check = $(document.getElementById('check-input')).attr('value');
-			if(check == 0){
-				$(document.getElementById('check-active')).attr('checked','');
-			}
-
-			if (document.getElementById('check-active').checked)
-		  {
-				arr = document.getElementsByClassName('active');
-				if(arr.length > 0){
-					for (var i = 0; i < arr.length; i++) {
-						arr[i].setAttribute('hidden','');
-					}
-				}
-				arr = document.getElementsByClassName('inactive');
-				if(arr.length > 0){
-					for (var i = 0; i < arr.length; i++) {
-						arr[i].removeAttribute('hidden');
-					}
-				}
-		  } else {
-				arr = document.getElementsByClassName('inactive');
-				if(arr.length > 0){
-					for (var i = 0; i < arr.length; i++) {
-						arr[i].setAttribute('hidden','');
-					}
+			if(check){
+				if(check == 0){
+					$(document.getElementById('check-active')).attr('checked','');
 				}
 
-				arr = document.getElementsByClassName('active');
-				if(arr.length > 0){
-					for (var i = 0; i < arr.length; i++) {
-						arr[i].removeAttribute('hidden');
+				if (document.getElementById('check-active').checked)
+			  {
+					arr = document.getElementsByClassName('active');
+					if(arr.length > 0){
+						for (var i = 0; i < arr.length; i++) {
+							arr[i].setAttribute('hidden','');
+						}
+					}
+					arr = document.getElementsByClassName('inactive');
+					if(arr.length > 0){
+						for (var i = 0; i < arr.length; i++) {
+							arr[i].removeAttribute('hidden');
+						}
+					}
+			  } else {
+					arr = document.getElementsByClassName('inactive');
+					if(arr.length > 0){
+						for (var i = 0; i < arr.length; i++) {
+							arr[i].setAttribute('hidden','');
+						}
+					}
+
+					arr = document.getElementsByClassName('active');
+					if(arr.length > 0){
+						for (var i = 0; i < arr.length; i++) {
+							arr[i].removeAttribute('hidden');
+						}
 					}
 				}
 		  }
@@ -389,7 +397,6 @@
 		$(document).ready(function() {
 			check();
 		});
-
 
 		$("body").on("click",".input_img",function(){
 			var inp = $(this).attr("data-id");
@@ -502,66 +509,32 @@
 						type: "POST",
 						headers:{"X-CSRF-TOKEN": to},
 						url: url,
+						cache: false,
 						dataType: 'json',
 						data: {
-                "_token": "{{ csrf_token() }}",
+                "_token": to,
                 "_method": method
             },
 						success: function(data) {
+							console.log('success');
+							$(table).load(" "+table);
+
 							Swal.fire(
 							 message2,
 							 message3,
 							 'success'
 						 	);
+						},
+						error: function(jqXHR, textStatus, errorThrown){
+							console.log('error');
 							$(table).load(" "+table);
 
-						},
-						complete: function () {
-							setTimeout(() => {
-								check = $(document.getElementById('check-input')).attr('value');
-								if(check == 0){
-									$(document.getElementById('check-active')).attr('checked','');
-								}
-
-								if (document.getElementById('check-active').checked)
-							  {
-									arr = document.getElementsByClassName('active');
-									if(arr.length > 0){
-										for (var i = 0; i < arr.length; i++) {
-											arr[i].setAttribute('hidden','');
-										}
-									}
-									arr = document.getElementsByClassName('inactive');
-									if(arr.length > 0){
-										for (var i = 0; i < arr.length; i++) {
-											arr[i].removeAttribute('hidden');
-										}
-									}
-							  } else {
-									arr = document.getElementsByClassName('inactive');
-									if(arr.length > 0){
-										for (var i = 0; i < arr.length; i++) {
-											arr[i].setAttribute('hidden','');
-										}
-									}
-
-									arr = document.getElementsByClassName('active');
-									if(arr.length > 0){
-										for (var i = 0; i < arr.length; i++) {
-											arr[i].removeAttribute('hidden');
-										}
-									}
-							  }
-							},1500);
-
-            },
-						error: function(reject){
-							if( reject.status === 422 ) {
-        	      var errors = $.parseJSON(reject.responseText);
-                $.each(errors, function (key, val) {
-                  message = val;
-                });
-              }
+							if(jqXHR.status == 422){
+								message = jqXHR.responseText;
+							}
+							else{
+								message = 'Oops! there was an error, please try again later.';
+							}
 							Swal.fire(
 							 'Error!',
 							 message,

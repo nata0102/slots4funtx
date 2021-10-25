@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class MachineBrand extends Model
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+  protected $table = 'machine_brands';
+
+	protected $fillable = ['id', 'brand', 'model', 'weight', 'active'];
+
+  //protected $guarded = ['id', 'created_at', 'updated_at'];
 }

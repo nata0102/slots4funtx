@@ -29,8 +29,8 @@ Route::post('/logout', 'MainController@logout');
 Route::group(['middleware' => ['auth','admin']], function() {
   Route::resource("machines",'MachineController');
   Route::resource("parts",'PartController');
-  Route::put('/part-active/{id}', 'PartController@active');
   Route::put('/machine-active/{id}', 'MachineController@active');
   Route::resource("lookups",'LookupController');
+  Route::resource("machine-brands",'MachineBrandController');
 
 });

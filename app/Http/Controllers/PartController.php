@@ -106,6 +106,7 @@ class PartController extends Controller
           }
         });
       }catch(\Exception $e){
+        $cad='Oops! there was an error, please try again later.';
         $message = $e->getMessage();
         $pos = strpos($message, 'part.serial');
         if ($pos != false)
@@ -228,17 +229,17 @@ class PartController extends Controller
       try{
         return DB::transaction(function() use($id){
           $part = Part::find($id);
-          $part->active = 0;
+          $part->active = $part->active == 0 ? 1 : 0;
           $destroy = $part->save();
           if ($destroy) {
             $this->insertPartHistory($part->id);
-            return response()->json(array('success' => true), 200);
+            return response()->json(200);
           }else {
-            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+            return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
           }
       });
       }catch(\Exception $e){
-        return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+        return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
       }
     }
 
@@ -247,18 +248,17 @@ class PartController extends Controller
       try{
         return DB::transaction(function() use($id){
           $part = Part::find($id);
-          if($part->active == 0)
-            $part->active = 1;
+          $part->active = $part->active == 0 ? 1 : 0;
           $update = $part->save();
           if ($update) {
             $this->insertPartHistory($part->id);
-            return response()->json(array('success' => true), 200);
+            return response()->json(200);
           }else {
-            return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+            return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
           }
       });
       }catch(\Exception $e){
-        return response()->json(array('success' => false,'errors' => 'Oops! there was an error, please try again later.'), 422);
+        return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
       }
 
     }
