@@ -30,6 +30,7 @@ class PartController extends Controller
     }
 
     public function searchWithFilters($params){
+
       $res = Part::whereHas(
         'status', function($q) use($params){
           $q->where('value', 'LIKE', "%{$params['status']}%");
@@ -37,6 +38,7 @@ class PartController extends Controller
         'type', function($q) use($params){
           $q->where('value', 'LIKE', "%{$params['type']}%");
       })->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('active',$params['active'])->get();
+      dd($params,$res);
       return $res;
     }
 
