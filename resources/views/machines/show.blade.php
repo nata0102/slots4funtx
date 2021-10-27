@@ -5,10 +5,10 @@
 <div class="main-content">
     <div class="section__content section__content--p30">
       <div class="container-fluid">
-        <div class="card" id="card-section"> 
-        
-          <a href="{{action('MachineController@index')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
-       	
+        <div class="card" id="card-section">
+
+          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
+
         	<div class="row">
 
               <div class="col-12 col-sm-6 col-md-4">
@@ -21,7 +21,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Owner</label>
-                  <input type="text" class="form-control" disabled value="{{$machine->owner->value}}">          
+                  <input type="text" class="form-control" disabled value="{{$machine->owner->value}}">
                 </div>
               </div>
 
@@ -29,9 +29,9 @@
                 <div class="form-group">
                   <label for="">Brand</label>
                   @if($machine->brand != null)
-                  	<input type="text" class="form-control" disabled value="{{$machine->brand->brand}} {{$machine->brand->model}} {{$machine->brand->weight}}"> 
+                  	<input type="text" class="form-control" disabled value="{{$machine->brand->brand}} {{$machine->brand->model}} {{$machine->brand->weight}}">
                   @else
-                  	<input type="text" class="form-control" disabled value=""> 
+                  	<input type="text" class="form-control" disabled value="">
                   @endif
                 </div>
               </div>
@@ -49,14 +49,14 @@
                   <input type="text" class="form-control" disabled value="{{$machine->inventory}}">
                 </div>
               </div>
-              
+
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Address</label>
                   @if($machine->address != null)
-                  	<input type="text" class="form-control" disabled value="{{$machine->address->client->name}} - {{$machine->address->name_address}}"> 
+                  	<input type="text" class="form-control" disabled value="{{$machine->address->client->name}} - {{$machine->address->name_address}}">
                   @else
-                  	<input type="text" class="form-control" disabled value=""> 
+                  	<input type="text" class="form-control" disabled value="">
                   @endif
                 </div>
               </div>
@@ -65,9 +65,9 @@
                 <div class="form-group">
                   <label for="">Status</label>
                   @if($machine->status != null)
-                  	<input type="text" class="form-control" disabled value="{{$machine->status->value}}"> 
+                  	<input type="text" class="form-control" disabled value="{{$machine->status->value}}">
                   @else
-                  	<input type="text" class="form-control" disabled value=""> 
+                  	<input type="text" class="form-control" disabled value="">
                   @endif
                 </div>
               </div>
@@ -98,7 +98,7 @@
 	                    <thead>
 	                        <tr>
 	                        	<th>Type</th>
-	                        	<th>Brand</th>    
+	                        	<th>Brand</th>
 	                        	<th>Model</th>
 	                        	<th>Serial</th>
 	                        </tr>
@@ -110,8 +110,8 @@
 	                            <td>{{$part->brand}}</td>
 	                            <td>{{$part->model}}</td>
 	                            <td>{{$part->serial}}</td>
-	                        </tr> 
-	                        @endforeach           
+	                        </tr>
+	                        @endforeach
 	                    </tbody>
 	                </table>
 	                </div>
