@@ -194,12 +194,12 @@
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 											</li>
 											<li>
-												<a href="{{action('PercentagePriceController@index')}}">	Percentage/Amount</a>
+												<a href="{{action('PercentagePriceController@index')}}">Percentage/Amount</a>
 												</li>
 											<li>
 												<a href="{{action('LookupController@index')}}">Configuration</a>
 											</li>
-											
+
 			            </ul>
 			        </nav>
 			    </div>

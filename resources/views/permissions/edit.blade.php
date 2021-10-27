@@ -7,7 +7,7 @@
   		<div class="container-fluid">
     		<div class="card" id="card-section">
         	
-        		<a href="{{action('PermissionController@index')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           		<form class="" action="{{action('PermissionController@update',$permission->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf

@@ -6,13 +6,13 @@
   <div class="section__content section__content--p30">
     <div class="container-fluid">
       <div class="card" id="card-section">
-          
-        <a href="{{action('PercentagePriceController@index')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
-          
+
+        <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+
         <form class="" action="{{action('PercentagePriceController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
-                     
+
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -69,5 +69,5 @@
     </div>
   </div>
 </div>
- 
+
 @stop
