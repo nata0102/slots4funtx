@@ -154,6 +154,12 @@
 														<a href="{{action('MachineBrandController@index')}}">Machine Brands</a>
 												</li>
 												<li>
+												<a href="{{action('PermissionController@index')}}">	Permissions</a>
+												</li>
+												<li>
+												<a href="{{action('PercentagePriceController@index')}}">	Percentage/Amount</a>
+												</li>
+												<li>
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
 		                </ul>
@@ -187,6 +193,9 @@
 											<li>
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 											</li>
+											<li>
+												<a href="{{action('PercentagePriceController@index')}}">	Percentage/Amount</a>
+												</li>
 											<li>
 												<a href="{{action('LookupController@index')}}">Configuration</a>
 											</li>
