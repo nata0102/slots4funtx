@@ -34,6 +34,12 @@ class Controller extends BaseController
         $machine = Machine::with('owner')->findOrFail($id);
         $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')->where('machine_id',$machine->id)
             ->select('percentage_price_machine.*','lookups.value')->first();
+        $machine->type_price = null;
+        $machine->type_price_amount = null;
+        if($price_machine != null){
+            $machine->type_price = $price_machine->value;
+            $machine->type_price_amount = $price_machine->amount;
+        }
 
         $band = false;
         $history = MachineHistory::where('machine_id',$machine->id)->orderBy('id','desc')->first();
@@ -41,22 +47,14 @@ class Controller extends BaseController
             $band = true;
         else{
             if($machine->address_id != $history->address_id || $machine->lkp_status_id != $history->lkp_status_id || $machine->machine_sold_id != $history->machine_sold_id ||
-                $machine->active != $history->active || $machine->owner->value != $history->owner_type)
+                $machine->active != $history->active || $machine->owner->value != $history->owner_type ||
+                $history->type_price != $machine->type_price || $history->type_price_amount != $machine->type_price_amount)
                 $band = true;
-            if($price_machine != null){
-                if($history->type_price != $price_machine->value ||
-                   $history->type_price_amount != $price_machine->amount)
-                    $band = true;
-            }
         }
         if($band){
             $arr_history = ['machine_id' => $machine->id,'address_id'=>$machine->address_id,
-                'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,'type_price'=> null,'type_price_amount'=>null, 'active'=>$machine->active,
-                'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s')];
-            if($price_machine != null){
-                $arr_history['type_price'] = $price_machine->value;
-                $arr_history['type_price_amount'] = $price_machine->amount;
-            }
+                'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,
+                'active'=>$machine->active,'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s'), 'type_price' => $machine->type_price, 'type_price_amount' => $machine->type_price_amount];
             MachineHistory::create($arr_history);
         }
     }
