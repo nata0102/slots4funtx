@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Lookup;
 
 class Part extends Model
 {
@@ -27,6 +28,24 @@ class Part extends Model
 
   public function machine(){
       return $this->hasOne('App\Models\Machine', 'id', 'machine_id');
+  }
+
+  public static function scopeStatus1($query, $status) {
+  	if ($status) {
+
+      return $query->whereHas('status', function($q) use($status){
+          $q->where('value', 'LIKE', "%$status%");
+      });
+
+  	}
+  }
+
+  public function scopeType1($query, $type) {
+  	if ($type) {
+      return $query->whereHas('type', function($q) use($type){
+          $q->where('value', 'LIKE', "%$type%");
+      });
+  	}
   }
 
   public function scopeModel($query, $model) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Part;
+use App\Models\Lookup;
 use App\Models\Machine;
 use DB;
 use File;
@@ -31,18 +32,12 @@ class PartController extends Controller
 
     public function searchWithFilters($params){
 
-      $res = Part::whereHas(
-        'status', function($q) use($params){
-          $q->where('value', 'LIKE', "%{$params['status']}%");
-      })->whereHas(
-        'type', function($q) use($params){
-          $q->where('value', 'LIKE', "%{$params['type']}%");
-      })
-
+      $res = Part::
+      where('active',$params['active'])
+      ->status1($params['status'])
+      ->type1($params['type'])
       ->model($params['model'])
-      ->brand($params['brand'])
-
-      ->where('active',$params['active'])->get();
+      ->brand($params['brand'])->get();
       return $res;
     }
 
