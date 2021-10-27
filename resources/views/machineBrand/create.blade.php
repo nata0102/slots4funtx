@@ -14,7 +14,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Brand</label>
+                  <label for="">Brand <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('brand') is-invalid @enderror input100" name="brand" value="{{old('brand')}}" required>
                   @error('brand')
                       <span class="invalid-feedback" role="alert">
@@ -26,7 +26,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Model</label>
+                  <label for="">Model <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('model') is-invalid @enderror input100" name="model" value="{{old('model')}}" required>
                   @error('model')
                       <span class="invalid-feedback" role="alert">
@@ -38,7 +38,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Weight</label>
+                  <label for="">Weight <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{old('weight')}}" required>
                   @error('weight')
                       <span class="invalid-feedback" role="alert">
