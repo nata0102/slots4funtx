@@ -37,8 +37,12 @@ class PartController extends Controller
       })->whereHas(
         'type', function($q) use($params){
           $q->where('value', 'LIKE', "%{$params['type']}%");
-      })->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('active',$params['active'])->get();
-      dd($params,$res);
+      })
+
+      ->model($params['model'])
+      ->brand($params['brand'])
+
+      ->where('active',$params['active'])->get();
       return $res;
     }
 

@@ -29,5 +29,16 @@ class Part extends Model
       return $this->hasOne('App\Models\Machine', 'id', 'machine_id');
   }
 
+  public function scopeModel($query, $model) {
+  	if ($model) {
+  		return $query->where('model','like',"%$model%");
+  	}
+  }
+
+  public function scopeBrand($query, $brand) {
+  	if ($brand) {
+  		return $query->where('brand','like',"%$brand%");
+  	}
+  }
 
 }
