@@ -84,7 +84,7 @@ class MachineController extends Controller
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
                     ->select('addresses.*','clients.name')->get();
         $brands = DB::table('machine_brands')->get();
-        $parts = DB::table('parts')->whereNull('machine_id')->where('active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
+        $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
         return view('machines.create',compact('owners','addresses','status','brands','parts'));
     }
 
@@ -176,7 +176,7 @@ class MachineController extends Controller
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
                     ->select('addresses.*','clients.name')->get();
         $brands = DB::table('machine_brands')->get();
-        $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
+        $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
         $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->get();
         $parts_ids = [];
         foreach ($parts_on_machine as $p_machine )
