@@ -33,4 +33,5 @@ Route::group(['middleware' => ['auth','admin']], function() {
   Route::resource("machine-brands",'MachineBrandController');
   Route::resource("permissions",'PermissionController');
   Route::resource("percentage_price",'PercentagePriceController');
+  Route::resource("clients","ClientController");
 });

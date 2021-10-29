@@ -162,6 +162,9 @@
 												<li>
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
+												<li>
+													<a href="{{action('ClientController@index')}}">Clients</a>
+												</li>
 		                </ul>
 		            </div>
 		        </nav>
@@ -198,6 +201,9 @@
 												</li>
 											<li>
 												<a href="{{action('LookupController@index')}}">Configuration</a>
+											</li>
+											<li>
+												<a href="{{action('ClientController@index')}}">Clients</a>
 											</li>
 
 			            </ul>

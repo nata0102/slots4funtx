@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\MachineBrand;
+use App\Models\Client;
 use DB;
 use File;
 use Input;
 
-class MachineBrandController extends Controller
+class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,17 +19,21 @@ class MachineBrandController extends Controller
     {
       switch($request->option){
         case 'all':
-          $brands = $this->searchWithFilters($request->all());
+          $clients = $this->searchWithFilters($request->all());
         break;
         default:
-          $brands = MachineBrand::where('active',1)->orderBy('id','desc')->take(20)->get();
+          $clients = Client::where('active',1)->orderBy('id','desc')->take(20)->get();
         break;
       }
-      return view('machineBrand.index',compact('brands'));
+      return view('client.index',compact('clients'));
     }
 
     public function searchWithFilters($params){
-      $res = MachineBrand::where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('weight','LIKE',"%{$params['weight']}%")->where('active',$params['active'])->get();
+      $res = Client::
+      where('active',$params['active'])
+      ->name($params['name'])
+      ->email($params['email'])
+      ->phone($params['phone'])->get();
       return $res;
     }
 
@@ -40,7 +44,7 @@ class MachineBrandController extends Controller
      */
     public function create()
     {
-      return view('machineBrand.create');
+      return view('client.create');
     }
 
     /**
@@ -52,34 +56,31 @@ class MachineBrandController extends Controller
     public function store(Request $request)
     {
       $this->validate($request, [
-        'brand' => 'required',
-        'model' => 'required',
-        'weight' => 'required|numeric',
+        'name' => 'required',
+        'phone' => 'required|unique:clients,phone|numeric',
+        'email' => 'required|unique:clients,email',
       ]);
-
-      $brand = MachineBrand::where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->first();
-      if($brand){
-        $notification = array(
-          'message' => 'There is already a record with the same data.',
-          'alert-type' => 'info'
-        );
-        return back()->with($notification)->withInput($request->all());
-      }
 
       try {
         return DB::transaction(function() use($request){
-          $brand = new MachineBrand;
-          $brand->brand = $request->brand;
-          $brand->model = $request->model;
-          $brand->weight = $request->weight;
-          $brand->active = 1;
-          $created = $brand->save();
+          $client = new Client;
+          $client->name = $request->name;
+          $client->phone = $request->phone;
+          $client->dob = $request->dob;
+          $client->email = $request->email;
+          $client->referral = $request->referral;
+          $client->active = 1;
+          $created = $client->save();
+          if($request->image){
+            $client->photo = $this->saveGetNameImage($request->image,'/images/clients/');
+          }
+          $created = $client->save();
           if ($created) {
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
-            return redirect()->action('MachineBrandController@index')->with($notification);
+            return redirect()->action('ClientController@index')->with($notification);
           }else {
             $notification = array(
               'message' => 'Oops! there was an error, please try again later.',
@@ -92,7 +93,7 @@ class MachineBrandController extends Controller
         $cad='Oops! there was an error, please try again later.';
         $message = $e->getMessage();
         $transaction = array(
-            'message' => $cad,
+            'message' => $message,
             'alert-type' => 'error'
         );
         return back()->with($transaction)->withInput($request->all());
@@ -107,8 +108,8 @@ class MachineBrandController extends Controller
      */
     public function show($id)
     {
-      $brand = MachineBrand::find($id);
-      return view('machineBrand.show',compact('brand'));
+      $client = Client::find($id);
+      return view('client.show',compact('client'));      
     }
 
     /**
@@ -119,8 +120,8 @@ class MachineBrandController extends Controller
      */
     public function edit($id)
     {
-      $brand = MachineBrand::find($id);
-      return view('machineBrand.edit',compact('brand'));
+      $client = Client::find($id);
+      return view('client.edit',compact('client'));
     }
 
     /**
@@ -132,34 +133,38 @@ class MachineBrandController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+
       $this->validate($request, [
-        'brand' => 'required',
-        'model' => 'required',
-        'weight' => 'required|numeric',
+        'name' => 'required',
+        'phone' => 'required|numeric|unique:clients,phone,'.$id,
+        'email' => 'required|unique:clients,email,'.$id,
       ]);
 
-      $brand = MachineBrand::where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->where('id','!=',$id)->first();
-      if($brand){
-        $notification = array(
-            'message' => 'There is already a record with the same data.',
-            'alert-type' => 'info'
-        );
-        return back()->with($notification)->withInput($request->all());
-      }
 
       try {
-        return DB::transaction(function() use($request, $id){
-          $brand = MachineBrand::find($id);
-          $brand->brand = $request->brand;
-          $brand->model = $request->model;
-          $brand->weight = $request->weight;
-          $created = $brand->save();
+        return DB::transaction(function() use($request,$id){
+          $client = Client::find($id);
+          $client->name = $request->name;
+          $client->phone = $request->phone;
+          $client->dob = $request->dob;
+          $client->email = $request->email;
+          $client->referral = $request->referral;
+          $client->active = 1;
+          $created = $client->save();
+          if($request->image){
+            if($client->photo != NULL && file_exists(public_path().'/images/clients/'.$client->photo)){
+              unlink(public_path().'/images/clients/'.$client->photo);
+            }
+            $client->photo = $this->saveGetNameImage($request->image,'/images/clients/');
+          }
+          $created = $client->save();
           if ($created) {
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
             );
-            return redirect()->action('MachineBrandController@index')->with($notification);
+            return redirect()->action('ClientController@index')->with($notification);
           }else {
             $notification = array(
               'message' => 'Oops! there was an error, please try again later.',
@@ -172,11 +177,12 @@ class MachineBrandController extends Controller
         $cad='Oops! there was an error, please try again later.';
         $message = $e->getMessage();
         $transaction = array(
-            'message' => $cad,
+            'message' => $message,
             'alert-type' => 'error'
         );
         return back()->with($transaction)->withInput($request->all());
       }
+
     }
 
     /**
@@ -189,7 +195,7 @@ class MachineBrandController extends Controller
     {
       try{
         return DB::transaction(function() use($id){
-          $brand = MachineBrand::find($id);
+          $brand = Client::find($id);
           $brand->active = $brand->active == 0 ? 1 : 0;
           $destroy = $brand->save();
           if ($destroy) {
