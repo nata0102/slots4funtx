@@ -25,11 +25,15 @@ class MachineBrandController extends Controller
           $brands = MachineBrand::where('active',1)->orderBy('id','desc')->take(20)->get();
         break;
       }
-      return view('machineBrand.index',compact('brands'));
+      $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
+      $brands_types =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)
+                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();
+
+      return view('machineBrand.index',compact('brands','types','brands_types'));
     }
 
     public function searchWithFilters($params){
-      $res = MachineBrand::where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand']}%")->where('weight','LIKE',"%{$params['weight']}%")->where('active',$params['active'])->get();
+      $res = MachineBrand::with('type')->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand_type']}%")->where('active',$params['active'])->get();
       return $res;
     }
 
@@ -40,7 +44,8 @@ class MachineBrandController extends Controller
      */
     public function create()
     {
-      return view('machineBrand.create');
+      $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
+      return view('machineBrand.create', compact('types'));
     }
 
     /**
@@ -54,14 +59,15 @@ class MachineBrandController extends Controller
       $this->validate($request, [
         'brand' => 'required',
         'model' => 'required',
-        'weight' => 'required|numeric',
+        'lkp_type_id' => 'required',
+        'weight' => 'numeric',
       ]);
 
-      $brand = MachineBrand::where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->first();
+      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->first();
       if($brand){
         $notification = array(
-          'message' => 'There is already a record with the same data.',
-          'alert-type' => 'info'
+            'message' => 'There is already a record with the same data.',
+            'alert-type' => 'info'
         );
         return back()->with($notification)->withInput($request->all());
       }
@@ -72,6 +78,7 @@ class MachineBrandController extends Controller
           $brand->brand = $request->brand;
           $brand->model = $request->model;
           $brand->weight = $request->weight;
+          $brand->lkp_type_id = $request->lkp_type_id;
           $brand->active = 1;
           $created = $brand->save();
           if ($created) {
@@ -119,8 +126,9 @@ class MachineBrandController extends Controller
      */
     public function edit($id)
     {
+      $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::find($id);
-      return view('machineBrand.edit',compact('brand'));
+      return view('machineBrand.edit',compact('brand','types'));
     }
 
     /**
@@ -134,11 +142,12 @@ class MachineBrandController extends Controller
     {
       $this->validate($request, [
         'brand' => 'required',
+        'lkp_type_id' => 'required',
         'model' => 'required',
-        'weight' => 'required|numeric',
+        'weight' => 'numeric',
       ]);
 
-      $brand = MachineBrand::where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->where('id','!=',$id)->first();
+      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->where('id','!=',$id)->first();
       if($brand){
         $notification = array(
             'message' => 'There is already a record with the same data.',
@@ -153,6 +162,7 @@ class MachineBrandController extends Controller
           $brand->brand = $request->brand;
           $brand->model = $request->model;
           $brand->weight = $request->weight;
+          $brand->lkp_type_id = $request->lkp_type_id;
           $created = $brand->save();
           if ($created) {
             $notification = array(
