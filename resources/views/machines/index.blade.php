@@ -18,28 +18,28 @@
                     </div>
                     <div class="input-group mb-5">
                         <select class="form-control" name="game">
-                            <option value="">- Select Game Title -</option>
+                            <option value="">-- Select Game Title --</option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
                         <select class="form-control" name="owner">
-                            <option value="">- Select Type -</option>
+                            <option value="">-- Select Type --</option>
                               @foreach($owners as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['owner']) ? $_GET['owner'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
                         </select>                        
 
                         <select class="form-control" name="status" >
-                            <option value="">- Select Status -</option>
+                            <option value="">-- Select Status --</option>
                               @foreach($status as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
                         <select class="form-control" name="brand">
-                            <option value="">- Select Brand -</option>
+                            <option value="">-- Select Brand --</option>
                               @foreach($brands as $tp)
                                 <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
                               @endforeach

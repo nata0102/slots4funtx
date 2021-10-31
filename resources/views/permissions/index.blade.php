@@ -14,7 +14,7 @@
                 <form method="GET" action="{{action('PermissionController@index')}}">
                     <div class="input-group mb-5">
                         <select class="form-control" name="type">
-                            <option value="">- Select Type -</option>
+                            <option value="">-- Select Type --</option>
                               @foreach($types as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach

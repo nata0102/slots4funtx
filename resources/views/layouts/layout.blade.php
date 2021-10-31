@@ -160,11 +160,12 @@
 												<a href="{{action('PercentagePriceController@index')}}">Percentage/Amount</a>
 												</li>
 												<li>
-													<a href="{{action('LookupController@index')}}">Configuration</a>
-												</li>
-												<li>
 													<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
 												</li>
+												<li>
+													<a href="{{action('LookupController@index')}}">Configuration</a>
+												</li>
+												
 		                </ul>
 		            </div>
 		        </nav>
@@ -200,11 +201,12 @@
 												<a href="{{action('PercentagePriceController@index')}}">Percentage/Amount</a>
 												</li>
 											<li>
-												<a href="{{action('LookupController@index')}}">Configuration</a>
-											</li>
-											<li>
 												<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
 											</li>
+											<li>
+												<a href="{{action('LookupController@index')}}">Configuration</a>
+											</li>
+											
 
 			            </ul>
 			        </nav>

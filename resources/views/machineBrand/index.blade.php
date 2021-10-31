@@ -17,13 +17,13 @@
               </div>
               <div class="input-group mb-5">
                  <select class="form-control" name="type">
-                      <option value="" >- Type -</option>
+                      <option value="" >-- Select Type --</option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach
                   </select>
                   <select class="form-control" name="brand_type">
-                      <option value="" >- Brand -</option>
+                      <option value="" >-- Select Brand --</option>
                       @foreach($brands_types as $tp)
                           <option value="{{$tp->brand}}" {{ isset($_GET['brand_type']) ? $_GET['brand_type'] == $tp->brand ? 'selected' : '' : ''}}>{{$tp->brand}}</option>
                       @endforeach
