@@ -46,7 +46,7 @@
                     <td>{{$client->dob}}</td>
                     <td>
                       <div class="row" style="margin-right: 0; margin-left: 0;">
-                        <div class="col-4" style="padding: 0;">
+                        <div class="col-4" style="padding: 0;" hidden>
                           <a href="{{action('ClientController@show',$client->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                         </div>
 

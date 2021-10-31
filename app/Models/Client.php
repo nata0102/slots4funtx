@@ -26,7 +26,7 @@ class Client extends Model
 
   public function scopeEmail($query, $email) {
   	if ($email) {
-  		return $query->where('model','like',"%$email%");
+  		return $query->where('email','like',"%$email%");
   	}
   }
 }
