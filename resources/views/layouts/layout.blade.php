@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" lang="es" itemscope itemtype="http://schema.org/WebPage">
+<html prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#" lang="{{ str_replace('_', '-', app()->getLocale()) }}" itemscope itemtype="http://schema.org/WebPage">
 <head>
 
 	<meta charset="utf-8">
@@ -163,7 +163,7 @@
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
 												<li>
-													<a href="{{action('ClientController@index')}}">Clients</a>
+													<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
 												</li>
 		                </ul>
 		            </div>
@@ -203,7 +203,7 @@
 												<a href="{{action('LookupController@index')}}">Configuration</a>
 											</li>
 											<li>
-												<a href="{{action('ClientController@index')}}">Clients</a>
+												<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
 											</li>
 
 			            </ul>
@@ -220,15 +220,33 @@
 				        <div class="section__content section__content--p30">
 				            <div class="container-fluid">
 				                <div class="header-wrap">
+
+													<div class="" style="position: absolute; right: 130px; width: 40px; top: 0px;">
+														@if (config('locale.status') && count(config('locale.languages')) > 1)
+															<div class="top-right links">
+																@foreach (array_keys(config('locale.languages')) as $lang)
+																	@if ($lang != App::getLocale())
+																		<a href="{!! route('lang.swap', $lang) !!}">
+																			{!! $lang !!} <small>{!! $lang !!}</small>
+																		</a>
+																	@endif
+																@endforeach
+															</div>
+														@endif
+													</div>
+
 				                    <div class="header-button">
 				                        <div class="account-wrap">
 				                            <div class="account-item clearfix js-item-menu">
+
+
+
 				                                <div class="image">
 				                                  <img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
 				                                </div>
-				                                <div class="content">
-				                                    <a class="js-acc-btn" href="#">NOMBRE</a>
-				                                </div>
+				                                <!--div class="content">
+				                                    <a class="js-acc-btn" href="#"></a>
+				                                </div-->
 				                                <div class="account-dropdown js-dropdown">
 				                                    <div class="info clearfix">
 				                                        <div class="image">
@@ -511,6 +529,82 @@
 		}
 	</script>
 
+	<script>
+		$('body').on('click','.editAddress',function(event){
+			var action = $(this).attr('data-action');
+			var name_address = $(this).attr('data-name_address');
+			var business_name = $(this).attr('data-business_name');
+			var city = $(this).attr('data-city');
+			var country = $(this).attr('data-country');
+			$(document.getElementById('name_address')).attr('value',name_address);
+			$(document.getElementById('business_name')).attr('value',business_name);
+			$(document.getElementById('city')).attr('value',city);
+			$(document.getElementById('country')).attr('value',country);
+			$(document.getElementById('updateAddress')).attr('action',action);
+		});
+	</script>
+
+	<script>
+
+		$('body').on("click", '.formButton', function(e) {
+	    e.preventDefault();
+
+	    //$("#wait").css("display", "block");
+
+			var form_id = $(this).attr("data-form");
+			var form = document.getElementById(form_id);
+	    var form_action = $(form).attr("action");
+	    var div_refresh = $(form).attr("data-refresh");
+
+			var message1 = $(form).attr("data-message1");
+			var message2 = $(form).attr("data-message2");
+			var modal = $(form).attr("data-modal");
+			var dataString = $('#'+form_id).serialize();
+			var to = $("#token").val();
+
+
+
+			$.ajax({
+				type: "POST",
+				headers:{"X-CSRF-TOKEN": to},
+				data: dataString,
+				url: form_action,
+				cache: false,
+				dataType: 'json',
+				success: function(data) {
+					console.log('success');
+					$(div_refresh).load(" "+div_refresh);
+					$(modal).modal('hide');
+
+					form.reset();
+
+					Swal.fire(
+					 message1,
+					 message2,
+					 'success'
+					);
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					//$(div_refresh).load(" "+div_refresh);
+
+					if(jqXHR.status == 422){
+						message = $.parseJSON(jqXHR.responseText);
+					}
+					else{
+						message = '{{__("Oops! there was an error, please try again later.")}}';
+					}
+					Swal.fire(
+					 'Error!',
+					 message,
+					 'error'
+					);
+				},
+			});
+		});
+
+
+
+	</script>
 
 	<script>
 		$('body').on('click','.delete-alert',function(event){
@@ -525,13 +619,14 @@
 			var to = $("#token").val();
 
 			Swal.fire({
-			  title: 'Are you sure?',
+			  title: '{{__("Are you sure?")}}',
 			  text: message1,
 			  icon: 'warning',
 			  showCancelButton: true,
 			  confirmButtonColor: '#3085d6',
 			  cancelButtonColor: '#d33',
-			  confirmButtonText: 'Yes!'
+				confirmButtonText: '{{__("Yes!")}}',
+			  cancelButtonText: '{{__("Cancel")}}'
 			}).then((result) => {
 			  if (result.isConfirmed) {
 					$.ajax({
@@ -555,14 +650,14 @@
 						 	);
 						},
 						error: function(jqXHR, textStatus, errorThrown){
-							console.log('error');
-							$(table).load(" "+table);
+
+							//$(table).load(" "+table);
 
 							if(jqXHR.status == 422){
-								message = jqXHR.responseText;
+								$.parseJSON(jqXHR.responseText);
 							}
 							else{
-								message = 'Oops! there was an error, please try again later.';
+								message = '{{__("Oops! there was an error, please try again later.")}}';
 							}
 							Swal.fire(
 							 'Error!',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Address;
 use DB;
 use File;
 use Input;
@@ -109,7 +110,8 @@ class ClientController extends Controller
     public function show($id)
     {
       $client = Client::find($id);
-      return view('client.show',compact('client'));      
+      $addresses = Address::where('client_id',$id)->where('active',1)->get();
+      return view('client.show',compact('client','addresses'));
     }
 
     /**

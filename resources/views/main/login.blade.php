@@ -16,7 +16,7 @@
 
 
                 <div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror input100" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Correo electrónico">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror input100" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{ __('Email') }}">
 
                     @error('email')
                         <span class="invalid-feedback" role="alert">
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
-                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror input100" name="password" required autocomplete="current-password" placeholder="Contraseña">
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror input100" name="password" required autocomplete="current-password" placeholder="{{ __('Password') }}">
 
                     @error('password')
                         <span class="invalid-feedback" role="alert">
@@ -53,9 +53,26 @@
 
                 <div class="text-center w-full p-t-30">
                     <a class="txt1" href="" style="text-shadow: 1px 1px #00000077;">
-                        Olvide mi contraseña
+                      {{ __('Forgot Your Password?') }}
                     </a>
                 </div>
+
+                @if (config('locale.status') && count(config('locale.languages')) > 1)
+                  <div class="top-right links">
+                    @foreach (array_keys(config('locale.languages')) as $lang)
+                      @if ($lang != App::getLocale())
+                        <a href="{!! route('lang.swap', $lang) !!}">
+                          {!! $lang !!} <small>{!! $lang !!}</small>
+                        </a>
+                      @endif
+                    @endforeach
+                  </div>
+                @endif
+
+                <!--div class="text-center w-full p-t-60">
+                  <a href="{{ url('lang', ['en']) }}"style="margin-right: 10px;"><img src="{{asset('images/en.png')}}" style="height: 28px;" alt="en"></a>
+                  <a href="{{ url('lang', ['es']) }}"style="margin-left: 10px;"><img src="{{asset('images/es.svg')}}" style="height: 28px;" alt="es"></a>
+                </div-->
 
                 <!--div class="text-center w-full p-t-25 p-b-230">
 

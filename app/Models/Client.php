@@ -8,6 +8,10 @@ class Client extends Model
 {
   protected $guarded = ['id', 'created_at', 'updated_at'];
 
+  public function addresses(){
+    return $this->hasMany('App\Models\Address');
+  }
+
   public function scopeName($query, $name) {
   	if ($name) {
   		return $query->where('name','like',"%$name%");

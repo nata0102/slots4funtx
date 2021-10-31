@@ -22,11 +22,14 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 */
 
-Route::get('/',['as'=>'login','uses'=>'MainController@index']);
-Route::post('/login', 'MainController@login');
-Route::post('/logout', 'MainController@logout');
+  Route::get('/',['as'=>'login','uses'=>'MainController@index']);
+  Route::post('/login', 'MainController@login');
+  Route::post('/logout', 'MainController@logout');
 
-Route::group(['middleware' => ['auth','admin']], function() {
+  Route::get('lang/{lang}', 'LanguageController@swap')->name('lang.swap');
+
+
+Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("machines",'MachineController');
   Route::resource("parts",'PartController');
   Route::resource("lookups",'LookupController');
@@ -34,4 +37,5 @@ Route::group(['middleware' => ['auth','admin']], function() {
   Route::resource("permissions",'PermissionController');
   Route::resource("percentage_price",'PercentagePriceController');
   Route::resource("clients","ClientController");
+  Route::resource("address","AddressController");
 });
