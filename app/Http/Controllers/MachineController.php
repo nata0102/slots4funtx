@@ -29,7 +29,11 @@ class MachineController extends Controller
                $res = Machine::with('status','address.client','brand','owner')->where('active',1)->orderBy('id','desc')->take(20)->get();
             break;
         }
-        return view('machines.index',compact('res'));
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
+        $owners =  DB::table('lookups')->where('type','owner_type')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
+        return view('machines.index',compact('res','owners','status','brands','games'));
     }
 
     public function searchWithFilters($params){
@@ -37,19 +41,21 @@ class MachineController extends Controller
         $aux = Machine::with([
             'status' => function ($query) use($params){
                 if($params['status'])
-                    $query->where('value', 'LIKE', "%{$params['status']}%");
+                    $query->where('id',$params['status']);
+            },
+            'game' => function ($query) use($params){
+                if($params['game'])
+                    $query->where('id',$params['game']);
             },
             'address.client',
             'brand' => function($query) use ($params){
                 if($params['brand'])
-                    $query->where('brand', 'LIKE', "%{$params['brand']}%")
-                    ->orWhere('model', 'LIKE', "%{$params['brand']}%")
-                    ->orWhere('weight', 'LIKE', "%{$params['brand']}%");
+                    $query->where('id',$params['brand']);
             },
             'owner' => function($query) use($params){
                 if($params['owner'])
-                    $query->where('value', 'LIKE', "%{$params['owner']}%");
-            }])->game($params['game'])->where('active',$params['active'])->get();
+                    $query->where('id', $params['owner']);
+            }])->where('active',$params['active'])->get();
         foreach ($aux as $a) {
             $b_owner = true;
             if($params['owner']){
@@ -66,7 +72,12 @@ class MachineController extends Controller
                 if($a->brand == null)
                     $b_brand = false;
             }
-            if($b_owner == true && $b_status == true && $b_brand == true)
+            $b_game = true;
+            if($params['game']){
+                if($a->game == null)
+                    $b_game = false;
+            }
+            if($b_owner == true && $b_status == true && $b_brand == true && $b_game == true)
                 array_push($res,$a);
         }
         return $res;
@@ -79,13 +90,15 @@ class MachineController extends Controller
      */
     public function create()
     {
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
+                    ->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->get();
-        $brands = DB::table('machine_brands')->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
         $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
-        return view('machines.create',compact('owners','addresses','status','brands','parts'));
+        return view('machines.create',compact('owners','addresses','status','brands','parts','games'));
     }
 
     /**
@@ -96,7 +109,7 @@ class MachineController extends Controller
      */
     public function store(Request $request){  
         $this->validate($request, [
-            'game_title' => 'required',
+            'lkp_game_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'unique:machines,serial|nullable',
             'inventory' => 'unique:machines,inventory|nullable'
@@ -170,19 +183,21 @@ class MachineController extends Controller
      */
     public function edit($id)
     {
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
         $machine = Machine::findOrFail($id);
         $owners =  DB::table('lookups')->where('type','owner_type')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
+                    ->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->get();
-        $brands = DB::table('machine_brands')->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
         $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
         $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->get();
         $parts_ids = [];
         foreach ($parts_on_machine as $p_machine )
             array_push($parts_ids,(string) $p_machine->id);
         
-        return view('machines.edit',compact('owners','addresses','status','brands','parts','machine','parts_ids'));   
+        return view('machines.edit',compact('owners','addresses','status','brands','parts','machine','parts_ids','games'));   
     }
 
     public function updateMachineParts($parts, $machine_id){
@@ -214,7 +229,7 @@ class MachineController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'game_title' => 'required',
+            'lkp_game_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'nullable|unique:machines,serial,'.$id,
             'inventory' => 'nullable|unique:machines,inventory,'.$id,

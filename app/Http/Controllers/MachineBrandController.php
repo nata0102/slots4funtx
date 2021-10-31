@@ -33,7 +33,7 @@ class MachineBrandController extends Controller
     }
 
     public function searchWithFilters($params){
-      $res = MachineBrand::with('type')->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand_type']}%")->where('active',$params['active'])->get();
+      $res = MachineBrand::with('type')->where('model','LIKE',"%{$params['model']}%")->where('brand','LIKE',"%{$params['brand_type']}%")->where('lkp_type_id',$params['type'])->where('active',$params['active'])->get();
       return $res;
     }
 

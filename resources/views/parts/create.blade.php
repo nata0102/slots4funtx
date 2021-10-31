@@ -14,9 +14,14 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Brand</label>
-                  <input type="text" class="form-control @error('brand') is-invalid @enderror input100" name="brand" value="{{old('brand')}}">
-                  @error('brand')
+                  <label for="">Type <span style="color:red">*</span></label>
+                  <select class="form-control @error('type') is-invalid @enderror input100" name="type">
+                    <option value=""></option>
+                    @foreach($types as $type)
+                      <option value="{{$type->id}}" {{ old('type') == $type->id ? 'selected' : '' }} >{{$type->value}}</option>
+                    @endforeach
+                  </select>
+                  @error('type')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -26,9 +31,48 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Model</label>
-                  <input type="text" class="form-control @error('model') is-invalid @enderror input100" name="model" value="{{old('model')}}">
-                  @error('model')
+                  <label for="">Brand-Model</label>
+                  <select class="form-control @error('brand_id') is-invalid @enderror input100" name="brand_id">
+                    <option value=""></option>
+                    @foreach($brands as $brand)
+                      <option value="{{$brand->id}}" {{ old('brand_id') == $brand->id ? 'selected' : '' }} >{{$brand->brand}} {{$brand->model}}</option>
+                    @endforeach
+                  </select>
+                  @error('brand_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Protocol</label>
+                  <select class="form-control @error('protocol') is-invalid @enderror input100" name="protocol">
+                    <option value=""></option>
+                    @foreach($protocols as $protocol)
+                      <option value="{{$protocol->id}}" {{ old('protocol') == $protocol->id ? 'selected' : '' }} >{{$protocol->value}}</option>
+                    @endforeach
+                  </select>
+                  @error('protocol')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Status</label>
+                  <select class="form-control @error('status') is-invalid @enderror input100" name="status">
+                    <option value=""></option>
+                    @foreach($status as $status)
+                      <option value="{{$status->id}}" {{ old('status') == $status->id ? 'selected' : '' }}>{{$status->value}}</option>
+                    @endforeach
+                  </select>
+                  @error('status')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -58,90 +102,16 @@
                       </span>
                   @enderror
                 </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Weight</label>
-                  <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{old('weight')}}">
-                  @error('weight')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Status</label>
-                  <select class="form-control @error('status') is-invalid @enderror input100" name="status">
-                    <option value=""></option>
-                    @foreach($status as $status)
-                      <option value="{{$status->id}}" {{ old('status') == $status->id ? 'selected' : '' }}>{{$status->value}}</option>
-                    @endforeach
-                  </select>
-                  @error('status')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Type <span style="color:red">*</span></label>
-                  <select class="form-control @error('type') is-invalid @enderror input100" name="type">
-                    <option value=""></option>
-                    @foreach($types as $type)
-                      <option value="{{$type->id}}" {{ old('type') == $type->id ? 'selected' : '' }} >{{$type->value}}</option>
-                    @endforeach
-                  </select>
-                  @error('type')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Protocol</label>
-                  <select class="form-control @error('protocol') is-invalid @enderror input100" name="protocol">
-                    <option value=""></option>
-                    @foreach($protocols as $protocol)
-                      <option value="{{$protocol->id}}" {{ old('protocol') == $protocol->id ? 'selected' : '' }} >{{$protocol->value}}</option>
-                    @endforeach
-                  </select>
-                  @error('protocol')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
+              </div>      
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine</label>
-                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
+                  <select class="form-control selectpicker show-menu-arrow @error('machine_id') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
                   @foreach($machines as $machine)
-                    <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->game_title}} - {{$machine->serial}}</option>
+                    <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->game->value}} - {{$machine->serial}}</option>
                   @endforeach
                   </select>
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Image</label>
-                  <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
-                    <img src="{{asset('/images/interface.png')}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
-                  </div>
-                  <input class="photo" type="file" name="image" value="{{old('image')}}" id="img-btn-3" data-id2="img-new-3" accept="image/*" hidden>
-                  <input class="mg" type="text" value="" id="img-new-3" accept="image/*" hidden>
                 </div>
               </div>
 

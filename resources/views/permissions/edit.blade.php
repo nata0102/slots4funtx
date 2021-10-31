@@ -37,7 +37,7 @@
 			                  <select class="form-control @error('machine_id') is-invalid @enderror input100" name="machine_id" required="">
 			                    <option value=""></option>
 			                      @foreach($machines as $machine)
-			                        <option value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->game_title}}</option>
+			                        <option value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
 			                      @endforeach
 			                  </select>
 			                  @error('machine_id')
@@ -62,7 +62,7 @@
 
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
-			                  <label for="">Date Permit <span style="color:red">*</span></label>
+			                  <label for="">Due Date <span style="color:red">*</span></label>
 			                  <input type="date" class="form-control @error('date_permit') is-invalid @enderror input100" name="date_permit" value="{{$permission->date_permit}}" id="datepicker" required="">
 			                  @error('date_permit')
 			                      <span class="invalid-feedback" role="alert">

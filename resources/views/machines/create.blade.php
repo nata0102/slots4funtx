@@ -15,8 +15,13 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Game Title <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('game_title') is-invalid @enderror input100" name="game_title" value="{{old('game_title')}}" required="">
-                  @error('game_title')
+                  <select class="form-control @error('lkp_game_id') is-invalid @enderror input100" name="lkp_game_id" required="">
+                    <option value=""></option>
+                      @foreach($games as $game)
+                        <option value="{{$game->id}}"  {{ old('lkp_game_id') == $game->id ? 'selected' : '' }}>{{$game->value}}</option>
+                      @endforeach
+                  </select>
+                  @error('lkp_owner_id')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -58,18 +63,6 @@
                   <label for="">Serial</label>
                   <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}">
                   @error('serial')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Inventory</label>
-                  <input type="text" class="form-control @error('inventory') is-invalid @enderror input100" name="inventory" value="{{old('inventory')}}">
-                  @error('inventory')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>

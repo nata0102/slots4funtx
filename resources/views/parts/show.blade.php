@@ -10,19 +10,50 @@
 
           <div class="row">
 
-            <div class="col-12 col-sm-6 col-md-4">
+           <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
-                <label for="">Brand</label>
-                <input type="text" class="form-control" disabled name="brand" value="{{$part->brand}}">
+                <label for="">Type</label>
+                @if($part->lkp_type_id != NULL)
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->type->value}}">
+                @else
+                <input type="text" class="form-control" disabled name="machine_id" value="">
+                @endif
               </div>
             </div>
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
-                <label for="">Model</label>
-                <input type="text" class="form-control" disabled name="model" value="{{$part->model}}">
+                <label for="">Brand-Model</label>
+                @if($part->brand_id != NULL)
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->brand->brand}} {{$part->brand->model}}">
+                @else
+                <input type="text" class="form-control" disabled name="machine_id" value="">
+                @endif
               </div>
             </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="form-group">
+                <label for="">Protocol</label>
+                @if($part->lkp_protocol_id != NULL)
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->protocol->value}}">
+                @else
+                <input type="text" class="form-control" disabled name="machine_id" value="">
+                @endif
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="form-group">
+                <label for="">Status</label>
+                @if($part->lkp_status_id != NULL)
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->status->value}}">
+                @else
+                <input type="text" class="form-control" disabled name="machine_id" value="">
+                @endif
+              </div>
+            </div>
+           
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
@@ -36,64 +67,20 @@
                 <label for="">Price</label>
                 <input type="text" class="form-control" disabled name="price" value="{{$part->price}}">
               </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4">
-              <div class="form-group">
-                <label for="">Weight</label>
-                <input type="text" class="form-control" disabled name="weight" value="{{$part->weight}}">
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4">
-              <div class="form-group">
-                <label for="">Status</label>
-                <select class="form-control" name="status" disabled>
-                  <option value=""></option>
-                  @foreach($status as $status)
-                    <option value="{{$status->id}}" {{$part->lkp_status_id == $status->id ? 'selected' : ''}}>{{$status->value}}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4">
-              <div class="form-group">
-                <label for="">Type</label>
-                <select class="form-control" name="type" disabled>
-                  <option value=""></option>
-                  @foreach($types as $type)
-                    <option value="{{$type->id}}" {{$part->lkp_type_id == $type->id ? 'selected' : ''}}>{{$type->value}}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4">
-              <div class="form-group">
-                <label for="">Protocol</label>
-                <select class="form-control" name="protocol" disabled>
-                  <option value=""></option>
-                  @foreach($protocols as $protocol)
-                    <option value="{{$protocol->id}}" {{$part->lkp_protocol_id == $protocol->id ? 'selected' : ''}}>{{$protocol->value}}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
+            </div>                     
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
                 <label for="">Machine</label>
                 @if($part->machine_id != NULL)
-                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->machine->game_title}} - {{$part->machine->serial}}">
+                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->machine_id}} - {{$part->machine->game->value}} - {{$part->machine->serial}}">
                 @else
                 <input type="text" class="form-control" disabled name="machine_id" value="">
-
                 @endif
               </div>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-4">
+            <!--<div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
                 <label for="">Image @if($part->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif</label>
                 <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; overflow: hidden; position: relative;">
@@ -102,7 +89,7 @@
                   @endif
                 </div>
               </div>
-            </div>
+            </div>-->
 
             <div class="col-12">
               <div class="form-group">

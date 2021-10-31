@@ -18,6 +18,10 @@ class Machine extends Model
         return $this->hasOne('App\Models\Lookup', 'id', 'lkp_owner_id');
     }
 
+    public function game(){
+        return $this->hasOne('App\Models\Lookup', 'id', 'lkp_game_id');
+    }
+
     public function address(){
         return $this->hasOne('App\Models\Address', 'id', 'address_id');
     }
@@ -28,11 +32,5 @@ class Machine extends Model
 
     public function parts(){
         return $this->hasMany('App\Models\Part', 'machine_id', 'id');
-    }
-
-    //Query Scopes
-    public function scopeGame($qry, $game){
-    	if($game)
-    		return $qry->where('game_title','LIKE',"%$game%");
     }
 }

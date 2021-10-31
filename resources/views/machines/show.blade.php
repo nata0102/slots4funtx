@@ -45,13 +45,6 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Inventory</label>
-                  <input type="text" class="form-control" disabled value="{{$machine->inventory}}">
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
                   <label for="">Address</label>
                   @if($machine->address != null)
                   	<input type="text" class="form-control" disabled value="{{$machine->address->client->name}} - {{$machine->address->name_address}}">

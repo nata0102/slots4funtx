@@ -17,13 +17,33 @@
                         <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
                     </div>
                     <div class="input-group mb-5">
-                        <input class="form-control" type="text" name="game" autofocus placeholder="Game Title" value="{{ isset($_GET['game']) ? $_GET['game'] : '' }}">
+                        <select class="form-control" name="game">
+                            <option value="">- Select Game Title -</option>
+                              @foreach($games as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                              @endforeach
+                        </select>
 
-                        <input class="form-control" name="owner" autofocus placeholder="Owner Type (Mine/Service)" value="{{ isset($_GET['owner']) ? $_GET['owner'] : '' }}">
+                        <select class="form-control" name="owner">
+                            <option value="">- Select Type -</option>
+                              @foreach($owners as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['owner']) ? $_GET['owner'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                              @endforeach
+                        </select>                        
 
-                        <input class="form-control" name="status" autofocus placeholder="Status" value="{{ isset($_GET['status']) ? $_GET['status'] : '' }}">
+                        <select class="form-control" name="status" >
+                            <option value="">- Select Status -</option>
+                              @foreach($status as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
+                              @endforeach
+                        </select>
 
-                        <input class="form-control" name="brand" autofocus placeholder="Brand" value="{{ isset($_GET['brand']) ? $_GET['brand'] : '' }}">
+                        <select class="form-control" name="brand">
+                            <option value="">- Select Brand -</option>
+                              @foreach($brands as $tp)
+                                <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
+                              @endforeach
+                        </select>
 
                         <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
@@ -34,30 +54,34 @@
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                        	<th style="width:100px; text-align: center;">Game Title</th>
+                            <th style="width:100px; text-align: center;">ID</th>
+                            <th style="width:100px; text-align: center;">Game Title</th>
                         	<th style="width:100px; text-align: center;">Owner Type</th>
                         	<th style="width:100px; text-align: center;">Serial</th>
-                        	<th style="width:100px; text-align: center;">Inventory</th>
-                          <th style="width:100px; text-align: center;">Client</th>
-                          <th style="width:150px; text-align: center;">Business</th>
-                          <th style="width:150px; text-align: center;">Status</th>
-                          <th style="width:100px; text-align: center;">Machine Brand</th>
-                          <th style="width:175px; text-align: center;">Date Sale</th>
-                          <th style="width:125px; text-align: center;"></th>
+                            <th style="width:100px; text-align: center;">Client</th>
+                            <th style="width:150px; text-align: center;">Business</th>
+                            <th style="width:150px; text-align: center;">Status</th>
+                            <th style="width:100px; text-align: center;">Brand-Model</th>
+                            <th style="width:175px; text-align: center;">Date Sale</th>
+                            <th style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
                         </tr>
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->game_title}}</td>
+                            <td>{{$r->id}}</td>
+                            @if($r->game == null)
+                                <td></td>
+                            @else
+                                <td>{{$r->game->value}}</td>
+                            @endif
                             @if($r->owner == null)
                                 <td></td>
                             @else
                                 <td>{{$r->owner->value}}</td>
                             @endif
                             <td>{{$r->serial}}</td>
-                            <td>{{$r->inventory}}</td>
                             @if($r->address_id == null)
                                 <td></td>
                                 <td></td>
@@ -73,7 +97,7 @@
                             @if($r->brand == null)
                                 <td></td>
                             @else
-                                <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}} lbs.</td>
+                                <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}}</td>
                             @endif
                             <td>{{$r->date_sale}}</td>
                             <td>

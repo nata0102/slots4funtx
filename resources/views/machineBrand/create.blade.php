@@ -14,6 +14,24 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
+                  <label for="">Type <span style="color:red">*</span></label>
+                  <select class="form-control @error('type') is-invalid @enderror input100" name="lkp_type_id" required="">
+                    <option value=""></option>
+                      @foreach($types as $tp)
+                        <option value="{{$tp->id}}"  {{ old('lkp_type_id') == $tp->id ? 'selected' : '' }}>{{$tp->value}}</option>
+                      @endforeach
+                  </select>
+                   @error('lkp_type_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
                   <label for="">Brand <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('brand') is-invalid @enderror input100" name="brand" value="{{old('brand')}}" required>
                   @error('brand')
@@ -38,8 +56,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Weight <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{old('weight')}}" required>
+                  <label for="">Weight</label>
+                  <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{old('weight')}}" >
                   @error('weight')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

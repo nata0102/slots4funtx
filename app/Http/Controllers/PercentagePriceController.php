@@ -21,17 +21,28 @@ class PercentagePriceController extends Controller
                 $res = $this->searchWithFilters($request->all());
             break;
         }
-        return view('percentage_price.index',compact('res'));  
+        $types =  DB::table('lookups')->where('type','type_price')->get();
+
+        return view('percentage_price.index',compact('res','types'));  
     }
 
     public function searchWithFilters($params){
-        $qry = "select p.*, m.game_title, l.value from percentage_price_machine p, machines m, lookups l
-                where p.machine_id = m.id and p.lkp_type_id=l.id";
-        if (array_key_exists('type', $params))
-            $qry .= " and l.value like '%".$params['type']."%'";
-        if (array_key_exists('machine', $params))
-            $qry .= " and m.game_title like '%".$params['machine']."%'";
-        $qry .= " order by m.game_title, l.value;";
+        $qry = "select tab1.*,concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=mc.lkp_game_id) as game from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
+        if(count($params)){
+            if($params['type'] != "" || $params['machine'] != "")
+                $qry .= " where ";
+            if($params['type'] != ""){
+                if(substr($qry, -6) != "where ")
+                    $qry.= " and ";
+                $qry .= " tab1.lkp_type_id =".$params['type'];
+            }
+            if($params['machine'] != ""){
+                if(substr($qry, -6) != "where ")
+                    $qry.= " and ";
+                $qry .= " concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) like '%".$params['machine']."%'";
+            }
+        }
+        $qry .= " order by tab1.type, tab1.machine_id, tab1.game, tab1.serial;";
         return DB::select($qry);
     }
 
@@ -43,7 +54,8 @@ class PercentagePriceController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_price')->get();
-        $machines = DB::table('machines')->whereNotIn('id', DB::table('percentage_price_machine')->pluck('machine_id')->toArray())->orderBy('game_title')->get();
+        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
+        $machines = DB::select($qry);
         return view('percentage_price.create',compact('types','machines'));
     }
 
@@ -112,8 +124,9 @@ class PercentagePriceController extends Controller
     {
         $percentage_price = PercentagePrice::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_price')->get();
-        $machines = DB::table('machines')->whereNotIn('id', DB::table('percentage_price_machine')
-            ->where('id','!=',$id)->pluck('machine_id')->toArray())->orderBy('game_title')->get();
+        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine where id != ".$id.");";
+        $machines = DB::select($qry);
+        /*$machines = DB::table('machines')->where('active',1)->whereNotIn('id', DB::table('percentage_price_machine')->where('id','!=',$id)->pluck('machine_id')->toArray())->orderBy('game_title')->get();*/
         return view('percentage_price.edit',compact('types','machines','percentage_price'));
     }
 

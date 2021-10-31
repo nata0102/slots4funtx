@@ -21,19 +21,21 @@ class PermissionController extends Controller
                 $res = $this->searchWithFilters($request->all());
             break;
         }
-        return view('permissions.index',compact('res'));    
+        $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
+        return view('permissions.index',compact('res','types'));    
     }
 
     public function searchWithFilters($params){
-        $qry = "select * from (select p.*,l.value as type_value,(select game_title from machines where id=p.machine_id) as machine_name from permissions p, lookups l where p.lkp_type_permit_id = l.id)  as tab1";
-        if(count($params) > 0)
-            $qry .= " where ";
-        if (array_key_exists('type', $params))
-            $qry .= " tab1.type_value like '%".$params['type']."%'";
-        if (array_key_exists('machine', $params))
-            $qry .= " and tab1.machine_name like '%".$params['machine']."%'";
-        if (array_key_exists('number', $params))
-            $qry .= " and tab1.permit_number like '%".$params['number']."%'";
+        $qry = "select * from (select p.*, concat(m.id,' - ',l.value, ' - ', ifnull(m.serial,'')) as game,m.active,(select value from lookups where id=p.lkp_type_permit_id) as type
+            from permissions p, machines m, lookups l where p.machine_id = m.id and l.id = m.lkp_game_id) as tab1 where tab1.active=1";
+        if(count($params) > 0){
+            if($params['type'] != "")
+                $qry .= " and tab1.lkp_type_permit_id = ".$params['type'];
+            if($params['machine'] != "")
+                $qry .= " and tab1.game like '%".$params['machine']."%'";
+            if($params['number'] != "")
+                $qry .= " and tab1.permit_number like '%".$params['number']."%'";
+        }            
         $qry .= " order by tab1.id desc;";
         return DB::select($qry);
     }
@@ -46,7 +48,10 @@ class PermissionController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $machines =  DB::table('machines')->where('active',1)->orderBy('game_title')->get();
+        $machines = DB::table('machines')->join('lookups', 'machines.lkp_game_id', '=', 'lookups.id')
+                    ->where('lookups.active',1)->where('machines.active',1)
+                    ->where('machines.lkp_owner_id',38)
+                    ->select('machines.*','lookups.value')->get();
         return view('permissions.create',compact('types','machines'));
     }
 
@@ -119,7 +124,10 @@ class PermissionController extends Controller
     {
         $permission = Permission::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $machines =  DB::table('machines')->where('active',1)->orderBy('game_title')->get();
+        $machines = DB::table('machines')->join('lookups', 'machines.lkp_game_id', '=', 'lookups.id')
+                    ->where('lookups.active',1)->where('machines.active',1)
+                    ->where('machines.lkp_owner_id',38)
+                    ->select('machines.*','lookups.value')->get();
         return view('permissions.edit',compact('types','machines','permission'));
     }
 

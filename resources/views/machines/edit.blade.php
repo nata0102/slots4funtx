@@ -13,11 +13,17 @@
             	@csrf
             	<input type="hidden" name="_method" value="PUT">
             	<div class="row">
-            		<div class="col-12 col-sm-6 col-md-4">
+            		
+		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Game Title <span style="color:red">*</span></label>
-		                  <input type="text" class="form-control @error('game_title') is-invalid @enderror input100" name="game_title" value="{{$machine->game_title}}" required="">
-		                  @error('game_title')
+		                  <select class="form-control @error('lkp_game_id') is-invalid @enderror input100" name="lkp_game_id" required="">
+		                    <option value=""></option>
+		                      @foreach($games as $game)
+		                        <option value="{{$game->id}}"  {{ $machine->lkp_game_id == $game->id ? 'selected' : '' }}>{{$game->value}}</option>
+		                      @endforeach
+		                  </select>
+		                  @error('lkp_game_id')
 		                      <span class="invalid-feedback" role="alert">
 		                          <strong>{{ $message }}</strong>
 		                      </span>
@@ -72,18 +78,6 @@
 		            </div>
 
 		            <div class="col-12 col-sm-6 col-md-4">
-		                <div class="form-group">
-		                  <label for="">Inventory</label>
-		                  <input type="text" class="form-control @error('inventory') is-invalid @enderror input100" name="inventory" value="{{$machine->inventory}}">
-		                  @error('inventory')
-		                      <span class="invalid-feedback" role="alert">
-		                          <strong>{{ $message }}</strong>
-		                      </span>
-		                  @enderror
-		                </div>
-		              </div>
-
-		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Address</label>
 		                  <select class="form-control @error('address_id') is-invalid @enderror input100" name="address_id">

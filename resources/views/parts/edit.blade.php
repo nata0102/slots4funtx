@@ -16,84 +16,7 @@
 
             <div class="row">
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Brand</label>
-                  <input type="text" class="form-control @error('brand') is-invalid @enderror input100" name="brand" value="{{$part->brand}}">
-                  @error('brand')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Model</label>
-                  <input type="text" class="form-control @error('model') is-invalid @enderror input100" name="model" value="{{$part->model}}">
-                  @error('model')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Serial</label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$part->serial}}">
-                  @error('serial')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Price</label>
-                  <input type="text" class="form-control @error('price') is-invalid @enderror input100" name="price" value="{{$part->price}}">
-                  @error('price')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Weight</label>
-                  <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{$part->weight}}">
-                  @error('weight')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Status</label>
-                  <select class="form-control @error('status') is-invalid @enderror input100" name="status">
-                    <option value=""></option>
-                    @foreach($status as $status)
-                      <option value="{{$status->id}}" {{$part->lkp_status_id == $status->id ? 'selected' : ''}}>{{$status->value}}</option>
-                    @endforeach
-                  </select>
-                  @error('status')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
+               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
                   <select class="form-control @error('type') is-invalid @enderror input100" name="type" required>
@@ -103,6 +26,23 @@
                     @endforeach
                   </select>
                   @error('type')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Brand-Model </label>
+                  <select class="form-control @error('brand_id') is-invalid @enderror input100" name="brand_id" required>
+                    <option value=""></option>
+                    @foreach($brands as $brand)
+                      <option value="{{$brand->id}}" {{$part->brand_id == $brand->id ? 'selected' : ''}}>{{$brand->brand}} {{$brand->model}}</option>
+                    @endforeach
+                  </select>
+                  @error('brand_id')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -129,31 +69,57 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Machine</label>
-                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
-                  @foreach($machines as $machine)
-                    @if($part->machine_id != NULL)
-                    <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->game_title}} - {{$machine->serial}}</option>
-                    @else
-                    <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->game_title}} - {{$machine->serial}}</option>
-                    @endif
-                  @endforeach
+                  <label for="">Status</label>
+                  <select class="form-control @error('status') is-invalid @enderror input100" name="status">
+                    <option value=""></option>
+                    @foreach($status as $status)
+                      <option value="{{$status->id}}" {{$part->lkp_status_id == $status->id ? 'selected' : ''}}>{{$status->value}}</option>
+                    @endforeach
                   </select>
+                  @error('status')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>              
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Serial</label>
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$part->serial}}">
+                  @error('serial')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Image @if($part->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
-                  <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
-                    @if($part->image && file_exists(public_path().'/images/part/'.$part->image))
-                    <img src="{{asset('/images/part')}}/{{$part->image}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
+                  <label for="">Price</label>
+                  <input type="text" class="form-control @error('price') is-invalid @enderror input100" name="price" value="{{$part->price}}">
+                  @error('price')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>                        
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Machine</label>
+                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
+                  @foreach($machines as $machine)
+                    @if($part->machine_id != NULL)
+                    <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->game->value}} - {{$machine->serial}}</option>
                     @else
-                    <img src="{{asset('/images/interface.png')}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
+                    <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->game->value}} - {{$machine->serial}}</option>
                     @endif
-                  </div>
-                  <input class="photo" type="file" name="image" value="" id="img-btn-3" data-id2="img-new-3" accept="image/*" hidden>
-                  <input class="mg" type="text" value="" id="img-new-3" accept="image/*" hidden>
+                  @endforeach
+                  </select>
                 </div>
               </div>
 
@@ -176,30 +142,10 @@
               </div>
             </div>
 
-
           </form>
 
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Actual image</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="padding: 0;">
-        <img src="{{asset('/images/part')}}/{{$part->image}}" alt="" style="width: 100%;">
-      </div>
-
-    </div>
-  </div>
-</div>
-
   @stop

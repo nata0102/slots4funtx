@@ -17,10 +17,25 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div class="input-group mb-5">
-                  <input class="form-control" type="text" name="type" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}" placeholder="Type">
-                  <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
-                  <input class="form-control" type="text" name="status" value="{{ isset($_GET['status']) ? $_GET['status'] : '' }}" placeholder="Status">
-                  <input class="form-control" type="text" name="brand" value="{{ isset($_GET['brand']) ? $_GET['brand'] : '' }}" placeholder="Brand">
+                  <select class="form-control" name="type">
+                      <option value="" >-- Select Type --</option>
+                      @foreach($types as $tp)
+                          <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
+                      @endforeach                              
+                  </select>
+                  <select class="form-control" name="brand">
+                      <option value="">-- Select Brand --</option>
+                        @foreach($brands as $tp)
+                          <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
+                        @endforeach
+                  </select>
+
+                  <select class="form-control" name="status" >
+                      <option value="">-- Select Status --</option>
+                        @foreach($status as $tp)
+                          <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
+                        @endforeach
+                  </select>
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>
                       <span class="glyphicon glyphicon-search"></span>
@@ -32,14 +47,12 @@
             <table id="table" class="table" style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
-                      <th style="width:100px; text-align: center;">Brand</th>
-                      <th style="width:100px; text-align: center;">Model</th>
+                      <th style="width:100px; text-align: center;">Type</th>
+                      <th style="width:100px; text-align: center;">Brand-Model</th>
+                      <th style="width:150px; text-align: center;">Protocol</th>
                       <th style="width:100px; text-align: center;">Serial</th>
                       <th style="width:85px; text-align: center;">Price</th>
-                      <th style="width:70px; text-align: center;">Weight</th>
-                      <th style="width:100px; text-align: center;">Type</th>
                       <th style="width:135px; text-align: center;">Status</th>
-                      <th style="width:150px; text-align: center;">Protocol</th>
                       <th style="width:175px; text-align: center;">Machine</th>
                     	<th style="width:125px; text-align: center;"></th>
                     </tr>
@@ -47,18 +60,13 @@
                 <tbody>
                 	@foreach($parts as $part)
                     <tr>
-                      <td>{{$part->brand}}</td>
-                      <td>{{$part->model}}</td>
-                      <td>{{$part->serial}}</td>
-                      <td>${{number_format($part->price,'2','.',',')}}</td>
-                      <td>{{$part->weight}}</td>
                       @if($part->type != NULL)
                         <td>{{$part->type->value}}</td>
                       @else
                         <td></td>
                       @endif
-                      @if($part->status != NULL)
-                        <td>{{$part->status->value}}</td>
+                      @if($part->brand_id != NULL)
+                        <td>{{$part->brand->brand}} {{$part->brand->model}}</td>
                       @else
                         <td></td>
                       @endif
@@ -67,8 +75,19 @@
                       @else
                         <td></td>
                       @endif
-                      @if($part->machine_id != NULL)
-                        <td>{{$part->machine->game_title}} - {{$part->machine->serial}}</td>
+                      <td>{{$part->serial}}</td>
+                      <td>${{number_format($part->price,'2','.',',')}}</td>
+                      @if($part->status != NULL)
+                        <td>{{$part->status->value}}</td>
+                      @else
+                        <td></td>
+                      @endif                      
+                      @if($part->machine_id != null)
+                        @if($part->machine->machine_brand_id != null)
+                          <td>{{$part->machine_id}} - {{$part->machine->brand->brand}} {{$part->machine->brand->model}} - {{$part->machine->serial}}</td>
+                        @else
+                          <td></td>
+                        @endif
                       @else
                         <td></td>
                       @endif

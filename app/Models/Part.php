@@ -30,11 +30,15 @@ class Part extends Model
       return $this->hasOne('App\Models\Machine', 'id', 'machine_id');
   }
 
+  public function brand(){
+        return $this->hasOne('App\Models\MachineBrand', 'id', 'brand_id');
+  }
+
   public static function scopeStatus1($query, $status) {
   	if ($status) {
 
       return $query->whereHas('status', function($q) use($status){
-          $q->where('value', 'LIKE', "%$status%");
+          $q->where('id', 'LIKE', "%$status%");
       });
 
   	}
@@ -43,7 +47,7 @@ class Part extends Model
   public function scopeType1($query, $type) {
   	if ($type) {
       return $query->whereHas('type', function($q) use($type){
-          $q->where('value', 'LIKE', "%$type%");
+          $q->where('id', 'LIKE', "%$type%");
       });
   	}
   }
@@ -56,7 +60,7 @@ class Part extends Model
 
   public function scopeBrand($query, $brand) {
   	if ($brand) {
-  		return $query->where('brand','like',"%$brand%");
+  		return $query->where('id','like',"%$brand%");
   	}
   }
 

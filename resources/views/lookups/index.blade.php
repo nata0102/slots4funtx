@@ -17,7 +17,12 @@
                         <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
                     </div>
                     <div class="input-group mb-5">
-                        <input class="form-control" type="text" name="type" autofocus placeholder="Type" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}">
+                        <select class="form-control" name="type">
+                            <option value="" >- Type -</option>
+                            @foreach($types as $tp)
+                                <option value="{{$tp->key_value}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->key_value ?   'selected' : '' : ''}}>{{$tp->value}}</option>
+                            @endforeach                              
+                        </select>
 
                         <input class="form-control" name="value" autofocus placeholder="Value" value="{{ isset($_GET['value']) ? $_GET['value'] : '' }}">
 

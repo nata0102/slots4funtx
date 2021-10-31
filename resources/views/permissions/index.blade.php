@@ -13,11 +13,16 @@
 
                 <form method="GET" action="{{action('PermissionController@index')}}">
                     <div class="input-group mb-5">
-                        <input class="form-control" type="text" name="type" autofocus placeholder="Type Permit" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}">
+                        <select class="form-control" name="type">
+                            <option value="">- Select Type -</option>
+                              @foreach($types as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                              @endforeach
+                        </select>  
 
                         <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">
 
-                        <input class="form-control" name="number" autofocus placeholder="Number" value="{{ isset($_GET['number']) ? $_GET['number'] : '' }}">
+                        <input class="form-control" name="number" autofocus placeholder="Permit Number" value="{{ isset($_GET['number']) ? $_GET['number'] : '' }}">
 
                         <button type="submit" class="btn btn-default" name="option"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
@@ -31,15 +36,15 @@
                         	<th>Type Permit</th>
                         	<th>Machine</th>
                             <th>Permit Number</th>
-                            <th>Date Number</th>
+                            <th>Due Date</th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->type_value}}</td>                            
-                            <td>{{$r->machine_name}}</td>
+                            <td>{{$r->type}}</td>                            
+                            <td>{{$r->game}}</td>
                             <td>{{$r->permit_number}}</td>
                             <td>{{$r->date_permit}}</td>
                             <td>

@@ -16,22 +16,25 @@ class LookupController extends Controller
     public function index(Request $request)
     {
         $res = [];
+        $types = [];
         switch ($request->option) {
             case 'type':
                 $res = Lookup::where('type',$request->type)->orderBy('value')->get();
             break;
             default:
                 $res = $this->searchWithFilters($request->all());
+                $types = DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
+                $params = $request->all();
             break;
         }
-        return view('lookups.index',compact('res'));
+        return view('lookups.index',compact('res','types','params'));
     }
 
     public function searchWithFilters($params){
         $qry = "select tab1.*, l2.id, l2.value from(select l.key_value as p_key_value, value as p_value
                 from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
-        if (array_key_exists('type', $params))
-            $qry .= " and tab1.p_value like '%".$params['type']."%'";
+        if (array_key_exists('type', $params) && $params['type']!="")
+            $qry .= " and tab1.p_key_value ='".$params['type']."'";
         if (array_key_exists('value', $params))
             $qry .= " and l2.value like '%".$params['value']."%'";
         if(!array_key_exists('active', $params))
@@ -53,7 +56,7 @@ class LookupController extends Controller
      */
     public function create()
     {
-        $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->get();
+        $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
         return view('lookups.create',compact('types'));
     }
 

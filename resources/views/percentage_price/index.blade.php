@@ -13,9 +13,15 @@
 
                 <form method="GET" action="{{action('PercentagePriceController@index')}}">
                     <div class="input-group mb-5">
-                        <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">
 
-                        <input class="form-control" type="text" name="type" autofocus placeholder="Type" value="{{ isset($_GET['type']) ? $_GET['type'] : '' }}">                        
+                        <select class="form-control" name="type">
+                            <option value="">-- Select Type --</option>
+                              @foreach($types as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                              @endforeach
+                        </select>  
+
+                        <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">                       
 
                         <button type="submit" class="btn btn-default" name="option"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
@@ -26,8 +32,8 @@
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                        	<th>Machine</th>
-                        	<th>Type</th>
+                            <th>Type</th>
+                        	<th>Machine</th>                        	
                             <th>Percentage/Amount</th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
@@ -35,8 +41,8 @@
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->game_title}}</td>                            
-                            <td>{{$r->value}}</td>
+                            <td>{{$r->type}}</td>                            
+                            <td>{{$r->machine_name}}</td>
                             <td>{{$r->amount}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">

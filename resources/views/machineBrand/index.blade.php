@@ -19,13 +19,13 @@
                  <select class="form-control" name="type">
                       <option value="" >- Type -</option>
                       @foreach($types as $tp)
-                          <option value="{{$tp->id}}" @if (old('type') == $tp->key_value) {{ 'selected' }} @endif>{{$tp->value}}</option>
+                          <option value="{{$tp->id}}" {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach
                   </select>
                   <select class="form-control" name="brand_type">
                       <option value="" >- Brand -</option>
                       @foreach($brands_types as $tp)
-                          <option value="{{$tp->brand}}" @if (old('brand_type') == $tp->brand) {{ 'selected' }} @endif>{{$tp->brand}}</option>
+                          <option value="{{$tp->brand}}" {{ isset($_GET['brand_type']) ? $_GET['brand_type'] == $tp->brand ? 'selected' : '' : ''}}>{{$tp->brand}}</option>
                       @endforeach
                   </select>
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
@@ -66,7 +66,7 @@
                         </div>
 
                         <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }} hidden class="col-8 inactive" style="padding: 0;">
-                          <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this part?" data-message2="Activated" data-message3="Activated part." data-method="DELETE" data-action="{{action('MachineBrandController@destroy',$brand->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
+                          <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this brand?" data-message2="Activated" data-message3="Activated brand." data-method="DELETE" data-action="{{action('MachineBrandController@destroy',$brand->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
                         </div>
                       </div>
                     </td>

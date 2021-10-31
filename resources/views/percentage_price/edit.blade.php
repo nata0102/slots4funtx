@@ -37,7 +37,7 @@
 			                  <select class="form-control @error('machine_id') is-invalid @enderror input100" name="machine_id" required="">
 			                    <option value=""></option>
 			                      @foreach($machines as $machine)
-			                        <option value="{{$machine->id}}"  {{ $percentage_price->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->game_title}}</option>
+			                        <option value="{{$machine->id}}"  {{ $percentage_price->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
 			                      @endforeach
 			                  </select>
 			                  @error('machine_id')

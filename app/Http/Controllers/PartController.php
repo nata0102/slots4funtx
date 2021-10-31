@@ -24,19 +24,21 @@ class PartController extends Controller
           $parts = $this->searchWithFilters($request->all());
         break;
         default:
-          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine')->take(20)->get();
+          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine.brand','brand')->take(20)->get();
         break;
       }
-      return view('parts.index',compact('parts'));
+      $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
+      $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
+
+      return view('parts.index',compact('parts','types','brands','status'));
     }
 
     public function searchWithFilters($params){
 
-      $res = Part::
-      where('active',$params['active'])
+      $res = Part::where('active',$params['active'])
       ->status1($params['status'])
       ->type1($params['type'])
-      ->model($params['model'])
       ->brand($params['brand'])->get();
       return $res;
     }
@@ -48,11 +50,12 @@ class PartController extends Controller
      */
     public function create()
     {
-      $types =  DB::table('lookups')->where('type','part_type')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
-      $status =  DB::table('lookups')->where('type','status_parts')->get();
-      $machines = Machine::where('active',1)->orderBy('serial')->get();
-      return view('parts.create',compact('types','protocols','status','machines'));
+      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->get();
+      $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->get();
+      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->get();
+      $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
+      return view('parts.create',compact('types','protocols','status','machines','brands'));
     }
 
     /**
@@ -66,18 +69,15 @@ class PartController extends Controller
       $this->validate($request, [
         'type' => 'required',
         'price' => 'numeric|nullable',
-        'weight' => 'numeric|nullable',
         'serial' => 'unique:parts,serial|nullable',
       ]);
 
       try{
         return DB::transaction(function() use($request){
           $part = new Part;
-          $part->brand = $request->brand;
-          $part->model = $request->model;
+          $part->brand_id = $request->brand_id;
           $part->serial = $request->serial;
           $part->price = $request->price;
-          $part->weight = $request->weight;
           $part->active = 1;
           $part->lkp_type_id = $request->type;
           $part->lkp_protocol_id = $request->protocol;
@@ -128,12 +128,8 @@ class PartController extends Controller
      */
     public function show($id)
     {
-      $part = Part::find($id);
-      $types =  DB::table('lookups')->where('type','part_type')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
-      $status =  DB::table('lookups')->where('type','status_parts')->get();
-      $part = Part::where('id',$id)->with('machine')->first();
-      return view('parts.show',compact('part','types','protocols','status'));
+      $part = Part::with('type','protocol','brand','status','machine.brand')->find($id);
+      return view('parts.show',compact('part'));
     }
 
     /**
@@ -144,13 +140,14 @@ class PartController extends Controller
      */
     public function edit($id)
     {
-      $part = DB::table('parts')->where('id',$id)->first();
-      $types =  DB::table('lookups')->where('type','part_type')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->get();
-      $status =  DB::table('lookups')->where('type','status_parts')->get();
-      $machines = Machine::where('active',1)->orderBy('serial')->get();
+      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->get();
+      $part = DB::table('parts')->where('id',$id)->where('active',1)->where('active',1)->first();
+      $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->get();
+      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->get();
+      $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
       $part = Part::where('id',$id)->with('machine')->first();
-      return view('parts.edit',compact('part','types','protocols','status','machines'));
+      return view('parts.edit',compact('part','types','protocols','status','machines','brands'));
     }
 
     /**
@@ -165,18 +162,15 @@ class PartController extends Controller
       $this->validate($request, [
         'type' => 'required',
         'price' => 'numeric|nullable',
-        'weight' => 'numeric|nullable',
         'serial' => 'nullable|unique:parts,serial,'.$id,
       ]);
 
       try{
         return DB::transaction(function() use($request, $id){
           $part = Part::find($id);
-          $part->brand = $request->brand;
-          $part->model = $request->model;
+          $part->brand_id = $request->brand_id;
           $part->serial = $request->serial;
           $part->price = $request->price;
-          $part->weight = $request->weight;
           $part->lkp_type_id = $request->type;
           $part->lkp_protocol_id = $request->protocol;
           $part->lkp_status_id = $request->status;
