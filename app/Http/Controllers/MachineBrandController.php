@@ -39,8 +39,7 @@ class MachineBrandController extends Controller
       ->model($params['model'])
       ->brand($params['brand_type'])
       ->type($params['type'])
-
-      ->where('active',$params['active'])->get();
+      ->where('active',$params['active'])->orderBy('brand')->orderBy('model')->get();
       return $res;
     }
 
