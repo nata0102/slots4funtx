@@ -548,14 +548,12 @@
 
 	<script>
 
-	function typeBrand(value){
+	function typeBrand(value,search){
 		if(value == ""){
 			$(document.getElementById('part')).attr('hidden',"");
 			$(document.getElementById('machine')).attr('hidden',"");
 			document.getElementById('part').removeAttribute('name');
 			$(document.getElementById('machine')).attr('name',"brand_type");
-			document.getElementById("part").selectedIndex = 0;
-			document.getElementById("machine").selectedIndex = 0;
 		}
 		if(value == "53"){
 			document.getElementById('machine').removeAttribute('hidden');
@@ -569,11 +567,15 @@
 			document.getElementById('machine').removeAttribute('name');
 			$(document.getElementById('machine')).attr('hidden',"");
 		}
+		if(search==0){
+			document.getElementById("part").selectedIndex = 0;
+			document.getElementById("machine").selectedIndex = 0;
+		}
 	}
 
 	function selectBrand(){
 		type = document.getElementById('type').value;
-		typeBrand(type);
+		typeBrand(type,1);
 	}
 
 	$(document).ready(function() {
@@ -581,7 +583,7 @@
 	});
 
 	document.getElementById('type').addEventListener('change', function() {
-		typeBrand(this.value);
+		typeBrand(this.value,0);
 	});
 	</script>
 
