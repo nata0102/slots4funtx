@@ -38,7 +38,7 @@
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
-                  <h4>Machine Brands</h4>
+                  <h4>Machine/Part Brands</h4>
                 </div>
               </div>
             </a>
