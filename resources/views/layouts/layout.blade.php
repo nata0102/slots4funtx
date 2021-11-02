@@ -548,7 +548,7 @@
 
 	<script>
 
-	function typeBrand(value,search){
+	function selectBrand(value,search){
 		if(value == ""){
 			$(document.getElementById('part')).attr('hidden',"");
 			$(document.getElementById('machine')).attr('hidden',"");
@@ -573,17 +573,13 @@
 		}
 	}
 
-	function selectBrand(){
-		type = document.getElementById('type').value;
-		typeBrand(type,1);
-	}
-
 	$(document).ready(function() {
-		selectBrand();
+		type = document.getElementById('type').value;
+		selectBrand(type,1);
 	});
 
 	document.getElementById('type').addEventListener('change', function() {
-		typeBrand(this.value,0);
+		selectBrand(this.value,0);
 	});
 	</script>
 
