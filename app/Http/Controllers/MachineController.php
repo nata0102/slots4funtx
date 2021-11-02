@@ -29,10 +29,10 @@ class MachineController extends Controller
                $res = Machine::with('status','address.client','brand','owner')->where('active',1)->orderBy('id','desc')->take(20)->get();
             break;
         }
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
-        $owners =  DB::table('lookups')->where('type','owner_type')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
-        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
+        $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         return view('machines.index',compact('res','owners','status','brands','games'));
     }
 
@@ -90,13 +90,13 @@ class MachineController extends Controller
      */
     public function create()
     {
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
-        $owners =  DB::table('lookups')->where('type','owner_type')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
+        $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
                     ->where('addresses.active',1)->where('clients.active',1)
-                    ->select('addresses.*','clients.name')->get();
-        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
+                    ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
         return view('machines.create',compact('owners','addresses','status','brands','parts','games'));
     }
@@ -183,16 +183,16 @@ class MachineController extends Controller
      */
     public function edit($id)
     {
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->get();
+        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
         $machine = Machine::findOrFail($id);
-        $owners =  DB::table('lookups')->where('type','owner_type')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->get();
+        $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
+        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
                     ->where('addresses.active',1)->where('clients.active',1)
-                    ->select('addresses.*','clients.name')->get();
-        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->get();
+                    ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
+        $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
-        $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->get();
+        $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->orderBy('serial')->get();
         $parts_ids = [];
         foreach ($parts_on_machine as $p_machine )
             array_push($parts_ids,(string) $p_machine->id);
