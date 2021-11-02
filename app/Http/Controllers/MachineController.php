@@ -171,7 +171,7 @@ class MachineController extends Controller
      */
     public function show($id)
     {
-        $machine = Machine::with('status','address.client','brand','owner','parts.type')->findOrFail($id);
+        $machine = Machine::with('game','status','address.client','brand','owner','parts.type')->findOrFail($id);
         return view('machines.show',compact('machine'));
     }
 

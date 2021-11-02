@@ -55,13 +55,13 @@
                     <thead>
                         <tr>
                             <th style="width:100px; text-align: center;">ID</th>
+                            <th style="width:100px; text-align: center;">Owner Type</th>
+                            <th style="width:100px; text-align: center;">Brand-Model</th>
                             <th style="width:100px; text-align: center;">Game Title</th>
-                        	<th style="width:100px; text-align: center;">Owner Type</th>
                         	<th style="width:100px; text-align: center;">Serial</th>
                             <th style="width:100px; text-align: center;">Client</th>
                             <th style="width:150px; text-align: center;">Business</th>
                             <th style="width:150px; text-align: center;">Status</th>
-                            <th style="width:100px; text-align: center;">Brand-Model</th>
                             <th style="width:175px; text-align: center;">Date Sale</th>
                             <th style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
@@ -69,18 +69,23 @@
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
-                        <tr>
+                        <tr>                            
                             <td>{{$r->id}}</td>
-                            @if($r->game == null)
-                                <td></td>
-                            @else
-                                <td>{{$r->game->value}}</td>
-                            @endif
                             @if($r->owner == null)
                                 <td></td>
                             @else
                                 <td>{{$r->owner->value}}</td>
                             @endif
+                            @if($r->brand == null)
+                                <td></td>
+                            @else
+                                <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}}</td>
+                            @endif
+                            @if($r->game == null)
+                                <td></td>
+                            @else
+                                <td>{{$r->game->value}}</td>
+                            @endif                            
                             <td>{{$r->serial}}</td>
                             @if($r->address_id == null)
                                 <td></td>
@@ -94,11 +99,7 @@
                             @else
                                 <td>{{$r->status->value}}</td>
                             @endif
-                            @if($r->brand == null)
-                                <td></td>
-                            @else
-                                <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}}</td>
-                            @endif
+                            
                             <td>{{$r->date_sale}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
