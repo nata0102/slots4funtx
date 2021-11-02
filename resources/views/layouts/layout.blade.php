@@ -165,7 +165,7 @@
 												<li>
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
-												
+
 		                </ul>
 		            </div>
 		        </nav>
@@ -206,7 +206,7 @@
 											<li>
 												<a href="{{action('LookupController@index')}}">Configuration</a>
 											</li>
-											
+
 
 			            </ul>
 			        </nav>
@@ -544,6 +544,45 @@
 			$(document.getElementById('country')).attr('value',country);
 			$(document.getElementById('updateAddress')).attr('action',action);
 		});
+	</script>
+
+	<script>
+
+	function typeBrand(value){
+		if(value == ""){
+			$(document.getElementById('part')).attr('hidden',"");
+			$(document.getElementById('machine')).attr('hidden',"");
+			document.getElementById('part').removeAttribute('name');
+			$(document.getElementById('machine')).attr('name',"brand_type");
+			document.getElementById("part").selectedIndex = 0;
+			document.getElementById("machine").selectedIndex = 0;
+		}
+		if(value == "53"){
+			document.getElementById('machine').removeAttribute('hidden');
+			$(document.getElementById('machine')).attr('name',"brand_type");
+			document.getElementById('part').removeAttribute('name');
+			$(document.getElementById('part')).attr('hidden',"");
+		}
+		if(value == "54"){
+			document.getElementById('part').removeAttribute('hidden');
+			$(document.getElementById('part')).attr('name',"brand_type");
+			document.getElementById('machine').removeAttribute('name');
+			$(document.getElementById('machine')).attr('hidden',"");
+		}
+	}
+
+	function selectBrand(){
+		type = document.getElementById('type').value;
+		typeBrand(type);
+	}
+
+	$(document).ready(function() {
+		selectBrand();
+	});
+
+	document.getElementById('type').addEventListener('change', function() {
+		typeBrand(this.value);
+	});
 	</script>
 
 	<script>

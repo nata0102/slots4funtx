@@ -16,18 +16,31 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div class="input-group mb-5">
-                 <select class="form-control" name="type">
+                 <select class="form-control" name="type" id="type">
                       <option value="" >-- Select Type --</option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach
                   </select>
-                  <select class="form-control" name="brand_type">
+
+
+
+                  <select class="form-control" id="machine" name="brand_type" hidden>
                       <option value="" >-- Select Brand --</option>
                       @foreach($brands_types as $tp)
                           <option value="{{$tp->brand}}" {{ isset($_GET['brand_type']) ? $_GET['brand_type'] == $tp->brand ? 'selected' : '' : ''}}>{{$tp->brand}}</option>
                       @endforeach
                   </select>
+
+                  <select class="form-control" id="part" hidden>
+                      <option value="" >-- Select Brand --</option>
+                      @foreach($brands_types2 as $tp)
+                          <option value="{{$tp->brand}}" {{ isset($_GET['brand_type']) ? $_GET['brand_type'] == $tp->brand ? 'selected' : '' : ''}}>{{$tp->brand}}</option>
+                      @endforeach
+                  </select>
+
+
+
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>

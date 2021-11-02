@@ -28,8 +28,10 @@ class MachineBrandController extends Controller
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brands_types =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)
                       ->orderBy('brand')->groupBy('brand')->select('brand')->get();
+      $brands_types2 =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)
+                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();
 
-      return view('machineBrand.index',compact('brands','types','brands_types'));
+      return view('machineBrand.index',compact('brands','types','brands_types','brands_types2'));
     }
 
     public function searchWithFilters($params){
