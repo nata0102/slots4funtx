@@ -56,8 +56,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Model <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('model') is-invalid @enderror input100" name="model" value="{{$brand->model}}" required>
+                  <label for="">Model</label>
+                  <input type="text" class="form-control @error('model') is-invalid @enderror input100" name="model" value="{{$brand->model}}">
                   @error('model')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

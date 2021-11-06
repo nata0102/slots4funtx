@@ -113,18 +113,6 @@
 
 		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
-		                  <label for="">Price</label>
-		                  <input type="number" class="form-control @error('price') is-invalid @enderror input100" name="price" value="{{$machine->price}}">
-		                  @error('price')
-		                      <span class="invalid-feedback" role="alert">
-		                          <strong>{{ $message }}</strong>
-		                      </span>
-		                  @enderror
-		                </div>
-		              </div>
-
-		              <div class="col-12 col-sm-6 col-md-4">
-		                <div class="form-group">
 		                  <label for="">Parts</label>
 		                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]">
 		                  @foreach($parts as $part)

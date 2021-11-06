@@ -64,14 +64,7 @@
                   @endif
                 </div>
               </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Price</label>
-                  <input type="number" class="form-control" disabled value="{{$machine->price}}">
-                </div>
-              </div>
-
+              
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Image @if($machine->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>

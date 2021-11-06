@@ -64,7 +64,6 @@ class MachineBrandController extends Controller
     {
       $this->validate($request, [
         'brand' => 'required',
-        'model' => 'required',
         'lkp_type_id' => 'required',
         'weight' => 'numeric',
       ]);
@@ -149,7 +148,6 @@ class MachineBrandController extends Controller
       $this->validate($request, [
         'brand' => 'required',
         'lkp_type_id' => 'required',
-        'model' => 'required',
         'weight' => 'numeric',
       ]);
 
