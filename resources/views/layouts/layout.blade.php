@@ -575,6 +575,16 @@
 
 	//////////////////////
 
+	function selectPaymentType(value){
+		if(value == '68'){
+			document.getElementById('content_percentage_payday').removeAttribute('hidden');
+			$(document.getElementById('percentage_payday')).attr('payday',"payday");
+		}else{
+			$(document.getElementById('content_percentage_payday')).attr('hidden',"");
+			document.getElementById('percentage_payday').removeAttribute('payday');
+		}
+	}
+
 	function selectMachineBrand(value){
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
@@ -610,6 +620,11 @@
 			type = document.getElementById('percentage_type').value;
 			percentageAmount(type);
 		}
+
+		if(document.getElementById('percentage_periodicity')){
+			type = document.getElementById('percentage_periodicity').value;
+			selectPaymentType(type);
+		}
 	});
 
 	if(document.getElementById('type')){
@@ -627,6 +642,12 @@
 	if(document.getElementById('percentage_type')){
 		document.getElementById('percentage_type').addEventListener('change', function() {
 			percentageAmount(this.value);
+		});
+	}
+
+	if(document.getElementById('percentage_periodicity')){
+		document.getElementById('percentage_periodicity').addEventListener('change', function() {
+			selectPaymentType(this.value);
 		});
 	}
 
