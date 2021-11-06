@@ -574,13 +574,44 @@
 	}
 
 	$(document).ready(function() {
-		type = document.getElementById('type').value;
-		selectBrand(type,1);
+		if(document.getElementById('type')){
+			type = document.getElementById('type').value;
+			selectBrand(type,1);
+		}
 	});
 
-	document.getElementById('type').addEventListener('change', function() {
-		selectBrand(this.value,0);
-	});
+	if(document.getElementById('type')){
+		document.getElementById('type').addEventListener('change', function() {
+			selectBrand(this.value,0);
+		});
+	}
+
+	if(document.getElementById('machine_brand_type')){
+		document.getElementById('machine_brand_type').addEventListener('change', function() {
+			if(this.value == '54'){
+				document.getElementById('combo-content').removeAttribute('hidden');
+				$(document.getElementById('combo-select')).attr('name',"name");
+			}else{
+				$(document.getElementById('combo-content')).attr('hidden',"");
+				document.getElementById('combo-select').removeAttribute('name');
+			}
+		});
+	}
+
+	if(document.getElementById('percentage_type')){
+		document.getElementById('percentage_type').addEventListener('change', function() {
+			if(this.value == '44'){//rent
+				document.getElementById('input').innerHTML='Amount <span style="color:red">*</span>';
+			}if(this.value == '45'){//Percentage
+				document.getElementById('input').innerHTML='Percentage <span style="color:red">*</span>';
+			}if(this.value == ''){
+				document.getElementById('input').innerHTML='Percentage/Amount <span style="color:red">*</span>';
+			}
+		});
+	}
+
+
+
 	</script>
 
 	<script>
