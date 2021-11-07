@@ -579,9 +579,11 @@
 		if(value == '68'){
 			document.getElementById('content_percentage_payday').removeAttribute('hidden');
 			$(document.getElementById('percentage_payday')).attr('payday',"payday");
+			$(document.getElementById('percentage_payday')).attr('required',"");
 		}else{
 			$(document.getElementById('content_percentage_payday')).attr('hidden',"");
 			document.getElementById('percentage_payday').removeAttribute('payday');
+			document.getElementById('percentage_payday').removeAttribute('required');
 		}
 	}
 
