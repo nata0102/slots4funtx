@@ -50,9 +50,51 @@
 
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
+			                  <label for="">Payment Periodicity <span style="color:red">*</span></label>
+			                  <select id="percentage_periodicity" class="form-control @error('lkp_periodicity_id') is-invalid @enderror input100" name="lkp_periodicity_id" required="">
+			                    <option value=""></option>
+			                      @foreach($payments as $type)
+			                        <option value="{{$type->id}}"  {{ $percentage_price->lkp_periodicity_id == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
+			                      @endforeach
+			                  </select>
+			                  @error('lkp_periodicity_id')
+			                      <span class="invalid-feedback" role="alert">
+			                          <strong>{{ $message }}</strong>
+			                      </span>
+			                  @enderror
+			                </div>
+			            </div>
+
+			            <div class="col-12 col-sm-6 col-md-4" id="content_percentage_payday" hidden>
+			                <div class="form-group">
+			                  <label for="">Payday <span style="color:red">*</span></label>
+			                  <input type="number" id="percentage_payday" name="payday" min="1" max="31"
+			                  class="form-control @error('payday') is-invalid @enderror input100" value="{{$percentage_price->payday}}" required>
+			                  @error('payday')
+			                      <span class="invalid-feedback" role="alert">
+			                          <strong>{{ $message }}</strong>
+			                      </span>
+			                  @enderror
+			                </div>
+			            </div> 
+
+			            <div class="col-12 col-sm-6 col-md-4">
+			                <div class="form-group">
 			                  <label for="" id="input">Percentage/Amount <span style="color:red">*</span></label>
 			                  <input type="text" class="form-control @error('amount') is-invalid @enderror input100" name="amount" value="{{$percentage_price->amount}}">
 			                  @error('amount')
+			                      <span class="invalid-feedback" role="alert">
+			                          <strong>{{ $message }}</strong>
+			                      </span>
+			                  @enderror
+			                </div>
+			            </div>
+
+			            <div class="col-12 col-sm-6 col-md-4">
+			                <div class="form-group">
+			                  <label for="">Start Payment <span style="color:red">*</span></label>
+			                  <input type="date" class="form-control @error('date_permit') is-invalid @enderror input100" name="start_payment" value="{{$percentage_price->start_payment}}" id="datepicker" required="">
+			                  @error('start_payment')
 			                      <span class="invalid-feedback" role="alert">
 			                          <strong>{{ $message }}</strong>
 			                      </span>

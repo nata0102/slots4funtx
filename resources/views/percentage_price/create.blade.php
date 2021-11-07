@@ -33,8 +33,8 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select class="form-control @error('machine_id') is-invalid @enderror input100" name="machine_id" required="">
-                    <option value=""></option>
+                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
+                      <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
                         <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
                       @endforeach
@@ -46,6 +46,36 @@
                   @enderror
                 </div>
               </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Payment Periodicity <span style="color:red">*</span></label>
+                  <select id="percentage_periodicity" class="form-control @error('lkp_periodicity_id') is-invalid @enderror input100" name="lkp_periodicity_id" required="">
+                    <option value=""></option>
+                      @foreach($payments as $type)
+                        <option value="{{$type->id}}"  {{ old('lkp_periodicity_id') == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
+                      @endforeach
+                  </select>
+                  @error('lkp_periodicity_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4" id="content_percentage_payday" hidden>
+                <div class="form-group">
+                  <label for="">Payday <span style="color:red">*</span></label>
+                  <input type="number" id="percentage_payday" name="payday" min="1" max="31"
+                  class="form-control @error('payday') is-invalid @enderror input100" value="{{old('payday')}}" required>
+                  @error('payday')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>              
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">

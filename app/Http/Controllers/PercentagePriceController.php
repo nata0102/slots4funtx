@@ -22,14 +22,15 @@ class PercentagePriceController extends Controller
             break;
         }
         $types =  DB::table('lookups')->where('type','type_price')->get();
+        $periodicities =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
 
-        return view('percentage_price.index',compact('res','types'));  
+        return view('percentage_price.index',compact('res','types','periodicities'));  
     }
 
     public function searchWithFilters($params){
-        $qry = "select tab1.*,concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=mc.lkp_game_id) as game from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
+        $qry = "select tab1.*,concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=p.lkp_periodicity_id) as type_periodicity,(select value from lookups where id=mc.lkp_game_id) as game from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
         if(count($params)){
-            if($params['type'] != "" || $params['machine'] != "")
+            if($params['type'] != "" || $params['machine'] != "" ||  $params['periodicity'] != "" )
                 $qry .= " where ";
             if($params['type'] != ""){
                 if(substr($qry, -6) != "where ")
@@ -40,6 +41,11 @@ class PercentagePriceController extends Controller
                 if(substr($qry, -6) != "where ")
                     $qry.= " and ";
                 $qry .= " concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) like '%".$params['machine']."%'";
+            }
+            if($params['periodicity'] != ""){
+                if(substr($qry, -6) != "where ")
+                    $qry.= " and ";
+                $qry .= " tab1.lkp_periodicity_id =".$params['periodicity'];
             }
         }
         $qry .= " order by tab1.type, tab1.machine_id, tab1.game, tab1.serial;";
@@ -54,9 +60,10 @@ class PercentagePriceController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_price')->get();
+        $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
         $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
         $machines = DB::select($qry);
-        return view('percentage_price.create',compact('types','machines'));
+        return view('percentage_price.create',compact('types','machines','payments'));
     }
 
     /**
@@ -70,11 +77,13 @@ class PercentagePriceController extends Controller
         $this->validate($request, [
             'machine_id' => 'required',
             'lkp_type_id' => 'required',
+            'lkp_periodicity_id' => 'required',
             'amount' => 'required',
         ]);    
         try{
             $transaction = DB::transaction(function() use($request){                             
-                $arr = $request->except('_token');         
+                $arr = $request->except('_token');  
+                $arr['start_payment'] = date('Y-m-d');       
                 $percentage_price = PercentagePrice::create($arr);
                 if ($percentage_price) {
                     $notification = array(
@@ -124,10 +133,11 @@ class PercentagePriceController extends Controller
     {
         $percentage_price = PercentagePrice::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_price')->get();
+        $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
         $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine where id != ".$id.");";
         $machines = DB::select($qry);
         /*$machines = DB::table('machines')->where('active',1)->whereNotIn('id', DB::table('percentage_price_machine')->where('id','!=',$id)->pluck('machine_id')->toArray())->orderBy('game_title')->get();*/
-        return view('percentage_price.edit',compact('types','machines','percentage_price'));
+        return view('percentage_price.edit',compact('types','machines','percentage_price','payments'));
     }
 
     /**
@@ -142,12 +152,15 @@ class PercentagePriceController extends Controller
         $this->validate($request, [
             'machine_id' => 'required',
             'lkp_type_id' => 'required',
+            'lkp_periodicity_id' => 'required',
             'amount' => 'required',
         ]);    
         try{
             $transaction = DB::transaction(function() use($request, $id){                             
                 $arr = $request->except('_token','_method');         
                 $percentage_price = PercentagePrice::findOrFail($id);
+                if($arr['lkp_periodicity_id'] != 68)
+                  $arr['payday'] = null;
                 $percentage_price->update($arr);
                 $percentage_price->save();
                 if ($percentage_price) {

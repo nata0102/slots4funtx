@@ -21,6 +21,13 @@
                               @endforeach
                         </select>  
 
+                        <select class="form-control" name="periodicity">
+                            <option value="">-- Select Periodicity --</option>
+                              @foreach($periodicities as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['periodicity']) ? $_GET['periodicity'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                              @endforeach
+                        </select> 
+
                         <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">                       
 
                         <button type="submit" class="btn btn-default" name="option"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
@@ -35,6 +42,8 @@
                             <th>Type</th>
                         	<th>Machine</th>                        	
                             <th>Percentage/Amount</th>
+                            <th>Payment Periodicity</th>
+                            <th>Payday</th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
@@ -44,6 +53,8 @@
                             <td>{{$r->type}}</td>                            
                             <td>{{$r->machine_name}}</td>
                             <td>{{$r->amount}}</td>
+                            <td>{{$r->type_periodicity}}</td>
+                            <td>{{$r->payday}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4 active" style="padding: 0;">
@@ -53,7 +64,7 @@
                                     <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('PercentagePriceController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                                   </div>                                  
                                 </div>
-                            </td>
+                            </td>                            
                         </tr>
                         @endforeach
                     </tbody>
