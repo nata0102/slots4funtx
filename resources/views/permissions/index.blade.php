@@ -36,7 +36,7 @@
                         	<th>Type Permit</th>
                         	<th>Machine</th>
                             <th>Permit Number</th>
-                            <th>Due Date</th>
+                            <th>Year Permit</th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
@@ -46,7 +46,7 @@
                             <td>{{$r->type}}</td>                            
                             <td>{{$r->game}}</td>
                             <td>{{$r->permit_number}}</td>
-                            <td>{{$r->date_permit}}</td>
+                            <td>{{$r->year_permit}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4 active" style="padding: 0;">

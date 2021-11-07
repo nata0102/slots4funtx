@@ -33,8 +33,8 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select class="form-control @error('machine_id') is-invalid @enderror input100" name="machine_id" required="">
-                    <option value=""></option>
+                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
+                      <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
                         <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
                       @endforeach
@@ -61,16 +61,16 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Due Date <span style="color:red">*</span></label>
-                  <input type="date" class="form-control @error('date_permit') is-invalid @enderror input100" name="date_permit" value="date_permit" id="datepicker" required="">
-                  @error('date_permit')
+                  <label for="">Validate Permit Number <span style="color:red">*</span></label>
+                  <input type="text" class="form-control @error('validate_permit_number') is-invalid @enderror input100" name="validate_permit_number" value="{{old('validate_permit_number')}}" required="" onpaste="return false;">
+                  @error('validate_permit_number')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
                   @enderror
                 </div>
               </div>
-
+              
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>

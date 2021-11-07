@@ -44,6 +44,7 @@
                             <th>Percentage/Amount</th>
                             <th>Payment Periodicity</th>
                             <th>Payday</th>
+                            <th>Start Payment</th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
@@ -55,6 +56,7 @@
                             <td>{{$r->amount}}</td>
                             <td>{{$r->type_periodicity}}</td>
                             <td>{{$r->payday}}</td>
+                            <td>{{$r->start_payment}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4 active" style="padding: 0;">

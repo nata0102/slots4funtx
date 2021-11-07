@@ -48,10 +48,8 @@ class PermissionController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $machines = DB::table('machines')->join('lookups', 'machines.lkp_game_id', '=', 'lookups.id')
-                    ->where('lookups.active',1)->where('machines.active',1)
-                    ->where('machines.lkp_owner_id',38)
-                    ->select('machines.*','lookups.value')->get();
+        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
+        $machines = DB::select($qry);
         return view('permissions.create',compact('types','machines'));
     }
 
@@ -66,12 +64,20 @@ class PermissionController extends Controller
         $this->validate($request, [
             'machine_id' => 'required',
             'lkp_type_permit_id' => 'required',
-            'date_permit' => 'required',
-            'permit_number' => 'unique:permissions,permit_number|nullable',
-        ]);    
+            'permit_number' => 'required|unique:permissions,permit_number|nullable',
+            'validate_permit_number' => 'required'
+        ]);   
+        if($request->validate_permit_number != $request->permit_number){
+            $transaction = array(
+              'message' => 'The permission numbers do not match.',
+              'alert-type' => 'error'
+            );
+            return back()->with($transaction)->withInput($request->all());
+        }
         try{
-            $transaction = DB::transaction(function() use($request){                             
-                $arr = $request->except('_token');         
+            $transaction = DB::transaction(function() use($request){                   
+                $arr = $request->except('_token','validate_permit_number');  
+                $arr['year_permit'] = date('Y');       
                 $permission = Permission::create($arr);
                 if ($permission) {
                     $notification = array(
@@ -124,11 +130,17 @@ class PermissionController extends Controller
     {
         $permission = Permission::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $machines = DB::table('machines')->join('lookups', 'machines.lkp_game_id', '=', 'lookups.id')
-                    ->where('lookups.active',1)->where('machines.active',1)
-                    ->where('machines.lkp_owner_id',38)
-                    ->select('machines.*','lookups.value')->get();
+        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions where id != ".$id.") and m.lkp_owner_id = 38;";
+        $machines = DB::select($qry);
         return view('permissions.edit',compact('types','machines','permission'));
+    }
+
+    public function getUpdateYearPermit($year){
+        $res = $year;
+        $period = date('m');
+        if($period >= 10)
+            $res = date('Y') + 1;
+        return $res;
     }
 
     /**
@@ -141,15 +153,22 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'machine_id' => 'required',
             'lkp_type_permit_id' => 'required',
-            'date_permit' => 'required',
-            'permit_number' => 'nullable|unique:permissions,permit_number,'.$id,
-        ]);  
+            'permit_number' => 'required|nullable|unique:permissions,permit_number,'.$id,
+            'validate_permit_number' => 'required'
+        ]); 
+        if($request->validate_permit_number != $request->permit_number){
+            $transaction = array(
+              'message' => 'The permission numbers do not match.',
+              'alert-type' => 'error'
+            );
+            return back()->with($transaction)->withInput($request->all());
+        } 
         try{
             $transaction = DB::transaction(function() use($request, $id){                  
-                $arr = $request->except('_token','_method');            
+                $arr = $request->except('_token','_method','validate_permit_number');                
                 $permission = Permission::findOrFail($id);
+                $arr['year_permit'] = $this->getUpdateYearPermit($permission->year_permit);
                 $permission->update($arr);
                 $permission->save();
                 if ($permission) {
