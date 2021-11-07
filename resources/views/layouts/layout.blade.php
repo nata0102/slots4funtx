@@ -157,7 +157,7 @@
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 												</li>
 												<li>
-												<a href="{{action('PercentagePriceController@index')}}">Percentage/Amount</a>
+												<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
 												</li>
 												<li>
 													<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
@@ -198,7 +198,7 @@
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 											</li>
 											<li>
-												<a href="{{action('PercentagePriceController@index')}}">Percentage/Amount</a>
+												<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
 												</li>
 											<li>
 												<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>

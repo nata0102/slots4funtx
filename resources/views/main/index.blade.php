@@ -60,7 +60,7 @@
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
-                  <h4>Percentage/Amount</h4>
+                  <h4>Percentage/Flat Rate</h4>
                 </div>
               </div>
             </a>
