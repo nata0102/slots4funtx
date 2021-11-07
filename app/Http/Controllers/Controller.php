@@ -32,13 +32,19 @@ class Controller extends BaseController
 
     public function insertMachineHistory($id){
         $machine = Machine::with('owner')->findOrFail($id);
-        $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')->where('machine_id',$machine->id)
-            ->select('percentage_price_machine.*','lookups.value')->first();
+        $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')
+        ->join('lookups as l2', 'percentage_price_machine.lkp_periodicity_id', '=', 'l2.id')
+        ->where('machine_id',$machine->id)
+            ->select('percentage_price_machine.*','lookups.value', 'l2.value as periodicity')->first();
         $machine->type_price = null;
         $machine->type_price_amount = null;
+        $machine->periodicity = null;
+        $machine->payday = null;
         if($price_machine != null){
             $machine->type_price = $price_machine->value;
             $machine->type_price_amount = $price_machine->amount;
+            $machine->payday = $price_machine->payday;
+            $machine->periodicity = $price_machine->periodicity;
         }
 
         $band = false;
@@ -48,13 +54,13 @@ class Controller extends BaseController
         else{
             if($machine->address_id != $history->address_id || $machine->lkp_status_id != $history->lkp_status_id || $machine->machine_sold_id != $history->machine_sold_id ||
                 $machine->active != $history->active || $machine->owner->value != $history->owner_type ||
-                $history->type_price != $machine->type_price || $history->type_price_amount != $machine->type_price_amount)
+                $history->type_price != $machine->type_price || $history->type_price_amount != $machine->type_price_amount || $history->brand_id != $machine->machine_brand_id || $history->payday != $machine->payday || $history->periodicity != $machine->periodicity)
                 $band = true;
         }
         if($band){
             $arr_history = ['machine_id' => $machine->id,'address_id'=>$machine->address_id,
                 'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,
-                'active'=>$machine->active,'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s'), 'type_price' => $machine->type_price, 'type_price_amount' => $machine->type_price_amount];
+                'active'=>$machine->active,'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s'), 'type_price' => $machine->type_price, 'type_price_amount' => $machine->type_price_amount, 'brand_id' => $machine->machine_brand_id, 'payday' => $machine->payday, 'periodicity' => $machine->periodicity];
             MachineHistory::create($arr_history);
         }
     }
