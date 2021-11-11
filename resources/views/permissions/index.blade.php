@@ -8,7 +8,10 @@
             <div class="card" id="card-section">
         
                 <div class="input-group mb-2">
-                    <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>                    
+                    <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>   
+                    <a href="{{action('PermissionController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;margin-left: 250px;"><i class="fas fa-plus"></i>
+                    </a> 
+                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>              
                 </div>
 
                 <form method="GET" action="{{action('PermissionController@index')}}">

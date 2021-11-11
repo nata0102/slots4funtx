@@ -9,7 +9,7 @@
 
         <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
-        <form class="" action="{{action('PermissionController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+        <form class="" action="{{action('PermissionController@storeByRank')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
 
@@ -32,14 +32,9 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Machine <span style="color:red">*</span></label>
-                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
-                      <option value="" selected>-- Select Machine --</option>
-                      @foreach($machines as $machine)
-                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
-                      @endforeach
-                  </select>
-                  @error('machine_id')
+                  <label for="">Starting Range<span style="color:red">*</span></label>
+                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('start_range') is-invalid @enderror input100" name="start_range" value="{{old('start_range')}}" required="">
+                  @error('start_range')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -49,9 +44,9 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Permit Number <span style="color:red">*</span></label>
-                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{old('permit_number')}}" required="">
-                  @error('permit_number')
+                  <label for="">Final Rank<span style="color:red">*</span></label>
+                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('final_range') is-invalid @enderror input100" name="final_range" value="{{old('final_range')}}" required="" onpaste="return false;">
+                  @error('final_range')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -59,17 +54,18 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" >
                 <div class="form-group">
-                  <label for="">Validate Permit Number <span style="color:red">*</span></label>
-                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('validate_permit_number') is-invalid @enderror input100" name="validate_permit_number" value="{{old('validate_permit_number')}}" required="" onpaste="return false;">
-                  @error('validate_permit_number')
+                  <label for="">Permit Year <span style="color:red">*</span></label>
+                  <input type="number" name="year_permit" min="2021" max="2035"
+                  class="form-control @error('year_permit') is-invalid @enderror input100" value="{{old('year_permit')}}" required>
+                  @error('year_permit')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
                   @enderror
                 </div>
-              </div>
+              </div>  
               
             </div>
             <div class="form-group">

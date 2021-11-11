@@ -26,8 +26,13 @@ class PermissionController extends Controller
     }
 
     public function searchWithFilters($params){
-        $qry = "select * from (select p.*, concat(m.id,' - ',l.value, ' - ', ifnull(m.serial,'')) as game,m.active,(select value from lookups where id=p.lkp_type_permit_id) as type
-            from permissions p, machines m, lookups l where p.machine_id = m.id and l.id = m.lkp_game_id) as tab1 where tab1.active=1";
+        $qry = "select * from( 
+                select *,
+                (select value from lookups where id = p.lkp_type_permit_id) as type,
+                (select concat(id,' - ', ifnull(serial,'')) from machines where
+                id = p.machine_id and active=1) as game,
+                (select active from machines where id = p.machine_id) as active
+                from permissions p) as tab1 where (tab1.active = 1 or tab1.active is null)";
         if(count($params) > 0){
             if($params['type'] != "")
                 $qry .= " and tab1.lkp_type_permit_id = ".$params['type'];
@@ -51,6 +56,51 @@ class PermissionController extends Controller
         $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
         $machines = DB::select($qry);
         return view('permissions.create',compact('types','machines'));
+    }
+
+    public function createByRank(){
+        $types =  DB::table('lookups')->where('type','type_permit')->get();
+        return view('permissions.createByRank',compact('types'));
+    }
+
+    public function storeByRank(Request $request){
+        $this->validate($request, [
+            'lkp_type_permit_id' => 'required',
+            'start_range' => 'required',
+            'final_range' => 'required',
+            'year_permit' => 'required'
+        ]);   
+        if($request->final_range < $request->start_range){
+            $transaction = array(
+                'message' => 'The final range must be greater than the initial range.',
+                'alert-type' => 'error' 
+            );
+            return back()->with($transaction)->withInput($request->all());
+        }
+        try{
+            $transaction = DB::transaction(function() use($request){                   
+                $arr = $request->except('_token');
+                for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
+                    Permission::create(['permit_number'=>$i,'lkp_type_permit_id'=>$arr['lkp_type_permit_id'],'year_permit'=>$arr['year_permit']]);
+
+                }  
+                $notification = array(
+                  'message' => 'Successful!!',
+                  'alert-type' => 'success'
+                );
+                return $notification;
+            });
+
+            return redirect()->action('PermissionController@index')->with($transaction);
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';        
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error' 
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**
@@ -140,6 +190,8 @@ class PermissionController extends Controller
         $period = date('m');
         if($period >= 10)
             $res = date('Y') + 1;
+        else
+            $res = date('Y');
         return $res;
     }
 

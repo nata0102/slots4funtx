@@ -35,6 +35,8 @@ Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("lookups",'LookupController');
   Route::resource("machine-brands",'MachineBrandController');
   Route::resource("permissions",'PermissionController');
+  Route::get("permissions_rank",'PermissionController@createByRank');
+  Route::post("permissions_store_rank",'PermissionController@storeByRank');
   Route::resource("percentage_price",'PercentagePriceController');
   Route::resource("clients","ClientController");
   Route::resource("address","AddressController");

@@ -51,7 +51,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Permit Number <span style="color:red">*</span></label>
-			                  <input type="text" class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{$permission->permit_number}}">
+			                  <input type="number" maxlength="6" class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{$permission->permit_number}}">
 			                  @error('permit_number')
 			                      <span class="invalid-feedback" role="alert">
 			                          <strong>{{ $message }}</strong>
@@ -63,7 +63,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Validate Permit Number <span style="color:red">*</span></label>
-			                  <input type="text" class="form-control @error('validate_permit_number') is-invalid @enderror input100" name="validate_permit_number" value="{{$permission->permit_number}}" required="" onpaste="return false;">
+			                  <input type="number" maxlength="6" class="form-control @error('validate_permit_number') is-invalid @enderror input100" name="validate_permit_number" value="{{$permission->permit_number}}" required="" onpaste="return false;">
 			                  @error('validate_permit_number')
 			                      <span class="invalid-feedback" role="alert">
 			                          <strong>{{ $message }}</strong>
