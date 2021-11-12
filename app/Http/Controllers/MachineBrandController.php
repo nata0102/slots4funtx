@@ -36,7 +36,7 @@ class MachineBrandController extends Controller
     }
 
     public function searchWithFilters($params){
-      $res = MachineBrand::with('type')
+      $res = MachineBrand::with('type','part')
       ->model($params['model'])
       ->brand($params['brand_type'])
       ->type($params['type'])
@@ -52,7 +52,7 @@ class MachineBrandController extends Controller
     public function create()
     {
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
-      $parts = Part::where('active',1)->orderBy('id','desc')->get();
+      $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       return view('machineBrand.create', compact('types','parts'));
     }
 
@@ -136,8 +136,7 @@ class MachineBrandController extends Controller
     {
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::find($id);
-      $parts = Part::where('active',1)->orderBy('id','desc')->get();
-
+      $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       return view('machineBrand.edit',compact('brand','types','parts'));
     }
 

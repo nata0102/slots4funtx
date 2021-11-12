@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Permission;
+use App\Models\Machine;
+
 
 class PermissionController extends Controller
 {
@@ -53,7 +55,9 @@ class PermissionController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
+        /*$qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
+        $machines = DB::select($qry);*/
+        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id;";
         $machines = DB::select($qry);
         return view('permissions.create',compact('types','machines'));
     }
@@ -129,6 +133,7 @@ class PermissionController extends Controller
                 $arr = $request->except('_token','validate_permit_number');  
                 $arr['year_permit'] = date('Y');       
                 $permission = Permission::create($arr);
+                $this->insertMachineHistory($permission->machine_id);
                 if ($permission) {
                     $notification = array(
                       'message' => 'Successful!!',
@@ -180,19 +185,15 @@ class PermissionController extends Controller
     {
         $permission = Permission::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions where id != ".$id.") and m.lkp_owner_id = 38;";
-        $machines = DB::select($qry);
-        return view('permissions.edit',compact('types','machines','permission'));
-    }
-
-    public function getUpdateYearPermit($year){
-        $res = $year;
-        $period = date('m');
-        if($period >= 10)
-            $res = date('Y') + 1;
-        else
-            $res = date('Y');
-        return $res;
+        $machines = [];
+        $machine = null;
+        if($permission->machine_id != null )
+            $machine = Machine::findOrFail($permission->machine_id);
+        else{
+          $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id=l.id and m.id not in (select machine_id from permissions);";
+          $machines = DB::select($qry);
+        }
+        return view('permissions.edit',compact('types','machines','permission','machine'));
     }
 
     /**
@@ -218,11 +219,12 @@ class PermissionController extends Controller
         } 
         try{
             $transaction = DB::transaction(function() use($request, $id){                  
-                $arr = $request->except('_token','_method','validate_permit_number');                
+                $arr = $request->except('_token','_method','validate_permit_number');               
                 $permission = Permission::findOrFail($id);
-                $arr['year_permit'] = $this->getUpdateYearPermit($permission->year_permit);
                 $permission->update($arr);
                 $permission->save();
+                if($permission->machine_id != null)
+                    $this->insertMachineHistory($permission->machine_id);
                 if ($permission) {
                     $notification = array(
                       'message' => 'Successful!!',
@@ -262,7 +264,10 @@ class PermissionController extends Controller
     public function destroy($id)
     {
          $transaction = DB::transaction(function() use($id){
+            $permission = Permission::findOrFail($id);                          
             Permission::destroy($id);
+            if($permission->machine_id != null)
+                $this->insertMachineHistory($permission->machine_id);
             return response()->json(200);
          });
          return $transaction;

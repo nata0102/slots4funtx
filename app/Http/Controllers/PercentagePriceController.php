@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\PercentagePrice;
+use App\Models\Machine;
+
 
 class PercentagePriceController extends Controller
 {
@@ -28,7 +30,7 @@ class PercentagePriceController extends Controller
     }
 
     public function searchWithFilters($params){
-        $qry = "select tab1.*,concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=p.lkp_periodicity_id) as type_periodicity,(select value from lookups where id=mc.lkp_game_id) as game from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
+        $qry = "select tab1.*,concat(tab1.machine_id,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=p.lkp_periodicity_id) as type_periodicity from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
         if(count($params)){
             if($params['type'] != "" || $params['machine'] != "" ||  $params['periodicity'] != "" )
                 $qry .= " where ";
@@ -40,7 +42,7 @@ class PercentagePriceController extends Controller
             if($params['machine'] != ""){
                 if(substr($qry, -6) != "where ")
                     $qry.= " and ";
-                $qry .= " concat(tab1.machine_id,' - ',tab1.game,' - ',ifnull(tab1.serial,'')) like '%".$params['machine']."%'";
+                $qry .= " concat(tab1.machine_id,' - ',ifnull(tab1.serial,'')) like '%".$params['machine']."%'";
             }
             if($params['periodicity'] != ""){
                 if(substr($qry, -6) != "where ")
@@ -48,7 +50,7 @@ class PercentagePriceController extends Controller
                 $qry .= " tab1.lkp_periodicity_id =".$params['periodicity'];
             }
         }
-        $qry .= " order by tab1.type, tab1.machine_id, tab1.game, tab1.serial;";
+        $qry .= " order by tab1.type, tab1.machine_id, tab1.serial;";
         return DB::select($qry);
     }
 
@@ -61,7 +63,7 @@ class PercentagePriceController extends Controller
     {
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
-        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
+        $qry = "select m.* from machines m where m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
         $machines = DB::select($qry);
         return view('percentage_price.create',compact('types','machines','payments'));
     }
@@ -134,10 +136,8 @@ class PercentagePriceController extends Controller
         $percentage_price = PercentagePrice::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
-        $qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from percentage_price_machine where id != ".$id.");";
-        $machines = DB::select($qry);
-        /*$machines = DB::table('machines')->where('active',1)->whereNotIn('id', DB::table('percentage_price_machine')->where('id','!=',$id)->pluck('machine_id')->toArray())->orderBy('game_title')->get();*/
-        return view('percentage_price.edit',compact('types','machines','percentage_price','payments'));
+        $machine = Machine::findOrFail($percentage_price->machine_id);
+        return view('percentage_price.edit',compact('types','machine','percentage_price','payments'));
     }
 
     /**
@@ -150,19 +150,19 @@ class PercentagePriceController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'machine_id' => 'required',
             'lkp_type_id' => 'required',
             'lkp_periodicity_id' => 'required',
             'amount' => 'required',
         ]);    
         try{
-            $transaction = DB::transaction(function() use($request, $id){                             
-                $arr = $request->except('_token','_method');         
+            $transaction = DB::transaction(function() use($request, $id){                           
+                $arr = $request->except('_token','_method');       
                 $percentage_price = PercentagePrice::findOrFail($id);
                 if($arr['lkp_periodicity_id'] != 68)
                   $arr['payday'] = null;
                 $percentage_price->update($arr);
                 $percentage_price->save();
+                $this->insertMachineHistory($percentage_price->machine_id);
                 if ($percentage_price) {
                     $notification = array(
                       'message' => 'Successful!!',
@@ -174,12 +174,11 @@ class PercentagePriceController extends Controller
                       'alert-type' => 'error'
                     );
                 }
-                $this->insertMachineHistory($request->machine_id);
                 return $notification;
             });
 
             return redirect()->action('PercentagePriceController@index')->with($transaction);
-        }catch(\Exception $e){
+        }catch(\Exception $e){return $e->getMessage();
             $cad = 'Oops! there was an error, please try again later.';          
             $transaction = array(
                 'message' => $cad,

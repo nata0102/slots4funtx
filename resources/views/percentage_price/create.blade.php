@@ -36,7 +36,7 @@
                   <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
                       <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
+                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->serial}}</option>
                       @endforeach
                   </select>
                   @error('machine_id')

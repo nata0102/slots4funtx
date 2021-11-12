@@ -37,9 +37,9 @@
                 <div class="form-group">
                   <label for="">Parts <span style="color:red"></span></label>
                   <select class="form-control" name="" required="" id="combo-select">
-                    <option value="" selected disabled>- Part -</option>
+                    <option value="" selected disabled>-- Select Part --</option>
                     @foreach($parts as $part)
-                      <option value="{{$part->id}}" {{ $brand->lkp_part_id == $part->id ? "selected" : '' }}>{{$part->type->value}} - {{$part->brand->brand}} - {{$part->brand->model}}</option>
+                      <option value="{{$part->id}}" {{ $brand->lkp_part_id == $part->id ? "selected" : '' }}>{{$part->value}}</option>
                     @endforeach
                   </select>
                 </div>
