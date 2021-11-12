@@ -56,7 +56,7 @@
                   <th style="width:100px; text-align: center;">Type</th>
                   <th style="width:100px; text-align: center;">Brand</th>
                   <th style="width:100px; text-align: center;">Model</th>
-                  <th style="width:70px; text-align: center;">Weight</th>
+                  <!--th style="width:70px; text-align: center;">Weight</th-->
                 	<th style="width:125px; text-align: center;"></th>
                 </tr>
               </thead>
@@ -66,7 +66,7 @@
                     <td>{{$brand->type->value}}</td>
                     <td>{{$brand->brand}}</td>
                     <td>{{$brand->model}}</td>
-                    <td>{{$brand->weight}}</td>
+                    <!--td>{{$brand->weight}}</td-->
                     <td>
                       <div class="row" style="margin-right: 0; margin-left: 0;">
 

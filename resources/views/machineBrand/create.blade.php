@@ -31,9 +31,12 @@
 
               <div class="col-12 col-sm-6 col-md-4" id="combo-content" hidden>
                 <div class="form-group">
-                  <label for="">nuevo combo <span style="color:red"></span></label>
-                  <select class="form-control" name="name" required="" id="combo-select">
-                    <option value="">Seleciona</option>
+                  <label for="">Parts <span style="color:red"></span></label>
+                  <select class="form-control" name="" required="" id="combo-select">
+                    <option value="" selected disabled>- Part -</option>
+                    @foreach($parts as $part)
+                      <option value="{{$part->id}}">{{$part->type->value}} - {{$part->brand->brand}} - {{$part->brand->model}}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -62,7 +65,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <!--sdiv class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Weight</label>
                   <input type="text" class="form-control @error('weight') is-invalid @enderror input100" name="weight" value="{{old('weight')}}" >
@@ -72,7 +75,7 @@
                       </span>
                   @enderror
                 </div>
-              </div>
+              </div-->
 
               <div class="col-12">
                 <div class="form-group">

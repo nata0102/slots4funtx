@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MachineBrand;
+use App\Models\Part;
 use DB;
 use File;
 use Input;
@@ -51,7 +52,8 @@ class MachineBrandController extends Controller
     public function create()
     {
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
-      return view('machineBrand.create', compact('types'));
+      $parts = Part::where('active',1)->orderBy('id','desc')->get();
+      return view('machineBrand.create', compact('types','parts'));
     }
 
     /**
@@ -68,7 +70,7 @@ class MachineBrandController extends Controller
         'weight' => 'numeric',
       ]);
 
-      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->first();
+      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->first();
       if($brand){
         $notification = array(
             'message' => 'There is already a record with the same data.',
@@ -83,6 +85,7 @@ class MachineBrandController extends Controller
           $brand->brand = $request->brand;
           $brand->model = $request->model;
           $brand->weight = $request->weight;
+          $brand->lkp_part_id = $request->part_id;
           $brand->lkp_type_id = $request->lkp_type_id;
           $brand->active = 1;
           $created = $brand->save();
@@ -133,7 +136,9 @@ class MachineBrandController extends Controller
     {
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::find($id);
-      return view('machineBrand.edit',compact('brand','types'));
+      $parts = Part::where('active',1)->orderBy('id','desc')->get();
+
+      return view('machineBrand.edit',compact('brand','types','parts'));
     }
 
     /**
@@ -151,7 +156,7 @@ class MachineBrandController extends Controller
         'weight' => 'numeric',
       ]);
 
-      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('weight',$request->weight)->where('id','!=',$id)->first();
+      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('id','!=',$id)->first();
       if($brand){
         $notification = array(
             'message' => 'There is already a record with the same data.',
@@ -165,6 +170,7 @@ class MachineBrandController extends Controller
           $brand = MachineBrand::find($id);
           $brand->brand = $request->brand;
           $brand->model = $request->model;
+          $brand->lkp_part_id = $request->part_id;
           $brand->weight = $request->weight;
           $brand->lkp_type_id = $request->lkp_type_id;
           $created = $brand->save();

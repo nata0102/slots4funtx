@@ -298,7 +298,7 @@
 	<!-- Jquery JS -->
 	<script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 	<!-- Bootstrap JS -->
-	<script src="{{ asset('adminjs/popper.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
 	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
 	<script src="{{ asset('adminjs/toastr.js') }}"></script>
@@ -590,10 +590,12 @@
 	function selectMachineBrand(value){
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
-			$(document.getElementById('combo-select')).attr('name',"name");
+			$(document.getElementById('combo-select')).attr('name',"part_id");
+			$(document.getElementById('combo-select')).attr('required',"");
 		}else{
 			$(document.getElementById('combo-content')).attr('hidden',"");
 			document.getElementById('combo-select').removeAttribute('name');
+			document.getElementById('combo-select').removeAttribute('required');
 		}
 	}
 
