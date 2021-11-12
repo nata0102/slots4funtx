@@ -67,7 +67,7 @@ class MachineBrandController extends Controller
       $this->validate($request, [
         'brand' => 'required',
         'lkp_type_id' => 'required',
-        'weight' => 'numeric',
+        'weight' => 'numeric|nullable',
       ]);
 
       $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->first();
@@ -153,7 +153,7 @@ class MachineBrandController extends Controller
       $this->validate($request, [
         'brand' => 'required',
         'lkp_type_id' => 'required',
-        'weight' => 'numeric',
+        'weight' => 'numeric|nullable',
       ]);
 
       $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('id','!=',$id)->first();
