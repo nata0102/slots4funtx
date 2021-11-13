@@ -16,6 +16,10 @@ class MachineBrand extends Model
     return $this->hasOne('App\Models\Lookup', 'id', 'lkp_type_id');
   }
 
+  public function part(){
+    return $this->hasOne('App\Models\Lookup', 'id', 'lkp_part_id');
+  }
+
   public function scopeModel($query, $model) {
   	if ($model) {
   		return $query->where('model','like',"%$model%");

@@ -63,7 +63,11 @@
               <tbody>
               	@foreach($brands as $brand)
                   <tr>
-                    <td>{{$brand->type->value}}</td>
+                    @if($brand->lkp_part_id == null)
+                      <td>{{$brand->type->value}}</td>
+                    @else
+                      <td>{{$brand->type->value}} => {{$brand->part->value}}</td>
+                    @endif
                     <td>{{$brand->brand}}</td>
                     <td>{{$brand->model}}</td>
                     <!--td>{{$brand->weight}}</td-->

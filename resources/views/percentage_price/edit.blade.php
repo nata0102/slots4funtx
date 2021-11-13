@@ -33,18 +33,8 @@
 
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
-			                  <label for="">Machine <span style="color:red">*</span></label>
-			                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
-			                      <option value="" selected>-- Select Machine --</option>
-			                      @foreach($machines as $machine)
-			                        <option value="{{$machine->id}}"  {{ $percentage_price->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
-			                      @endforeach
-			                  </select>
-			                  @error('machine_id')
-			                      <span class="invalid-feedback" role="alert">
-			                          <strong>{{ $message }}</strong>
-			                      </span>
-			                  @enderror
+			                  <label disabled="disabled" for="">Machine <span style="color:red">*</span></label>
+			                  <input disabled="disabled" class="form-control" value="{{$machine->id}} - {{$machine->serial}}">
 			                </div>
 			            </div>
 
@@ -81,7 +71,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="" id="input">Percentage/Amount <span style="color:red">*</span></label>
-			                  <input type="text" class="form-control @error('amount') is-invalid @enderror input100" name="amount" value="{{$percentage_price->amount}}">
+			                  <input type="number" class="form-control @error('amount') is-invalid @enderror input100" name="amount" value="{{$percentage_price->amount}}">
 			                  @error('amount')
 			                      <span class="invalid-feedback" role="alert">
 			                          <strong>{{ $message }}</strong>
