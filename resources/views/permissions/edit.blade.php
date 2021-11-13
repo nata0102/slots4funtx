@@ -6,7 +6,7 @@
 	<div class="section__content section__content--p30">
   		<div class="container-fluid">
     		<div class="card" id="card-section">
-        	
+
         		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           		<form class="" action="{{action('PermissionController@update',$permission->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
@@ -17,7 +17,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Type Permit <span style="color:red">*</span></label>
-			                  <select class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id" required="">
+			                  <select id="permit_type" class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id" required="">
 			                    <option value=""></option>
 			                      @foreach($types as $type)
 			                        <option value="{{$type->id}}"  {{ $permission->lkp_type_permit_id == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
@@ -34,10 +34,10 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Machine <span style="color:red">*</span></label>
-			                  <select disabled="disabled" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" data-live-search="true">
-			                      <option value="" >-- Select Machine --</option>
+			                  <select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" required name="machine_id" data-live-search="true">
+			                      <option value="" selected >-- Select Machine --</option>
 			                      @foreach($machines as $machine)
-			                        <option value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
+			                        <option {{$r->lkp_type_permit_id}} value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
 			                      @endforeach
 			                  </select>
 			                  @error('machine_id')
@@ -51,7 +51,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Permit Number <span style="color:red">*</span></label>
-			                  <input type="number" maxlength="6" class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{$permission->permit_number}}">
+			                  <input type="text" id="long" pattern="[0-9]{6}" class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{$permission->permit_number}}">
 			                  @error('permit_number')
 			                      <span class="invalid-feedback" role="alert">
 			                          <strong>{{ $message }}</strong>
@@ -71,7 +71,7 @@
 			                  @enderror
 			                </div>
 			            </div>
-                 
+
 	            		</div>
 	            	 	<div class="col-12 col-sm-6 col-md-4">
 	                		<div class="form-group">

@@ -609,10 +609,53 @@
 		}
 	}
 
+	function permitSelect(value,change){//1chnage - 0no
+		if(value == '41'){//state
+			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
+			machines = document.getElementsByClassName(value);
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].document.removeAttribute('hidden');
+			}
+
+			machines = document.getElementsByClassName('42');
+			for (var i = 0; i < machines.length; i++) {
+				$(machines[i].document).attr('hidden','');
+			}
+		}if(value == '42'){//city
+			$(document.getElementById('long')).attr('pattern',"[0-9]{4}");
+			machines = document.getElementsByClassName(value);
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].document.removeAttribute('hidden');
+			}
+
+			machines = document.getElementsByClassName('41');
+			for (var i = 0; i < machines.length; i++) {
+				$(machines[i].document).attr('hidden','');
+			}
+		}if(value == ''){
+			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
+
+			machines = document.getElementsByClassName('42');
+			for (var i = 0; i < machines.length; i++) {
+				$(machines[i].document).attr('hidden','');
+			}
+
+			machines = document.getElementsByClassName('41');
+			for (var i = 0; i < machines.length; i++) {
+				$(machines[i].document).attr('hidden','');
+			}
+		}
+	}
+
 	$(document).ready(function() {
 		if(document.getElementById('type')){
 			type = document.getElementById('type').value;
 			selectBrand(type,1);
+		}
+
+		if(document.getElementById('permit_type')){
+			type = document.getElementById('permit_type').value;
+			permitSelect(type,0);
 		}
 
 		if(document.getElementById('machine_brand_type')){
@@ -652,6 +695,14 @@
 	if(document.getElementById('percentage_periodicity')){
 		document.getElementById('percentage_periodicity').addEventListener('change', function() {
 			selectPaymentType(this.value);
+		});
+	}
+
+	if(document.getElementById('permit_type')){
+		document.getElementById('permit_type').addEventListener('change', function() {
+			permitSelect(this.value,1);
+			$("#machine").val('default');
+			$("#machine").selectpicker("refresh");
 		});
 	}
 

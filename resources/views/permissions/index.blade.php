@@ -6,12 +6,12 @@
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="card" id="card-section">
-        
+
                 <div class="input-group mb-2">
-                    <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>   
+                    <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                     <a href="{{action('PermissionController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;margin-left: 250px;"><i class="fas fa-plus"></i>
-                    </a> 
-                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>              
+                    </a>
+                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>
                 </div>
 
                 <form method="GET" action="{{action('PermissionController@index')}}">
@@ -21,7 +21,7 @@
                               @foreach($types as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
-                        </select>  
+                        </select>
 
                         <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">
 
@@ -46,19 +46,19 @@
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->type}}</td>                            
+                            <td>{{$r->type}}</td>
                             <td>{{$r->game}}</td>
                             <td>{{$r->permit_number}}</td>
                             <td>{{$r->year_permit}}</td>
                             <td>
-                                <div class="row" style="margin-right: 0; margin-left: 0;">
-                                  <div class="col-4 active" style="padding: 0;">
-                                    <a href="{{action('PermissionController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
-                                  </div>
-                                  <div class="col-4 active" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('PermissionController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
-                                  </div>                                  
+                              <div class="row" style="margin-right: 0; margin-left: 0;">
+                                <div class="col-4 active" style="padding: 0;">
+                                  <a href="{{action('PermissionController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                 </div>
+                                <div class="col-4 active" style="padding: 0;">
+                                  <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('PermissionController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                                </div>
+                              </div>
                             </td>
                         </tr>
                         @endforeach

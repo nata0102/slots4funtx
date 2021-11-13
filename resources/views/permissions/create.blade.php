@@ -16,7 +16,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type Permit <span style="color:red">*</span></label>
-                  <select class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id" required="">
+                  <select id="permit_type" class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id" required="">
                     <option value=""></option>
                       @foreach($types as $type)
                         <option value="{{$type->id}}"  {{ old('lkp_type_permit_id') == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
@@ -33,10 +33,10 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
+                  <select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
                       <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
+                        <option class="{{$r->lkp_type_permit_id}}" value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
                       @endforeach
                   </select>
                   @error('machine_id')
@@ -50,7 +50,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Permit Number <span style="color:red">*</span></label>
-                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{old('permit_number')}}" required="">
+                  <input type="text" id="long" pattern="[0-9]{6}" class="form-control @error('permit_number') is-invalid @enderror input100" name="permit_number" value="{{old('permit_number')}}" required="">
                   @error('permit_number')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -70,7 +70,7 @@
                   @enderror
                 </div>
               </div>
-              
+
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>
