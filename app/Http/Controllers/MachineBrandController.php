@@ -23,7 +23,7 @@ class MachineBrandController extends Controller
           $brands = $this->searchWithFilters($request->all());
         break;
         default:
-          $brands = MachineBrand::where('active',1)->orderBy('id','desc')->take(20)->get();
+          $brands = MachineBrand::where('active',1)->orderBy('lkp_part_id')->orderBy('brand')->orderBy('model')->get();
         break;
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
@@ -40,7 +40,7 @@ class MachineBrandController extends Controller
       ->model($params['model'])
       ->brand($params['brand_type'])
       ->type($params['type'])
-      ->where('active',$params['active'])->orderBy('brand')->orderBy('model')->get();
+      ->where('active',$params['active'])->orderBy('lkp_part_id')->orderBy('brand')->orderBy('model')->get();
       return $res;
     }
 
