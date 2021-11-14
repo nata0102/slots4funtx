@@ -24,11 +24,11 @@ class PermissionController extends Controller
             break;
         }
         $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
-        return view('permissions.index',compact('res','types'));    
+        return view('permissions.index',compact('res','types'));
     }
 
     public function searchWithFilters($params){
-        $qry = "select * from( 
+        $qry = "select * from(
                 select *,
                 (select value from lookups where id = p.lkp_type_permit_id) as type,
                 (select concat(id,' - ', ifnull(serial,'')) from machines where
@@ -42,7 +42,7 @@ class PermissionController extends Controller
                 $qry .= " and tab1.game like '%".$params['machine']."%'";
             if($params['number'] != "")
                 $qry .= " and tab1.permit_number like '%".$params['number']."%'";
-        }            
+        }
         $qry .= " order by tab1.id desc;";
         return DB::select($qry);
     }
@@ -59,6 +59,8 @@ class PermissionController extends Controller
         $machines = DB::select($qry);*/
         $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id;";
         $machines = DB::select($qry);
+
+
         return view('permissions.create',compact('types','machines'));
     }
 
@@ -73,21 +75,21 @@ class PermissionController extends Controller
             'start_range' => 'required',
             'final_range' => 'required',
             'year_permit' => 'required'
-        ]);   
+        ]);
         if($request->final_range < $request->start_range){
             $transaction = array(
                 'message' => 'The final range must be greater than the initial range.',
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
             return back()->with($transaction)->withInput($request->all());
         }
         try{
-            $transaction = DB::transaction(function() use($request){                   
+            $transaction = DB::transaction(function() use($request){
                 $arr = $request->except('_token');
                 for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
                     Permission::create(['permit_number'=>$i,'lkp_type_permit_id'=>$arr['lkp_type_permit_id'],'year_permit'=>$arr['year_permit']]);
 
-                }  
+                }
                 $notification = array(
                   'message' => 'Successful!!',
                   'alert-type' => 'success'
@@ -97,10 +99,10 @@ class PermissionController extends Controller
 
             return redirect()->action('PermissionController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';        
+            $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
@@ -120,7 +122,7 @@ class PermissionController extends Controller
             'lkp_type_permit_id' => 'required',
             'permit_number' => 'required|unique:permissions,permit_number|nullable',
             'validate_permit_number' => 'required'
-        ]);   
+        ]);
         if($request->validate_permit_number != $request->permit_number){
             $transaction = array(
               'message' => 'The permission numbers do not match.',
@@ -129,9 +131,9 @@ class PermissionController extends Controller
             return back()->with($transaction)->withInput($request->all());
         }
         try{
-            $transaction = DB::transaction(function() use($request){                   
-                $arr = $request->except('_token','validate_permit_number');  
-                $arr['year_permit'] = date('Y');       
+            $transaction = DB::transaction(function() use($request){
+                $arr = $request->except('_token','validate_permit_number');
+                $arr['year_permit'] = date('Y');
                 $permission = Permission::create($arr);
                 $this->insertMachineHistory($permission->machine_id);
                 if ($permission) {
@@ -152,12 +154,12 @@ class PermissionController extends Controller
         }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
-            $pos = strpos($message, 'permissions.permit_number');            
-            if ($pos != false) 
-                $cad = "The Permit Number must be unique.";           
+            $pos = strpos($message, 'permissions.permit_number');
+            if ($pos != false)
+                $cad = "The Permit Number must be unique.";
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
@@ -209,17 +211,17 @@ class PermissionController extends Controller
             'lkp_type_permit_id' => 'required',
             'permit_number' => 'required|nullable|unique:permissions,permit_number,'.$id,
             'validate_permit_number' => 'required'
-        ]); 
+        ]);
         if($request->validate_permit_number != $request->permit_number){
             $transaction = array(
               'message' => 'The permission numbers do not match.',
               'alert-type' => 'error'
             );
             return back()->with($transaction)->withInput($request->all());
-        } 
+        }
         try{
-            $transaction = DB::transaction(function() use($request, $id){                  
-                $arr = $request->except('_token','_method','validate_permit_number');               
+            $transaction = DB::transaction(function() use($request, $id){
+                $arr = $request->except('_token','_method','validate_permit_number');
                 $permission = Permission::findOrFail($id);
                 $permission->update($arr);
                 $permission->save();
@@ -237,18 +239,18 @@ class PermissionController extends Controller
                     );
                 }
                 return $notification;
-            }); 
+            });
 
             return redirect()->action('PermissionController@index')->with($transaction);
         }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
-            $pos = strpos($message, 'permission.permit_number');            
-            if ($pos != false) 
-                $cad = "The Permit Number must be unique.";          
+            $pos = strpos($message, 'permission.permit_number');
+            if ($pos != false)
+                $cad = "The Permit Number must be unique.";
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
@@ -264,7 +266,7 @@ class PermissionController extends Controller
     public function destroy($id)
     {
          $transaction = DB::transaction(function() use($id){
-            $permission = Permission::findOrFail($id);                          
+            $permission = Permission::findOrFail($id);
             Permission::destroy($id);
             if($permission->machine_id != null)
                 $this->insertMachineHistory($permission->machine_id);

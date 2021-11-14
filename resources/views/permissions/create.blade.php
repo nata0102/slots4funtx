@@ -2,6 +2,7 @@
 
 @section('content')
 
+
 <div class="main-content">
   <div class="section__content section__content--p30">
     <div class="container-fluid">
@@ -36,7 +37,7 @@
                   <select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
                       <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
-                        <option class="{{$machine->lkp_type_permit_id}}" value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
+                        <option class="" value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
                       @endforeach
                   </select>
                   @error('machine_id')
