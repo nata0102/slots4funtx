@@ -17,14 +17,17 @@ class PermissionController extends Controller
      */
     public function index(Request $request)
     {
-        $res = [];
-        switch ($request->option) {
-            default:
-                $res = $this->searchWithFilters($request->all());
-            break;
-        }
-        $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
-        return view('permissions.index',compact('res','types'));
+
+      $machines = Machine::select('machines.*','permissions.*')->join('permissions','machines.id','permissions.machine_id')->get();
+
+      $res = [];
+      switch ($request->option) {
+          default:
+              $res = $this->searchWithFilters($request->all());
+          break;
+      }
+      $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
+      return view('permissions.index',compact('res','types','machines'));
     }
 
     public function searchWithFilters($params){
@@ -57,8 +60,10 @@ class PermissionController extends Controller
         $types =  DB::table('lookups')->where('type','type_permit')->get();
         /*$qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
         $machines = DB::select($qry);*/
-        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id;";
+        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id and m.id not in (select machine_id from permissions);";
         $machines = DB::select($qry);
+
+        $permissions = Permission::all();
 
 
         return view('permissions.create',compact('types','machines'));
@@ -88,7 +93,6 @@ class PermissionController extends Controller
                 $arr = $request->except('_token');
                 for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
                     Permission::create(['permit_number'=>$i,'lkp_type_permit_id'=>$arr['lkp_type_permit_id'],'year_permit'=>$arr['year_permit']]);
-
                 }
                 $notification = array(
                   'message' => 'Successful!!',

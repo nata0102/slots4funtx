@@ -16,14 +16,19 @@
 
                 <form method="GET" action="{{action('PermissionController@index')}}">
                     <div class="input-group mb-5">
-                        <select class="form-control" name="type">
+                        <select id="permit_type_index" class="form-control" name="type">
                             <option value="">-- Select Type --</option>
                               @foreach($types as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
-                        <input class="form-control" name="machine" autofocus placeholder="Machine" value="{{ isset($_GET['machine']) ? $_GET['machine'] : '' }}">
+                        <select class="form-control" id="machine_index" name="machine">
+                            <option value="" >-- Machine --</option>
+                            @foreach($machines as $machine)
+                                <option class="s-{{$machine->lkp_type_permit_id}}" value="{{$machine->machine_id}} - {{$machine->serial}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->machine_id}} - {{$machine->serial}}</option>
+                            @endforeach
+                        </select>
 
                         <input class="form-control" name="number" autofocus placeholder="Permit Number" value="{{ isset($_GET['number']) ? $_GET['number'] : '' }}">
 

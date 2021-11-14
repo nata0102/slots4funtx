@@ -613,38 +613,47 @@
 		if(value == '41'){//state
 			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
 			$(document.getElementById('long')).attr('maxlength',"6");
-			machines = document.getElementsByClassName(value);
-			for (var i = 0; i < machines.length; i++) {
-				machines[i].document.removeAttribute('hidden');
-			}
 
-			machines = document.getElementsByClassName('42');
-			for (var i = 0; i < machines.length; i++) {
-				$(machines[i].document).attr('hidden','');
-			}
 		}if(value == '42'){//city
 			$(document.getElementById('long')).attr('pattern',"[0-9]{4}");
 			$(document.getElementById('long')).attr('maxlength',"4");
-			machines = document.getElementsByClassName(value);
-			for (var i = 0; i < machines.length; i++) {
-				machines[i].document.removeAttribute('hidden');
-			}
 
-			machines = document.getElementsByClassName('41');
-			for (var i = 0; i < machines.length; i++) {
-				$(machines[i].document).attr('hidden','');
-			}
 		}if(value == ''){
 			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
 			$(document.getElementById('long')).attr('maxlength',"6");
-			machines = document.getElementsByClassName('42');
+
+		}
+	}
+
+	function permitSelectIndex(value,change){//1chnage - 0no
+		console.log(value);
+		if(value == '41'){//state
+			machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
-				$(machines[i].document).attr('hidden','');
+				machines[i].removeAttribute('hidden');
+			}
+			machines = document.getElementsByClassName('s-42');
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].setAttribute('hidden','');
+			}
+		}if(value == '42'){//city
+			machines = document.getElementsByClassName('s-'+value);
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].removeAttribute('hidden');
+			}
+			machines = document.getElementsByClassName('s-41');
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].setAttribute('hidden','');
+			}
+		}if(value == ''){
+			machines = document.getElementsByClassName('s-42');
+			for (var i = 0; i < machines.length; i++) {
+				machines[i].removeAttribute('hidden');
 			}
 
-			machines = document.getElementsByClassName('41');
+			machines = document.getElementsByClassName('s-41');
 			for (var i = 0; i < machines.length; i++) {
-				$(machines[i].document).attr('hidden','');
+				machines[i].removeAttribute('hidden');
 			}
 		}
 	}
@@ -658,6 +667,11 @@
 		if(document.getElementById('permit_type')){
 			type = document.getElementById('permit_type').value;
 			permitSelect(type,0);
+		}
+
+		if(document.getElementById('permit_type_index')){
+			type = document.getElementById('permit_type_index').value;
+			permitSelectIndex(type,0);
 		}
 
 		if(document.getElementById('machine_brand_type')){
@@ -707,11 +721,13 @@
 			$("#machine").selectpicker("refresh");
 		});
 	}
+	if(document.getElementById('permit_type_index')){
+		document.getElementById('permit_type_index').addEventListener('change', function() {
+			permitSelectIndex(this.value,1);
+		});
+	}
 
 	//////////////////////
-
-
-
 	</script>
 
 	<script>
