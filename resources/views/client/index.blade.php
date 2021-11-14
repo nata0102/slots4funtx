@@ -33,7 +33,7 @@
                   <th style="width:200px; text-align: center;">Name</th>
                   <th style="width:175px; text-align: center;">Email</th>
                   <th style="width:80px; text-align: center;">Phone</th>
-                  <th style="width:80px; text-align: center;">Dob</th>
+                  <th style="width:80px; text-align: center;">Date of Birthday</th>
                 	<th style="width:125px; text-align: center;"></th>
                 </tr>
               </thead>

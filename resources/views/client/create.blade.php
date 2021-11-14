@@ -50,8 +50,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Dob</label>
-                  <input type="text" class="form-control @error('dob') is-invalid @enderror input100" name="dob" value="{{old('dob')}}">
+                  <label for="">Date of Birthday</label>
+                  <input type="date" class="form-control @error('dob') is-invalid @enderror input100" name="dob" value="{{old('dob')}}">
                   @error('dob')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

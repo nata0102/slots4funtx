@@ -49,7 +49,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">{{ __('DOB') }}</label>
+                  <label for="">{{ __('Date of Birthday') }}</label>
                   <input type="text" class="form-control @error('dob') is-invalid @enderror input100" name="dob" value="{{$client->dob}}" disabled>
                   @error('dob')
                       <span class="invalid-feedback" role="alert">
