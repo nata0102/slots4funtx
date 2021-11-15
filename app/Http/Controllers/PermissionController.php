@@ -18,7 +18,7 @@ class PermissionController extends Controller
     public function index(Request $request)
     {
 
-      $machines = Machine::select('machines.*','permissions.*')->join('permissions','machines.id','permissions.machine_id')->get();
+      $machines = Machine::select('machines.*','permissions.*')->join('permissions','machines.id','permissions.machine_id')->where('active',1)->get();
 
       $res = [];
       switch ($request->option) {
@@ -60,11 +60,11 @@ class PermissionController extends Controller
         $types =  DB::table('lookups')->where('type','type_permit')->get();
         /*$qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
         $machines = DB::select($qry);*/
-        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id and m.id not in (select machine_id from permissions);";
+        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id ";
+
         $machines = DB::select($qry);
 
-        $permissions = Permission::all();
-
+        $machines = Machine::with('permission','owner')->where('active',1)->get();
 
         return view('permissions.create',compact('types','machines'));
     }
@@ -197,7 +197,8 @@ class PermissionController extends Controller
             $machine = Machine::findOrFail($permission->machine_id);
         else{
           $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id=l.id and m.id not in (select machine_id from permissions);";
-          $machines = DB::select($qry);
+          $machines = DB::select($qry);          
+          $machines = Machine::with('permission','owner')->where('active',1)->get();
         }
         return view('permissions.edit',compact('types','machines','permission','machine'));
     }

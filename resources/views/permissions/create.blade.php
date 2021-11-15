@@ -37,7 +37,7 @@
                   <select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
                       <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->value}} - {{$machine->serial}}</option>
+                        <option class="{{ $machine->permission ? 's-'.$machine->permission->lkp_type_permit_id : '' }}" value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner->value}} - {{$machine->serial}}</option>
                       @endforeach
                   </select>
                   @error('machine_id')
