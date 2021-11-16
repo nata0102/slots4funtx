@@ -45,6 +45,17 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
+            <a href="{{action('GameCatalogController@index')}}">
+              <div class="text-center div-card">
+                <div class="">
+                  <i class="fas fa-th-list" style="font-size: 40px;"></i>
+                  <h4>Games Catalog</h4>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
             <a href="{{action('PermissionController@index')}}">
               <div class="text-center div-card">
                 <div class="">

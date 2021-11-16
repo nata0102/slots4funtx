@@ -305,7 +305,7 @@ class MachineController extends Controller
 //return response()->json(422);
             });
             return $transaction;
-        }catch(\Exception $e){return $e->getMessage();
+        }catch(\Exception $e){
             return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
         }
     }

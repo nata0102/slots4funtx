@@ -40,4 +40,5 @@ Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("percentage_price",'PercentagePriceController');
   Route::resource("clients","ClientController");
   Route::resource("address","AddressController");
+  Route::resource("game_catalog","GameCatalogController");
 });

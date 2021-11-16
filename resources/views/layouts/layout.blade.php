@@ -154,6 +154,9 @@
 														<a href="{{action('MachineBrandController@index')}}">Machine/Part Brands</a>
 												</li>
 												<li>
+														<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
+												</li>
+												<li>
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 												</li>
 												<li>
@@ -194,6 +197,9 @@
 											<li>
 													<a href="{{action('MachineBrandController@index')}}">Machine/Part Brands</a>
 											</li>
+											<li>
+														<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
+												</li>
 											<li>
 												<a href="{{action('PermissionController@index')}}">Permissions</a>
 											</li>

@@ -12,6 +12,7 @@ use App\Models\PartHistory;
 use App\Models\Part;
 use App\Models\Permission;
 use App\Models\Machine;
+use Auth;
 
 
 class Controller extends BaseController
@@ -77,7 +78,8 @@ class Controller extends BaseController
                 'lkp_status_id'=>$machine->lkp_status_id,'machine_sold_id' => $machine->machine_sold_id,
                 'active'=>$machine->active,'owner_type'=>$machine->owner->value,'created_at'=>date('Y-m-d H:i:s'), 'type_price' => $machine->type_price, 'type_price_amount' => $machine->type_price_amount, 'brand_id' => $machine->machine_brand_id, 'payday' => $machine->payday, 'periodicity' => $machine->periodicity,
                 'p_state_number'=>$machine->p_state_number, 'p_state_year'=>$machine->p_state_year,
-                'p_city_number'=>$machine->p_city_number,'p_city_year'=> $machine->p_city_year];
+                'p_city_number'=>$machine->p_city_number,'p_city_year'=> $machine->p_city_year,
+                'user_id' => Auth::id()];
             MachineHistory::create($arr_history);
         }
     }
@@ -122,6 +124,7 @@ class Controller extends BaseController
         $history->machine_id = $part->machine_id;
         $history->active = $part->active;
         $history->created_at = date('Y-m-d H:i:s');
+        $history->user_id = Auth::id();
         $history->save();
       }
     }

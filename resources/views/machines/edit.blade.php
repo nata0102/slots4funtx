@@ -12,8 +12,7 @@
           	<form class="" action="{{action('MachineController@update',$machine->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf
             	<input type="hidden" name="_method" value="PUT">
-            	<div class="row">
-            		
+            	<div class="row">            		
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Game Title <span style="color:red">*</span></label>
