@@ -622,11 +622,11 @@
 
 			machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
-				machines[i].removeAttribute('hidden');
+				machines[i].setAttribute('hidden','');
 			}
 			machines = document.getElementsByClassName('s-42');
 			for (var i = 0; i < machines.length; i++) {
-				machines[i].setAttribute('hidden','');
+				machines[i].removeAttribute('hidden');
 			}
 
 		}if(value == '42'){//city
@@ -635,11 +635,11 @@
 
 			machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
-				machines[i].removeAttribute('hidden');
+				machines[i].setAttribute('hidden','');
 			}
 			machines = document.getElementsByClassName('s-41');
 			for (var i = 0; i < machines.length; i++) {
-				machines[i].setAttribute('hidden','');
+				machines[i].removeAttribute('hidden');
 			}
 
 		}if(value == ''){
