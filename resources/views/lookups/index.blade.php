@@ -6,9 +6,9 @@
         <div class="section__content section__content--p30">
             <div class="container-fluid">
                 <div class="card" id="card-section">
-                
+
                 <div class="input-group mb-2">
-                    <a href="{{action('LookupController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>                    
+                    <a href="{{action('LookupController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 </div>
 
                 <form method="GET" action="{{action('LookupController@index')}}">
@@ -21,7 +21,7 @@
                             <option value="" >-- Select Type --</option>
                             @foreach($types as $tp)
                                 <option value="{{$tp->key_value}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->key_value ?   'selected' : '' : ''}}>{{$tp->value}}</option>
-                            @endforeach                              
+                            @endforeach
                         </select>
 
                         <input class="form-control" name="value" autofocus placeholder="Value" value="{{ isset($_GET['value']) ? $_GET['value'] : '' }}">
@@ -43,12 +43,12 @@
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->p_value}}</td>                            
+                            <td>{{$r->p_value}}</td>
                             <td>{{$r->value}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                     <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4" style="padding: 0;">
-                                        <button data-type="{{$r->p_key_value}}" data-value="{{$r->value}}" data-href="{{action('LookupController@update',$r->id)}}" class="btn btn-link lookup_edit" style="width:40px; margin: 0;padding: 0;" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-edit"></i></button>
+                                        <button data-type="{{$r->p_key_value}}" data-value="{{$r->value}}" data-city="{{$r->lkp_city_id}}" data-href="{{action('LookupController@update',$r->id)}}" class="btn btn-link lookup_edit " style="width:40px; margin: 0;padding: 0;" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-edit"></i></button>
                                     </div>
 
                                     <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
@@ -86,14 +86,25 @@
         <input type="hidden" name="p_key_value" id="p_key_value" value="">
         @csrf
 
-      <div class="modal-body">
-        <input id="lookup-value" class="form-control" type="text" name="value" placeholder="Value">              
+      <div class="modal-body" >
+        <div class="form-group" id="city-div" hidden>
+          <label for="">City <span style="color:red">*</span></label>
+          <select class="form-control @error('type') is-invalid @enderror input100" name="lkp_city_id" id="city-select">
+            <option value="" selected disabled></option>
+              @foreach($cities as $tp)
+                <option value="{{$tp->id}}" id="{{$tp->id}}">{{$tp->value}}</option>
+              @endforeach
+          </select>
+        </div>
+        <div class="form-group">
+          <input id="lookup-value" class="form-control" type="text" name="value" placeholder="Value">
+        </div>
      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Save changes</button>
       </div>
-      </form> 
+      </form>
     </div>
   </div>
 </div>

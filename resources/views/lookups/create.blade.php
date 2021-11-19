@@ -16,13 +16,30 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select class="form-control @error('type') is-invalid @enderror input100" name="type" required="">
+                  <select id="type-lookup" class="form-control @error('type') is-invalid @enderror input100" name="type" required="">
                     <option value=""></option>
                       @foreach($types as $tp)
                         <option value="{{$tp->key_value}}"  {{ old('type') == $tp->key_value ? 'selected' : '' }}>{{$tp->value}}</option>
                       @endforeach
                   </select>
                    @error('type')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4" hidden id="city-form">
+                <div class="form-group">
+                  <label for="">City <span style="color:red">*</span></label>
+                  <select class="form-control @error('type') is-invalid @enderror input100" name="lkp_city_id" required="" id="city-select">
+                    <option value="" selected disabled></option>
+                      @foreach($cities as $tp)
+                        <option value="{{$tp->id}}"  {{ old('lkp_city_id') == $tp->id ? 'selected' : '' }}>{{$tp->value}}</option>
+                      @endforeach
+                  </select>
+                   @error('lkp_city_id')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>

@@ -447,10 +447,30 @@
 			var url = $(this).attr("data-href");
 			var value = $(this).attr("data-value");
 			var type = $(this).attr("data-type");
+			var city = $(this).attr("data-city");
+			console.log(city);
 
 			$(document.getElementById("update-lookup")).attr("action",url);
 			$(document.getElementById("lookup-value")).attr("value",value);
 			$(document.getElementById("p_key_value")).attr("value",type);
+
+			$(document.getElementById("city-div")).attr("hidden",'');
+			document.getElementById("city-select").removeAttribute("name");
+			document.getElementById("city-select").removeAttribute("required");
+
+
+
+
+
+			if(city){
+				document.getElementById("city-div").removeAttribute("hidden");
+				$(document.getElementById(city)).attr("selected",'');
+				$(document.getElementById("city-select")).attr("name",'lkp_city_id');
+				$(document.getElementById("city-select")).attr("required",'');
+
+
+			}
+
 		});
 
 		$("body").on("click",".input_img",function(){
@@ -593,6 +613,19 @@
 		}
 	}
 
+/////////city
+	function selectCityLookup(value){
+		if(value == 'counties'){
+			document.getElementById('city-form').removeAttribute('hidden');
+			$(document.getElementById('city-select')).attr('name',"lkp_city_id");
+			$(document.getElementById('city-select')).attr('required',"");
+		}else{
+			$(document.getElementById('city-form')).attr('hidden',"");
+			document.getElementById('city-select').removeAttribute('name');
+			document.getElementById('city-select').removeAttribute('required');
+		}
+	}
+
 	function selectMachineBrand(value){
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
@@ -693,6 +726,11 @@
 	}
 
 	$(document).ready(function() {
+		if(document.getElementById('type-lookup')){
+			type = document.getElementById('type-lookup').value;
+			selectCityLookup(type);
+		}
+
 		if(document.getElementById('type')){
 			type = document.getElementById('type').value;
 			selectBrand(type,1);
@@ -761,7 +799,15 @@
 		});
 	}
 
+	if(document.getElementById('type-lookup')){
+		document.getElementById('type-lookup').addEventListener('change', function() {
+			selectCityLookup(this.value);
+		});
+	}
+
 	//////////////////////
+
+
 	</script>
 
 	<script>
