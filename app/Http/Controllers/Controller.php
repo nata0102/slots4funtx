@@ -55,7 +55,7 @@ class Controller extends BaseController
         if($city_permit != null){
             $machine->p_city_number = $city_permit->permit_number;
             $machine->p_city_year = $city_permit->year_permit;
-        }      
+        }
         $state_permit = Permission::where('machine_id',$id)->where('lkp_type_permit_id',41)->first();
         if($state_permit != null){
             $machine->p_state_number = $state_permit->permit_number;
@@ -86,7 +86,7 @@ class Controller extends BaseController
 
     public function insertPartHistory($id){print_r($id);
       $part = Part::where('id',$id)->with('machine')->with('status')->first();
-      $history = PartHistory::where('part_id',$id)->with('machine')->with('status')->orderBy('id','desc')->first();
+      $history = PartHistory::where('part_id',$id)->with('machine')->with('status')->with('brand_id')->orderBy('id','desc')->first();
       $status = false;
       $machine = false;
       $active = false;
@@ -120,6 +120,7 @@ class Controller extends BaseController
       if($new){
         $history = new PartHistory;
         $history->part_id = $part->id;
+        $history->brand_id = $part->brand_id;
         $history->lkp_status_id = $part->lkp_status_id;
         $history->machine_id = $part->machine_id;
         $history->active = $part->active;
