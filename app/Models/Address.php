@@ -16,4 +16,12 @@ class Address extends Model
     public function cliente(){
     	return $this->belongsTo('App\Models\Client');
     }
+
+    public function city(){
+      return $this->hasOne('App\Models\Lookup','id','lkp_city_id');
+    }
+
+    public function county(){
+      return $this->hasOne('App\Models\Lookup','id','lkp_county_id');
+    }
 }

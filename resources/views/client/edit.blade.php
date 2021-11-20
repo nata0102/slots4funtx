@@ -116,7 +116,7 @@
                         <th style="width:200px; text-align: center;">{{ __('Name Address') }}</th>
                         <th style="width:175px; text-align: center;">{{ __('Business Name') }}</th>
                         <th style="width:200px; text-align: center;">{{ __('City') }}</th>
-                        <th style="width:80px; text-align: center;">{{ __('Country') }}</th>
+                        <th style="width:80px; text-align: center;">{{ __('County') }}</th>
                         <th style="width:125px; text-align: center;"></th>
                       </tr>
                     </thead>
@@ -126,13 +126,21 @@
                           <tr>
                             <td>{{$address->name_address}}</td>
                             <td>{{$address->business_name}}</td>
-                            <td>{{$address->city}}</td>
-                            <td>{{$address->country}}</td>
+                            @if($address->city)                            
+                              <td>{{ $address->city->value }}</td>
+                            @else
+                              <td>-</td>
+                            @endif
+                            @if($address->county)
+                              <td>{{ $address->county->value }}</td>
+                            @else
+                              <td>-</td>
+                            @endif
                             <td>
                               <div class="row" style="margin-right: 0; margin-left: 0;">
 
                                 <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                  <button data-name_address="{{$address->name_address}}" data-business_name="{{$address->business_name}}" data-city="{{$address->city}}" data-country="{{$address->country}}" data-action="{{action('AddressController@update',$address->id)}}" class="btn btn-link editAddress" style="width:40px; margin: 0; padding-top: 0;" data-toggle="modal" data-target="#modalEdit"><i class="far fa-edit"></i></button>
+                                  <button data-name_address="{{$address->name_address}}" data-business_name="{{$address->business_name}}" data-city="{{$address->lkp_city_id}}" data-country="{{$address->lkp_county_id}}" data-action="{{action('AddressController@update',$address->id)}}" class="btn btn-link editAddress" style="width:40px; margin: 0; padding-top: 0;" data-toggle="modal" data-target="#modalEdit"><i class="far fa-edit"></i></button>
                                 </div>
 
                                 <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
@@ -197,22 +205,22 @@
 
               <div class="form-group">
                 <label for="">{{ __('City') }}</label>
-                <input type="text" class="form-control @error('city') is-invalid @enderror input100" name="city" value="">
-                @error('city')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
+                <select class="form-control @error('lkp_city_id') is-invalid @enderror input100" name="lkp_city_id" id="client-city">
+                  <option value="" selected disabled></option>
+                    @foreach($cities as $tp)
+                      <option value="{{$tp->id}}">{{$tp->value}}</option>
+                    @endforeach
+                </select>
               </div>
 
-              <div class="form-group">
-                <label for="">{{ __('Country') }}</label>
-                <input type="text" class="form-control @error('country') is-invalid @enderror input100" name="country" value="">
-                @error('country')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
+              <div class="form-group" hidden id="client-county-1">
+                <label for="">{{ __('County') }}</label>
+                <select class="form-control @error('lkp_county_id') is-invalid @enderror input100" name="lkp_county_id">
+                  <option value="" selected disabled></option>
+                    @foreach($counties as $tp)
+                      <option value="{{$tp->id}}" class="city-{{$tp->lkp_city_id}} counties" hidden>{{$tp->value}}</option>
+                    @endforeach
+                </select>
               </div>
             </div>
 
@@ -246,7 +254,7 @@
             </div>
             <div class="modal-body">
 
-              <div class="form-group">
+              <div class="form-group" >
                 <label for="">{{ __('Address') }} <span style="color:red">*</span></label>
                 <input type="text" class="form-control @error('name_address') is-invalid @enderror input100" name="name_address" value="" id="name_address" required>
                 @error('name_address')
@@ -268,23 +276,24 @@
 
               <div class="form-group">
                 <label for="">{{ __('City') }}</label>
-                <input type="text" class="form-control @error('city') is-invalid @enderror input100" name="city" value="" id="city">
-                @error('city')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
+                <select class="form-control @error('lkp_city_id') is-invalid @enderror input100" name="lkp_city_id" id="client-city2">
+                  <option value="" selected disabled></option>
+                    @foreach($cities as $tp)
+                      <option value="{{$tp->id}}" id="city-{{$tp->id}}">{{$tp->value}}</option>
+                    @endforeach
+                </select>
               </div>
 
-              <div class="form-group">
-                <label for="">{{ __('Country') }}</label>
-                <input type="text" class="form-control @error('country') is-invalid @enderror input100" name="country" value="" id="country">
-                @error('country')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
+              <div class="form-group" id="client-county-2">
+                <label for="">County</label>
+                <select class="form-control @error('lkp_county_id') is-invalid @enderror input100" name="lkp_county_id" id="client-county2">
+                  <option value="" selected disabled></option>
+                    @foreach($counties as $tp)
+                      <option value="{{$tp->id}}" class="city-{{$tp->lkp_city_id}} counties" id="county-{{$tp->id}}">{{$tp->value}}</option>
+                    @endforeach
+                </select>
               </div>
+
             </div>
 
             <div class="modal-footer">

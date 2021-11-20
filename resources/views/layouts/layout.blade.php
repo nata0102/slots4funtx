@@ -559,15 +559,22 @@
 
 	<script>
 		$('body').on('click','.editAddress',function(event){
+			document.getElementById('updateAddress').reset();
+
 			var action = $(this).attr('data-action');
 			var name_address = $(this).attr('data-name_address');
 			var business_name = $(this).attr('data-business_name');
 			var city = $(this).attr('data-city');
-			var country = $(this).attr('data-country');
+			var county = $(this).attr('data-country');
 			$(document.getElementById('name_address')).attr('value',name_address);
 			$(document.getElementById('business_name')).attr('value',business_name);
-			$(document.getElementById('city')).attr('value',city);
-			$(document.getElementById('country')).attr('value',country);
+
+			//var mySelect = document.getElementById("client-city2").selectedValue = city;
+			if(city)
+				$('#client-city2 option[value='+city+']').prop('selected', true);
+			if(county)
+				$('#client-county2 option[value='+county+']').prop('selected', true);
+
 			$(document.getElementById('updateAddress')).attr('action',action);
 		});
 	</script>
@@ -614,6 +621,29 @@
 	}
 
 /////////city
+	function selectCityClient(value,div){
+		console.log(value,div);
+		$("#client-county-"+div+' option').prop('selected', function() {
+        return this.defaultSelected;
+    });
+
+		if(value){
+			document.getElementById("client-county-"+div).removeAttribute('hidden');
+
+			county = document.getElementsByClassName('counties');
+			for (var i = 0; i < county.length; i++) {
+				county[i].setAttribute('hidden','');
+			}
+
+			county = document.getElementsByClassName('city-'+value);
+			for (var i = 0; i < county.length; i++) {
+				county[i].removeAttribute('hidden');
+			}
+		}
+	}
+
+	///////////////
+
 	function selectCityLookup(value){
 		if(value == 'counties'){
 			document.getElementById('city-form').removeAttribute('hidden');
@@ -693,7 +723,7 @@
 	}
 
 	function permitSelectIndex(value,change){//1chnage - 0no
-		console.log(value);
+	//	console.log(value);
 		if(value == '41'){//state
 			machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
@@ -802,6 +832,18 @@
 	if(document.getElementById('type-lookup')){
 		document.getElementById('type-lookup').addEventListener('change', function() {
 			selectCityLookup(this.value);
+		});
+	}
+
+	if(document.getElementById('client-city')){
+		document.getElementById('client-city').addEventListener('change', function() {
+			selectCityClient(this.value,1);
+		});
+	}
+
+	if(document.getElementById('client-city2')){
+		document.getElementById('client-city2').addEventListener('change', function() {
+			selectCityClient(this.value,2);
 		});
 	}
 

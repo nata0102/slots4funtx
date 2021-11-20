@@ -123,8 +123,12 @@ class ClientController extends Controller
     public function edit($id)
     {
       $client = Client::find($id);
-      $addresses = Address::where('client_id',$id)->where('active',1)->get();
-      return view('client.edit',compact('client','addresses'));
+      $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
+      $counties =  DB::table('lookups')->where('type','counties')->where('band_add',0)->orderBy('value')->get();
+      $addresses = Address::where('client_id',$id)->where('active',1)->with('county','city')->get();
+
+
+      return view('client.edit',compact('client','addresses','cities','counties'));
     }
 
     /**

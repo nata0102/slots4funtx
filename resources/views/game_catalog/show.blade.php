@@ -37,8 +37,8 @@
                   <textarea disabled class="form-control" name="description" value="{{$res->description}}"></textarea>
                 </div>
               </div>
-              
-              <div>  
+
+              <div>
                 <h4 align="center">Initial Brands</h4>          
                 <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                   <table class="table" style="width: 100%; table-layout: fixed;">
@@ -48,7 +48,7 @@
                         <th style="width:175px; text-align: left;">Model</th>
                       </tr>
                     </thead>
-                    <tbody>  
+                    <tbody>
                       @foreach($brands as $brand)
                       <tr>
                           <td>{{$brand->brand->brand}}</td>
@@ -61,7 +61,7 @@
               </div>
 
              <div id="table">
-              <h4 align="center">Games</h4> 
+              <h4 align="center">Games</h4>
               <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                 <table id="table_games" class="table" style="width: 100%; table-layout: fixed;">
                   <thead>
@@ -70,7 +70,7 @@
                       <th style="width:175px; text-align: left;">License</th>
                     </tr>
                   </thead>
-                  <tbody>  
+                  <tbody>
                   </tbody>
                 </table>
               </div>
@@ -89,7 +89,7 @@
   <script>
     function insertRow(val1, val2){
       var table = document.getElementById("table_games");
-      var rowCount = table.rows.length;  
+      var rowCount = table.rows.length;
       var row = table.insertRow(rowCount);
       row.setAttribute("id", "td_"+rowCount);
       var cell1 = row.insertCell(0);
@@ -106,7 +106,7 @@
           var arr2 = arr1[i].split('|$');
           insertRow(arr2[0], arr2[1]);
         }
-      }  
+      }
     };
   </script>
   @stop

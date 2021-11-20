@@ -41,8 +41,8 @@ class AddressController extends Controller
           $address = new Address;
           $address->name_address = $request->name_address;
           $address->business_name = $request->business_name;
-          $address->city = $request->city;
-          $address->country = $request->country;
+          $address->lkp_city_id = $request->lkp_city_id;
+          $address->lkp_county_id = $request->lkp_county_id;
           $address->client_id = $request->client_id;
           $address->active = 1;
           $created = $address->save();
@@ -98,8 +98,8 @@ class AddressController extends Controller
           $address = Address::find($id);
           $address->name_address = $request->name_address;
           $address->business_name = $request->business_name;
-          $address->city = $request->city;
-          $address->country = $request->country;
+          $address->lkp_city_id = $request->lkp_city_id;
+          $address->lkp_county_id = $request->lkp_county_id;
           $created = $address->save();
           if ($created) {
             return response()->json(200);
