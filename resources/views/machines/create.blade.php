@@ -12,22 +12,6 @@
           <form class="" action="{{action('MachineController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Game Title <span style="color:red">*</span></label>
-                  <select class="form-control @error('lkp_game_id') is-invalid @enderror input100" name="lkp_game_id" required="">
-                    <option value=""></option>
-                      @foreach($games as $game)
-                        <option value="{{$game->id}}"  {{ old('lkp_game_id') == $game->id ? 'selected' : '' }}>{{$game->value}}</option>
-                      @endforeach
-                  </select>
-                  @error('lkp_owner_id')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-              </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -48,9 +32,38 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
+                  <label for="">Software <span style="color:red">*</span></label>
+                  <select class="form-control @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" required="">
+                    <option value=""></option>
+                      @foreach($games as $game)
+                        <option value="{{$game->id}}"  {{ old('game_catalog_id') == $game->id ? 'selected' : '' }}>{{$game->name}}</option>
+                      @endforeach
+                  </select>
+                  @error('game_catalog_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>    
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Description Games</label>
+                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="brands_id[]">
+                  @foreach($brands as $brand)
+                    <option  {{ (collect(old('brands_id'))->contains($brand->id)) ? 'selected':'' }}  value="{{$brand->id}}">{{$brand->id}}</option>
+                  @endforeach
+                  </select>
+                </div>
+              </div>         
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
                   <label for="">Brand</label>
                   <select class="form-control @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id">
                     <option value=""></option>
+                    <option value="0">Other</option>
                       @foreach($brands as $brand)
                         <option value="{{$brand->id}}" {{ old('machine_brand_id') == $brand->id ? 'selected' : '' }}>{{$brand->brand}} {{$brand->model}} {{$brand->weight}}</option>
                       @endforeach
@@ -105,6 +118,12 @@
                 </div>
               </div>
 
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Description</label>
+                  <textarea class="form-control" name="description" value="{{old('description')}}"></textarea>
+                </div>
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">

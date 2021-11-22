@@ -90,11 +90,11 @@ class MachineController extends Controller
      */
     public function create()
     {
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
+        //FALTA EN GAMES TRAER LOS QUE NO TIENEN ALMACEN Y DE LOS QUE SI HAY ALMACEN
+        $games =   DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
-        $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')
-                    ->where('addresses.active',1)->where('clients.active',1)
+        $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
