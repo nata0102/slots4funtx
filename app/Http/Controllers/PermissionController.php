@@ -213,7 +213,7 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'lkp_type_permit_id' => 'required',
+            //'lkp_type_permit_id' => 'required',
             'permit_number' => 'required|nullable|unique:permissions,permit_number,'.$id,
             'validate_permit_number' => 'required'
         ]);
