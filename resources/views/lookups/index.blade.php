@@ -44,7 +44,11 @@
                     	@foreach($res as $r)
                         <tr>
                             <td>{{$r->p_value}}</td>
-                            <td>{{$r->value}}</td>
+                            @if($r->lkp_city_id != null)
+                                <td>{{$r->city}} => {{$r->value}}</td>
+                            @else
+                                <td>{{$r->value}}</td>
+                            @endif
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                     <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4" style="padding: 0;">
