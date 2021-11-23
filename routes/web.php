@@ -32,6 +32,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("machines",'MachineController');
   Route::resource("parts",'PartController');
+  Route::get("parts_rank",'PartController@createByRank');
+  Route::post("parts_store_rank",'PartController@storeByRank');
   Route::resource("lookups",'LookupController');
   Route::resource("machine-brands",'MachineBrandController');
   Route::resource("permissions",'PermissionController');

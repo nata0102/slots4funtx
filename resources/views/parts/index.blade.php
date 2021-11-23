@@ -9,6 +9,8 @@
           <div class="input-group mb-2">
             <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
 
+            <a href="{{action('PartController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;margin-left: 250px;"><i class="fas fa-plus"></i></a>
+                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>
           </div>
 
           <form method="GET" action="{{action('PartController@index')}}">
@@ -23,9 +25,9 @@
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach                              
                   </select>
-                  <select class="form-control" name="brand" id="parts_brands">
-                      <!--<option value="">-- Select Brand --</option>
-                        @foreach($brands as $tp)
+                  <select class="form-control" name="brand" id="parts_brands" data-old="{{old('brand')}}">
+                      <option value="">-- Select Brand --</option>
+                        <!--@foreach($brands as $tp)
                           <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
                         @endforeach-->
                   </select>
@@ -131,10 +133,10 @@
       select.options[i] = null;
 
     var option = document.createElement("option");
-        option.value = ""
-        option.text = "";
-        option.select = 'selected';
-        select.appendChild(option);
+    option.value = ""
+    option.text = "-- Select Brand --";
+    option.select = 'selected';
+    select.appendChild(option);
 
     for(var i=0;i < brands.length; i++){      
       if(type.value == brands[i].lkp_part_id){
@@ -146,23 +148,23 @@
     }
   }
 
-  window.onload = function() {    
-    let type = document.getElementById("parts_type");
-    let select = document.getElementById("parts_brands");
-    var option = document.createElement("option");
-    option.value = ""
-    option.text = "";
-    select.appendChild(option);
-    for(var i=0; i < {!!$brands!!}.length; i++){ 
-      if(type.value == {!!$brands!!}[i].lkp_part_id){
-          var option = document.createElement("option");
-          option.value = {!!$brands!!}[i].id;
-          option.text = {!!$brands!!}[i].brand+" - "+{!!$brands!!}[i].model;
-          if({!!$_GET['brand']!!} == {!!$brands!!}[i].id)
-              option.selected = 'selected';
-          select.appendChild(option);
-      }
-    } 
-  };  
+  window.onload = function() { 
+     let type = document.getElementById("parts_type");
+     if(type.value != ''){
+        let select = document.getElementById("parts_brands");
+        for(var i=0; i < {!!$brands!!}.length; i++){ 
+          if(type.value == {!!$brands!!}[i].lkp_part_id){
+              var option = document.createElement("option");
+              option.value = {!!$brands!!}[i].id;
+              option.text = {!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model;
+              @if(isset($_GET['brand']))
+                if({!!$_GET['brand']!!} == {!!$brands!!}[i].id)
+                    option.selected = 'selected';
+              @endif
+              select.appendChild(option);
+          }
+        } 
+     }
+  }; 
 </script>
 @stop

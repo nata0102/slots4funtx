@@ -45,7 +45,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Final Rank<span style="color:red">*</span></label>
-                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('final_range') is-invalid @enderror input100" name="final_range" value="{{old('final_range')}}" required="" onpaste="return false;">
+                  <input type="text" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('final_range') is-invalid @enderror input100" name="final_range" value="{{old('final_range')}}" required="">
                   @error('final_range')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

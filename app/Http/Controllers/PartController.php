@@ -237,7 +237,56 @@ class PartController extends Controller
       }catch(\Exception $e){
         return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
       }
-
     }
+
+    public function createByRank(){
+      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
+      $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
+      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
+      $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
+      return view('parts.createByRank',compact('types','protocols','status','brands'));
+    }
+
+    public function storeByRank(Request $request){
+        $this->validate($request, [
+            'lkp_type_id' => 'required',
+            'start_range' => 'required',
+            'final_range' => 'required',
+        ]);
+        if($request->final_range < $request->start_range){
+            $transaction = array(
+                'message' => 'The final range must be greater than the initial range.',
+                'alert-type' => 'error'
+            );
+            return back()->with($transaction)->withInput($request->all());
+        }
+        try{
+            $transaction = DB::transaction(function() use($request){
+                $arr = $request->only('start_range','final_range');
+                $arr_aux =  $request->except('_token');
+                for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
+                    $arr_aux['serial'] = $i;
+                    $part = Part::create($arr_aux);
+                    $this->insertPartHistory($part->id);
+                }
+                $notification = array(
+                  'message' => 'Successful!!',
+                  'alert-type' => 'success'
+                );
+                return $notification;
+            });
+
+            return redirect()->action('PartController@index')->with($transaction);
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error'
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());
+    }
+
 
 }
