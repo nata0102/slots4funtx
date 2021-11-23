@@ -67,28 +67,18 @@ class PartController extends Controller
     public function store(Request $request)
     {
       $this->validate($request, [
-        'type' => 'required',
+        'lkp_type_id' => 'required',
         'price' => 'numeric|nullable',
         'serial' => 'unique:parts,serial|nullable',
       ]);
 
       try{
         return DB::transaction(function() use($request){
-          $part = new Part;
-          $part->brand_id = $request->brand_id;
-          $part->serial = $request->serial;
-          $part->price = $request->price;
-          $part->active = 1;
-          $part->lkp_type_id = $request->type;
-          $part->lkp_protocol_id = $request->protocol;
-          $part->lkp_status_id = $request->status;
-          $part->description = $request->description;
-          $part->machine_id = $request->machine_id;
-          if($request->image){
+          $part = Part::create($request->except('_token'));          
+          /*if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
-          }
-          $created = $part->save();
-          if ($created) {
+          }*/
+          if ($part) {
             $notification = array(
               'message' => 'Successful!!',
               'alert-type' => 'success'
@@ -159,30 +149,23 @@ class PartController extends Controller
     public function update(Request $request, $id)
     {
       $this->validate($request, [
-        'type' => 'required',
+        'lkp_type_id' => 'required',
         'price' => 'numeric|nullable',
         'serial' => 'nullable|unique:parts,serial,'.$id,
       ]);
 
       try{
         return DB::transaction(function() use($request, $id){
-          $part = Part::find($id);
-          $part->brand_id = $request->brand_id;
-          $part->serial = $request->serial;
-          $part->price = $request->price;
-          $part->lkp_type_id = $request->type;
-          $part->lkp_protocol_id = $request->protocol;
-          $part->lkp_status_id = $request->status;
-          $part->description = $request->description;
-          $part->machine_id = $request->machine_id;
-          if($request->image){
+          $part = Part::findOrFail($id);
+          $part->update($request->except('_method','_token'));
+          $part->save();
+          /*if($request->image){
             if($part->image != NULL && file_exists(public_path().'/images/part/'.$part->image)){
               unlink(public_path().'/images/part/'.$part->image);
             }
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
-          }
-          $created = $part->save();
-          if ($created) {
+          }*/
+          if ($part) {
             ///historial de pieza
             $this->insertPartHistory($part->id);
             $notification = array(

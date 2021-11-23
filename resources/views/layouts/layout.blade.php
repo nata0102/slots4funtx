@@ -148,7 +148,7 @@
 														<a href="{{action('MachineController@index')}}">Machines</a>
 												</li>
 												<li>
-														<a href="{{action('PartController@index')}}">Parts</a>
+														<a href="{{action('PartController@index')}}">Stock Components</a>
 												</li>
 												<li>
 														<a href="{{action('MachineBrandController@index')}}">Machine/Part Brands</a>
@@ -192,7 +192,7 @@
 													<a href="{{action('MachineController@index')}}">Machines</a>
 											</li>
 											<li>
-													<a href="{{action('PartController@index')}}">Parts</a>
+													<a href="{{action('PartController@index')}}">Stock Components</a>
 											</li>
 											<li>
 													<a href="{{action('MachineBrandController@index')}}">Machine/Part Brands</a>

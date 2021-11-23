@@ -84,13 +84,15 @@ class Controller extends BaseController
         }
     }
 
-    public function insertPartHistory($id){print_r($id);
-      $part = Part::where('id',$id)->with('machine')->with('status')->first();
-      $history = PartHistory::where('part_id',$id)->with('machine')->with('status')->with('brand_id')->orderBy('id','desc')->first();
+    public function insertPartHistory($id){
+      $part = Part::findOrFail($id);
+      $history = PartHistory::where('part_id',$id)->orderBy('id','desc')->first();
       $status = false;
       $machine = false;
       $active = false;
+      $brand = false;
       $new = false;
+
       if($history){
         //checamos si ya tiene un status asignado
         if($history->lkp_status_id == NULL){
@@ -98,19 +100,27 @@ class Controller extends BaseController
         }
         else {
           if($part->lkp_status_id != NULL)
-            $status = $part->status->id == $history->status->id ? false : true;
+            $status = $part->lkp_status_id == $history->lkp_status_id ? false : true;
         }
         //checamos si ya tiene una maquina asignada
         if($history->machine_id == NULL){
           $machine = $part->machine_id == NULL ? false : true;
         }else {
           if($part->machine_id != NULL)
-            $machine = $part->machine->id == $history->machine->id ? false : true;
+            $machine = $part->machine_id == $history->machine_id ? false : true;
+        }
+
+        if($history->brand_id == NULL){
+          $brand = $part->brand_id == NULL ? false : true;
+        }
+        else {
+          if($part->brand_id != NULL)
+            $brand = $part->brand_id == $history->brand_id ? false : true;
         }
         //checamo si activo o desactivo la pieza
         $active = $part->active != $history->active ? true : false;
 
-        if($machine || $status || $active){
+        if($machine || $status || $active || $brand){
           $new = true;
         }
       }

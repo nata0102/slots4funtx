@@ -17,17 +17,17 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div class="input-group mb-5">
-                  <select class="form-control" name="type">
+                  <select onchange="fillBrand(this, {{$brands}})" id="parts_type" class="form-control" name="type">
                       <option value="" >-- Select Type --</option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach                              
                   </select>
-                  <select class="form-control" name="brand">
-                      <option value="">-- Select Brand --</option>
+                  <select class="form-control" name="brand" id="parts_brands">
+                      <!--<option value="">-- Select Brand --</option>
                         @foreach($brands as $tp)
                           <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
-                        @endforeach
+                        @endforeach-->
                   </select>
 
                   <select class="form-control" name="status" >
@@ -123,4 +123,46 @@
     </div>
   </div>
 
-  @stop
+<script>
+  function fillBrand(type, brands){
+    var select = document.getElementById("parts_brands");
+    var length = select.options.length;
+    for (i = length-1; i >= 0; i--) 
+      select.options[i] = null;
+
+    var option = document.createElement("option");
+        option.value = ""
+        option.text = "";
+        option.select = 'selected';
+        select.appendChild(option);
+
+    for(var i=0;i < brands.length; i++){      
+      if(type.value == brands[i].lkp_part_id){
+        var option = document.createElement("option");
+        option.value = brands[i].id;
+        option.text = brands[i].brand+" "+brands[i].model;
+        select.appendChild(option);
+      }
+    }
+  }
+
+  window.onload = function() {    
+    let type = document.getElementById("parts_type");
+    let select = document.getElementById("parts_brands");
+    var option = document.createElement("option");
+    option.value = ""
+    option.text = "";
+    select.appendChild(option);
+    for(var i=0; i < {!!$brands!!}.length; i++){ 
+      if(type.value == {!!$brands!!}[i].lkp_part_id){
+          var option = document.createElement("option");
+          option.value = {!!$brands!!}[i].id;
+          option.text = {!!$brands!!}[i].brand+" - "+{!!$brands!!}[i].model;
+          if({!!$_GET['brand']!!} == {!!$brands!!}[i].id)
+              option.selected = 'selected';
+          select.appendChild(option);
+      }
+    } 
+  };  
+</script>
+@stop

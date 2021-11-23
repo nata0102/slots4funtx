@@ -39,8 +39,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <input type="hidden" name="count_warehouse" value="0" />
-                  <label><input type="checkbox" class="@error('count_warehouse') is-invalid @enderror input100" name="count_warehouse" value="1" {{$res->count_warehouse == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Without Warehouse</span></label>
+                  <input type="hidden" name="band_select" value="0" />
+                  <label><input type="checkbox" class="@error('band_select') is-invalid @enderror input100" name="band_select" value="1" {{$res->band_select == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
                 </div>
               </div>
 

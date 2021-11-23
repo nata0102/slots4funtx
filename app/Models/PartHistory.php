@@ -10,8 +10,6 @@ class PartHistory extends Model
 
   protected $table = 'part_history';
 
-  protected $fillable = ['id', 'part_id', 'active','lkp_status_id','machine_id'];
-
   public function status(){
     return $this->hasOne('App\Models\Lookup', 'id', 'lkp_status_id');
   }
