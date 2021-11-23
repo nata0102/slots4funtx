@@ -95,10 +95,10 @@ class LookupController extends Controller
         try{
             $transaction = DB::transaction(function() use ($request){
                 $arr = $request->except('_token');
-                if(in_array('lkp_city_id', $arr))
-                  $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->get();
-                else {
-                  $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->get();
+                if(array_key_exists('lkp_city_id', $arr)){
+                    $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->get();
+                }else {
+                    $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->get();
                 }
                 if(count($validation)==0){
                     $arr['key_value'] = $this->getKeyValue($arr['value']);
