@@ -17,7 +17,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label for="">Type Permit <span style="color:red">*</span></label>
-			                  <select id="permit_type" class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id" required="">
+			                  <select disabled="disabled" id="permit_type" class="form-control @error('lkp_type_permit_id') is-invalid @enderror input100" name="lkp_type_permit_id">
 			                    <option value=""></option>
 			                      @foreach($types as $type)
 			                        <option value="{{$type->id}}"  {{ $permission->lkp_type_permit_id == $type->id ? 'selected' : '' }}>{{$type->value}}</option>

@@ -32,7 +32,9 @@ class LookupController extends Controller
     }
 
     public function searchWithFilters($params){
-        $qry = "select tab1.*, l2.id, l2.value, l2.lkp_city_id from(select l.key_value as p_key_value, value as p_value from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
+        $qry = "select tab1.*, l2.id, l2.value, l2.lkp_city_id,
+        (select value from lookups where id=l2.lkp_city_id) as city  
+        from(select l.key_value as p_key_value, value as p_value from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
         if (array_key_exists('type', $params) && $params['type']!="")
             $qry .= " and tab1.p_key_value ='".$params['type']."'";
         if (array_key_exists('value', $params))
@@ -95,10 +97,10 @@ class LookupController extends Controller
         try{
             $transaction = DB::transaction(function() use ($request){
                 $arr = $request->except('_token');
-                if(in_array('lkp_city_id', $arr))
-                  $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->get();
-                else {
-                  $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->get();
+                if(array_key_exists('lkp_city_id', $arr)){
+                    $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->get();
+                }else {
+                    $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->get();
                 }
                 if(count($validation)==0){
                     $arr['key_value'] = $this->getKeyValue($arr['value']);
@@ -170,7 +172,7 @@ class LookupController extends Controller
         try{
             $transaction = DB::transaction(function() use ($request, $id){
                 $arr = $request->except('_token','_method');
-                if(in_array('lkp_city_id', $arr))
+                if(array_key_exists('lkp_city_id', $arr))
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->whereNotIn('id',[$id])->get();
                 else
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->whereNotIn('id',[$id])->get();                  
