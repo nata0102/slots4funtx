@@ -65,7 +65,6 @@ class PermissionController extends Controller
         $machines = DB::select($qry);
 
         $machines = Machine::with('permission','owner')->where('active',1)->get();
-
         return view('permissions.create',compact('types','machines'));
     }
 

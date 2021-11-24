@@ -688,8 +688,10 @@
 		if(value == '41'){//state
 			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
 			$(document.getElementById('long')).attr('maxlength',"6");
+			$(document.getElementById('long2')).attr('pattern',"[0-9]{6}");
+			$(document.getElementById('long2')).attr('maxlength',"6");
 
-			machines = document.getElementsByClassName('s-'+value);
+			/*machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].setAttribute('hidden','');
 				machines[i].classList.add( "hidden" );
@@ -698,13 +700,15 @@
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].removeAttribute('hidden');
 				machines[i].classList.remove( "hidden" );
-			}
+			}*/
 
 		}if(value == '42'){//city
 			$(document.getElementById('long')).attr('pattern',"[0-9]{4}");
 			$(document.getElementById('long')).attr('maxlength',"4");
+			$(document.getElementById('long2')).attr('pattern',"[0-9]{4}");
+			$(document.getElementById('long2')).attr('maxlength',"4");
 
-			machines = document.getElementsByClassName('s-'+value);
+			/*machines = document.getElementsByClassName('s-'+value);
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].setAttribute('hidden','');
 				machines[i].classList.add( "hidden" );
@@ -713,14 +717,16 @@
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].removeAttribute('hidden');
 				machines[i].classList.remove( "hidden" );
-			}
+			}*/
 
 		}if(value == ''){
 
 			$(document.getElementById('long')).attr('pattern',"[0-9]{6}");
 			$(document.getElementById('long')).attr('maxlength',"6");
+			$(document.getElementById('long2')).attr('pattern',"[0-9]{6}");
+			$(document.getElementById('long2')).attr('maxlength',"6");
 
-			machines = document.getElementsByClassName('s-42');
+			/*machines = document.getElementsByClassName('s-42');
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].classList.add( "hidden" );
 			}
@@ -728,7 +734,7 @@
 			machines = document.getElementsByClassName('s-41');
 			for (var i = 0; i < machines.length; i++) {
 				machines[i].classList.add( "hidden" );
-			}
+			}*/
 
 		}
 	}

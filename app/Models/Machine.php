@@ -11,7 +11,7 @@ class Machine extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     public function permission(){
-      return $this->hasOne('App\Models\Permission');
+      return $this->hasMany('App\Models\Permission','machine_id','id');
     }
 
     public function status(){
