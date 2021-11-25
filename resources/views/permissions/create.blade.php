@@ -10,17 +10,15 @@
 
         <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
+        <button  id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px; margin-bottom: 10px;margin-left: 350px" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
+
+        <div style="margin-left: 200px;" id="div_cam" class="col-md-6" hidden>
+          <video id="preview" width="100%"></video>
+          <input type="text" name="text" id="text_qr">
+        </div>
+
         <form class="" action="{{action('PermissionController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
-            @csrf
-
-            <button onclick="readQR()">QR</button>
-
-            <div id="div_cam" class="col-md-6" hidden>
-              <video id="preview" width="100%"></video>
-              <label>SCAN QR CODE</label>
-              <input type="text" name="text" id="text_qr">
-            </div>
-
+            @csrf           
             <div class="row">
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -42,7 +40,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" title="-- Select Machine --" name="machine_id" required="" data-live-search="true">
+                  <select onchange="saveID(this.value)" id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" title="-- Select Machine --" name="machine_id" required="" data-live-search="true" >
                   </select>
                   @error('machine_id')
                       <span class="invalid-feedback" role="alert">
@@ -51,6 +49,8 @@
                   @enderror
                 </div>
               </div>
+
+              <input type="text" name="id_save_m" id="id_save_m" hidden="" value="{{old('id_save_m')}}">
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -106,22 +106,32 @@
       });
 
       scanner.addListener('scan', function(c){
-          document.getElementById('text_qr').value = c;
-          var select_machine = document.getElementById("permission_machine").options;
-          for(var i =0; i< select_machine.length;i++){
-              if(select_machine[i].value == 75){
-                document.getElementById("div_cam").hidden = true;
-                $('.selectpicker').selectpicker('val', '75');
-                $("#permission_machine").selectpicker("refresh");
-                break;
-              }
-          }
+          //document.getElementById('text_qr').value = c;
+          document.getElementById("div_cam").hidden = true;
+          var arr = c.split("/");
+          selectMachine(arr[1]);          
       });
   }
 
+  function selectMachine(value_id){
+        var select_machine = document.getElementById("permission_machine").options;
+        for(var i =0; i< select_machine.length;i++){
+            if(select_machine[i].value == value_id){
+              $('.selectpicker').selectpicker('val', value_id);
+              $("#permission_machine").selectpicker("refresh");
+              break;
+            }
+        }
+  }
+
   function fillMachines(type){ 
-     $('#permission_machine').empty();
-      for(var i=0; i < {!!$machines!!}.length; i++){ 
+    if(type!="")
+        document.getElementById("boton_qr").hidden = false;
+    else
+        document.getElementById("boton_qr").hidden = true;
+    
+    $('#permission_machine').empty();
+    for(var i=0; i < {!!$machines!!}.length; i++){ 
           var band = true;
           for(var j=0; j<{!!$machines!!}[i].permission.length;j++){
              if({!!$machines!!}[i].permission[j].lkp_type_permit_id == type){
@@ -131,10 +141,22 @@
           }
           if(band){
             $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+{!!$machines!!}[i].id+" - "+{!!$machines!!}[i].owner.value+" - "+{!!$machines!!}[i].serial+'</option>');
-            $("#permission_machine").selectpicker("refresh");
           }
-      } 
+    } 
+    $("#permission_machine").selectpicker("refresh");
   }
+
+  function saveID(id){
+      document.getElementById("id_save_m").value = id;    
+  }
+
+  window.onload = function() {
+    var value_machine_id = document.getElementById("id_save_m").value;
+    if(value_machine_id != "") {
+      fillMachines(document.getElementById("permit_type").value);  
+      selectMachine(value_machine_id);
+    }  
+  };
   </script>
 
 @stop

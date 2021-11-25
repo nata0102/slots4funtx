@@ -58,12 +58,6 @@ class PermissionController extends Controller
     public function create()
     {
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        /*$qry = "select m.*,l.value from machines m, lookups l where m.lkp_game_id=l.id and m.active = 1 and m.id not in (select machine_id from permissions) and m.lkp_owner_id = 38;";
-        $machines = DB::select($qry);*/
-        $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id = l.id ";
-
-        $machines = DB::select($qry);
-
         $machines = Machine::with('permission','owner')->where('active',1)->get();
         return view('permissions.create',compact('types','machines'));
     }

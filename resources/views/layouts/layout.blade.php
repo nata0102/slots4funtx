@@ -60,6 +60,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/slick.css') }} ">
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/select2.min.css') }} ">
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/perfect-scrollbar.css') }} ">
+	
 	<!-- theme -->
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/theme.css') }} ">
 	<!-- styles -->
