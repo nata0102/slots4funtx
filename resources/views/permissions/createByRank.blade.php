@@ -57,7 +57,7 @@
               <div class="col-12 col-sm-6 col-md-4" >
                 <div class="form-group">
                   <label for="">Permit Year <span style="color:red">*</span></label>
-                  <input type="number" name="year_permit" min="2021" max="2035"
+                  <input id="year_permit" type="number" name="year_permit" min="2021" max="2035"
                   class="form-control @error('year_permit') is-invalid @enderror input100" value="{{old('year_permit')}}" required>
                   @error('year_permit')
                       <span class="invalid-feedback" role="alert">
@@ -77,4 +77,10 @@
   </div>
 </div>
 
+<script>
+  window.onload = function() {
+    const d = new Date();
+    document.getElementById("year_permit").value = d.getFullYear();
+  };
+</script>
 @stop

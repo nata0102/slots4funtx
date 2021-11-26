@@ -9,17 +9,14 @@
 
         		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
-        		<div class="row">
-		          <div  class="col-12 col-sm-6 col-md-4">
-		            <div align="center" class="form-group">
-		                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px; margin-bottom: 10px; margin-left: 350px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
-		            </div>
+        		<div>
+		          <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
+		                transform: translateY(-50%);">
+		                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
 		          </div>
-		          <div id="div_cam" class="col-12 col-sm-6 col-md-4" hidden>
-		            <div class="form-group">        
-		              <video id="preview" width="100%"></video>
+		          <div align="center" id="div_cam" hidden>       
+		              <video align="center" id="preview" width="50%"></video>
 		              <input type="text" name="text" id="text_qr">
-		            </div>
 		          </div>
 		        </div>
 
@@ -49,10 +46,10 @@
 			                <div class="form-group">
 			                  <label for="">Machine <span style="color:red">*</span></label>
 			                  @if($permission->machine_id == null)
-									<select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" required name="machine_id" data-live-search="true">
+									<select id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" required name="machine_id" data-live-search="true">
 										 <option value="" selected >-- Select Machine --</option>
 										 @foreach($machines as $machine)
-											 <option value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner}} - {{$machine->serial}}</option>
+											 <option value="{{$machine->id}}"  >{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
 										 @endforeach
 								 </select>
 								 @error('machine_id')
@@ -61,7 +58,7 @@
 										 </span>
 								 @enderror
 				              @else
-				              		<input disabled="disabled" class="form-control @error('machine_id') is-invalid @enderror input100" value="{{$machine->id}} - {{$machine->serial}}">
+									<input disabled="disabled" class="form-control @error('machine_id') is-invalid @enderror input100" value="{{$permission->machine_id}} - {{$permission->machine->owner->value}} - {{$permission->machine->game->name}} - {{$permission->machine->serial}}">
 			                  @endif
 			                </div>
 			            </div>
@@ -90,6 +87,19 @@
 			                </div>
 			            </div>
 
+			            <div class="col-12 col-sm-6 col-md-4" >
+			                <div class="form-group">
+			                  <label for="">Permit Year <span style="color:red">*</span></label>
+			                  <input id="year_permit" type="number" name="year_permit" min="2021" max="2035"
+			                  class="form-control @error('year_permit') is-invalid @enderror input100" value="{{old('year_permit')}}" required>
+			                  @error('year_permit')
+			                      <span class="invalid-feedback" role="alert">
+			                          <strong>{{ $message }}</strong>
+			                      </span>
+			                  @enderror
+			                </div>
+			              </div>
+
 	            		</div>
 	            	 	<div class="col-12 col-sm-6 col-md-4">
 	                		<div class="form-group">
@@ -102,14 +112,50 @@
     	</div>
     </div>
 </div>
+<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script>
+function readQR(){
+      let aux = document.getElementById('div_cam');
+      aux.removeAttribute("hidden");
+      let scanner = new Instascan.Scanner({ video: document.getElementById('preview')});
+      Instascan.Camera.getCameras().then(function(cameras){
+        if(cameras.length > 0)
+          scanner.start(cameras[0]);
+        else
+          alert("No cameras");
+      }).catch(function(e){
+      console.error(e);
+      });
+
+      scanner.addListener('scan', function(c){
+          //document.getElementById('text_qr').value = c;
+          document.getElementById("div_cam").hidden = true;
+          var arr = c.split("/");
+          selectMachine(arr[1]);          
+      });
+  }
+
+  function selectMachine(value_id){
+        var select_machine = document.getElementById("permission_machine").options;
+        for(var i =0; i< select_machine.length;i++){
+            if(select_machine[i].value == value_id){
+              $('.selectpicker').selectpicker('val', value_id);
+              $("#permission_machine").selectpicker("refresh");
+              break;
+            }
+        }
+  }
+
 window.onload = function() {
-    var value_machine_id = document.getElementById("machine").value;
-    console.log("ID="+value_machine_id);
-    if(value_machine_id != "") {
-      /*fillMachines(document.getElementById("permit_type").value);  
-      selectMachine(value_machine_id);*/
-    }  
+	const d = new Date();
+    document.getElementById("year_permit").value = d.getFullYear();
+	var comp_machine = document.getElementById("permission_machine");
+	if(comp_machine != null){
+		document.getElementById("boton_qr").hidden = false;
+	} 
   };
 </script>
 @stop

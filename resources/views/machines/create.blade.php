@@ -119,7 +119,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Parts</label>
-                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]">
+                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]" id="parts_id_aux">
                   @foreach($parts as $part)
                     <option  {{ (collect(old('parts_ids'))->contains($part->id)) ? 'selected':'' }}  value="{{$part->id}}">{{$part->serial}} - {{$part->value}}</option>
                   @endforeach
@@ -180,9 +180,16 @@
           for(var i=0; i< arr1.length; i++){
               if(arr1[i] != ""){
                   var arr2 = arr1[i].split('|$');
-                  $('#contained_games').append('<option value="'+arr1[i]+'">'+arr2[0]+" "+arr2[1]+'</option>');
+                  $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
               }
           }
+          @if(old('games_select') != null)
+            var count= "{{ count(old('games_select')) }}";
+            var a3 = @json(old('games_select'));
+            $.each(a3, function(i,e){
+              $("#contained_games option[value='" + e + "']").prop("selected", true);
+            });
+          @endif
           $("#contained_games").selectpicker("refresh");
       }else{
           document.getElementById("div_contained_games").hidden=true; 
@@ -196,6 +203,7 @@
                   cad_final += arr2[0]+" "+arr2[1]+'\n';
               }
           } 
+
           document.getElementById("contained_games_2").value = cad_final;
           document.getElementById("text_games").value  = {!!$games!!}[index].games;
       } 
@@ -219,14 +227,11 @@
       var m_brand = document.getElementById("machine_brands");
       var brand_id = document.getElementById("id_save_m").value;
       var text_games = document.getElementById("text_games").value;
-      console.log("Value_game="+text_games);
-
-      console.log({{ (collect(old('parts_ids')))}});
-      
+     
       if(select_game.value != "")
-        fillContainedGames(select_game.value,select_game.selectedIndex + 1);
+          fillContainedGames(select_game.value,select_game.selectedIndex + 1);
       
-      if(select_game.value != "" && brand_id != ""){
+      /*if(select_game.value != "" && brand_id != ""){
          var band = false;
          for(var i=0;i<m_brand.options.length; i++){
             if(m_brand.options[i].value == brand_id){
@@ -244,7 +249,7 @@
          }
          document.getElementById("id_save_m").value = brand_id;
          $("#machine_brands").selectpicker("refresh");
-      }
+      }*/
   };
 </script>
   @stop

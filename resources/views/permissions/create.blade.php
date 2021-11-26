@@ -10,7 +10,7 @@
 
         <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
-        <div >
+        <div>
           <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
                 transform: translateY(-50%);">
                 <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
@@ -19,7 +19,6 @@
               <video align="center" id="preview" width="50%"></video>
               <input type="text" name="text" id="text_qr">
           </div>
-
         </div>
 
         <form class="" action="{{action('PermissionController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
@@ -45,7 +44,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select onchange="saveID(this.value)" id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" title="-- Select Machine --" name="machine_id" required="" data-live-search="true" >
+                  <select id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" title="-- Select Machine --" name="machine_id" required="" data-live-search="true" >
                   </select>
                   @error('machine_id')
                       <span class="invalid-feedback" role="alert">
@@ -54,8 +53,6 @@
                   @enderror
                 </div>
               </div>
-
-              <input type="text" name="id_save_m" id="id_save_m" hidden="" value="{{old('id_save_m')}}">
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -74,6 +71,19 @@
                   <label for="">Validate Permit Number <span style="color:red">*</span></label>
                   <input id="long2" type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('validate_permit_number') is-invalid @enderror input100" name="validate_permit_number" value="{{old('validate_permit_number')}}" required="" onpaste="return false;">
                   @error('validate_permit_number')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4" >
+                <div class="form-group">
+                  <label for="">Permit Year <span style="color:red">*</span></label>
+                  <input id="year_permit" type="number" name="year_permit" min="2021" max="2035"
+                  class="form-control @error('year_permit') is-invalid @enderror input100" value="{{old('year_permit')}}" required>
+                  @error('year_permit')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -145,22 +155,20 @@
              }
           }
           if(band){
-            $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+{!!$machines!!}[i].id+" - "+{!!$machines!!}[i].owner.value+" - "+{!!$machines!!}[i].serial+'</option>');
+            $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+{!!$machines!!}[i].id+" - "+{!!$machines!!}[i].owner.value+" - "+{!!$machines!!}[i].game.name+" - "+{!!$machines!!}[i].serial+'</option>');
           }
     } 
     $("#permission_machine").selectpicker("refresh");
   }
 
-  function saveID(id){
-      document.getElementById("id_save_m").value = id;    
-  }
-
   window.onload = function() {
-    var value_machine_id = document.getElementById("id_save_m").value;
-    if(value_machine_id != "") {
-      fillMachines(document.getElementById("permit_type").value);  
-      selectMachine(value_machine_id);
-    }  
+    const d = new Date();
+    document.getElementById("year_permit").value = d.getFullYear();
+    var comp_permit_type = document.getElementById("permit_type");
+    if(comp_permit_type.value !=""){
+        fillMachines(comp_permit_type.value);
+        selectMachine("{{old('machine_id')}}");
+    }
   };
   </script>
 

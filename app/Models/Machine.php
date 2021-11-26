@@ -23,7 +23,7 @@ class Machine extends Model
     }
 
     public function game(){
-        return $this->hasOne('App\Models\GameCatalog', 'id', 'lkp_game_id');
+        return $this->hasOne('App\Models\GameCatalog', 'id', 'game_catalog_id');
     }
 
     public function address(){

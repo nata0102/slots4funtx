@@ -8,14 +8,18 @@
             <div class="card" id="card-section">
 
                 <div class="input-group mb-2">
-                    <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
-                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">Assign to Machine</p>
-                    <a href="{{action('PermissionController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;margin-left: 250px;"><i class="fas fa-plus"></i></a>
-                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>
+                    <div style="width: 50%;height: 40px;">
+                        <a href="{{action('PermissionController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
+                        <p style="margin-left: 15px;padding-top: 5px;font-weight: bold;">Assign to Machine</p>
+                    </div>
+                    <div align="left" style="width: 50%;height: 40px;">
+                        <a href="{{action('PermissionController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
+                        <p  style="margin-left: 15px;padding-top: 5px;font-weight: bold;">By Rank</p>
+                    </div>
                 </div>
 
                 <form method="GET" action="{{action('PermissionController@index')}}">
-                    <div class="input-group mb-5">
+                    <div style="margin-top: 10px" class="input-group mb-5">
                         <select id="permit_type_index" class="form-control" name="type">
                             <option value="">-- Select Type --</option>
                               @foreach($types as $tp)
@@ -26,7 +30,7 @@
                         <select class="form-control" id="machine_index" name="machine">
                             <option value="" >-- Machine --</option>
                             @foreach($machines as $machine)
-                                <option class="s-{{$machine->lkp_type_permit_id}}" value="{{$machine->machine_id}} - {{$machine->serial}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->machine_id}} - {{$machine->serial}}</option>
+                                <option value="{{$machine->id}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
                             @endforeach
                         </select>
 
