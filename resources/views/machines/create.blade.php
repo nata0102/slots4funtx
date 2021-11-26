@@ -17,7 +17,6 @@
                 <div class="form-group">
                   <label for="">Owner <span style="color:red">*</span></label>
                   <select class="form-control @error('lkp_owner_id') is-invalid @enderror input100" name="lkp_owner_id" required="">
-                    <option value=""></option>
                       @foreach($owners as $owner)
                         <option value="{{$owner->id}}"  {{ old('lkp_owner_id') == $owner->id ? 'selected' : '' }}>{{$owner->value}}</option>
                       @endforeach
@@ -32,14 +31,14 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Software <span style="color:red">*</span></label>
-                  <select class="form-control @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" required="">
-                    <option value=""></option>
+                  <label for="">Game <span style="color:red">*</span></label>
+                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('lkp_game_id') is-invalid @enderror input100" name="lkp_game_id" title="-- Select Game --" required=""  data-live-search="true">
+                      <option value=""></option>
                       @foreach($games as $game)
-                        <option value="{{$game->id}}"  {{ old('game_catalog_id') == $game->id ? 'selected' : '' }}>{{$game->name}}</option>
+                        <option value="{{$game->id}}" {{ old('lkp_game_id') == $game->id ? 'selected' : '' }}>{{$game->name}}</option>
                       @endforeach
                   </select>
-                  @error('game_catalog_id')
+                  @error('lkp_game_id')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -47,29 +46,39 @@
                 </div>
               </div>    
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="div_contained_games" hidden>
                 <div class="form-group">
-                  <label for="">Description Games</label>
-                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="brands_id[]">
-                  @foreach($brands as $brand)
-                    <option  {{ (collect(old('brands_id'))->contains($brand->id)) ? 'selected':'' }}  value="{{$brand->id}}">{{$brand->id}}</option>
-                  @endforeach
+                  <label for="">Contained Games</label>
+                  <select id="contained_games" class="form-control selectpicker show-menu-arrow @error('games_select') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Games --" multiple="multiple" name="games_select[]">
                   </select>
                 </div>
-              </div>         
+              </div>     
+
+              <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
+                <div class="form-group">
+                  <label for="">Contained Games</label>
+                  <textarea onkeydown="return false;" id="contained_games_2"></textarea>
+                  <textarea onkeydown="return false;" id="text_games" name="games"  value="{{old('games')}}" hidden></textarea>
+                </div>
+              </div>     
+
+              <div class="col-12 col-sm-6 col-md-4" id="div_description_game" hidden>
+                <div class="form-group">
+                  <label for="">Description Game</label>
+                  <textarea disabled id="description_game"></textarea>
+                </div>
+              </div>   
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand</label>
-                  <select class="form-control @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id">
-                    <option value=""></option>
-                    <option value="0">Other</option>
-                      @foreach($brands as $brand)
-                        <option value="{{$brand->id}}" {{ old('machine_brand_id') == $brand->id ? 'selected' : '' }}>{{$brand->brand}} {{$brand->model}} {{$brand->weight}}</option>
-                      @endforeach
+                  <select onchange="changeBrand(this.value)" id="machine_brands" class="form-control selectpicker @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id" title="-- Select Brand --" data-live-search="true">
+                    <!--<option value="">OTHER</option>-->
                   </select>
                 </div>
               </div>
+
+              <input type="text" name="id_save_m" id="id_save_m" hidden="" value="{{old('id_save_m')}}">
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -120,8 +129,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Description</label>
-                  <textarea class="form-control" name="description" value="{{old('description')}}"></textarea>
+                  <label for="">Notes</label>
+                  <textarea class="form-control" name="notes" value="{{old('notes')}}"></textarea>
                 </div>
               </div>
 
@@ -145,4 +154,97 @@
     </div>
   </div>
 
+<script>
+
+  function changeBrand(brand_value){
+      document.getElementById("id_save_m").value=brand_value;
+      if(brand_value == ""){
+          $('#machine_brands').empty();
+          for(var i=0; i<{!!$brands!!}.length; i++){
+            $('#machine_brands').append('<option value="'+{!!$brands!!}[i].id+'">'+{!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model+'</option>');
+          }
+          $('#machine_brands').append('<option value="">OTHER</option>');
+          $("#machine_brands").selectpicker("refresh");
+      }
+  }
+
+  function fillContainedGames(game, index) {
+      //LLena combo de description Games
+      index=index-1;
+      $('#contained_games').empty();
+      var arr1 = {!!$games!!}[index].games.split("&$");
+      if({!!$games!!}[index].band_select == 1){
+          document.getElementById("div_contained_games").hidden=false; 
+          document.getElementById("div_contained_games_2").hidden=true;        
+      
+          for(var i=0; i< arr1.length; i++){
+              if(arr1[i] != ""){
+                  var arr2 = arr1[i].split('|$');
+                  $('#contained_games').append('<option value="'+arr1[i]+'">'+arr2[0]+" "+arr2[1]+'</option>');
+              }
+          }
+          $("#contained_games").selectpicker("refresh");
+      }else{
+          document.getElementById("div_contained_games").hidden=true; 
+          var container2 = document.getElementById("div_contained_games_2");
+          container2.hidden=false;
+          container2.value = {!!$games!!}[index].games;
+          var cad_final = "";
+          for(var i=0; i< arr1.length; i++){
+              if(arr1[i] != ""){
+                  var arr2 = arr1[i].split('|$');
+                  cad_final += arr2[0]+" "+arr2[1]+'\n';
+              }
+          } 
+          document.getElementById("contained_games_2").value = cad_final;
+          document.getElementById("text_games").value  = {!!$games!!}[index].games;
+      } 
+      if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
+          document.getElementById("div_description_game").hidden=false;
+          document.getElementById("description_game").value = {!!$games!!}[index].description;
+      }else
+        document.getElementById("div_description_game").hidden=true;
+
+      //LLena combo de Brands
+      $('#machine_brands').empty();
+      for(var i=0; i<{!!$games!!}[index].brands.length; i++){
+           $('#machine_brands').append('<option value="'+{!!$games!!}[index].brands[i].machine_brand_id+'">'+{!!$games!!}[index].brands[i].brand.brand+" "+{!!$games!!}[index].brands[i].brand.model+'</option>');
+      }
+      $('#machine_brands').append('<option value="">OTHER</option>');
+      $("#machine_brands").selectpicker("refresh");
+  }
+
+  window.onload = function() {
+      var select_game = document.getElementById("select_game");
+      var m_brand = document.getElementById("machine_brands");
+      var brand_id = document.getElementById("id_save_m").value;
+      var text_games = document.getElementById("text_games").value;
+      console.log("Value_game="+text_games);
+
+      console.log({{ (collect(old('parts_ids')))}});
+      
+      if(select_game.value != "")
+        fillContainedGames(select_game.value,select_game.selectedIndex + 1);
+      
+      if(select_game.value != "" && brand_id != ""){
+         var band = false;
+         for(var i=0;i<m_brand.options.length; i++){
+            if(m_brand.options[i].value == brand_id){
+              $('#machine_brands').selectpicker('val', brand_id);
+              band=true;
+            }
+         }
+         if(!band){
+            changeBrand("");
+            m_brand = document.getElementById("machine_brands");
+            for(var i=0;i<m_brand.options.length; i++){
+              if(m_brand.options[i].value == brand_id)
+                $('#machine_brands').selectpicker('val', brand_id);
+           }
+         }
+         document.getElementById("id_save_m").value = brand_id;
+         $("#machine_brands").selectpicker("refresh");
+      }
+  };
+</script>
   @stop

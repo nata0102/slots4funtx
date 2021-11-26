@@ -17,7 +17,6 @@ class PermissionController extends Controller
      */
     public function index(Request $request)
     {
-
       $machines = Machine::select('machines.*','permissions.*')->join('permissions','machines.id','permissions.machine_id')->where('active',1)->get();
 
       $res = [];
@@ -34,8 +33,7 @@ class PermissionController extends Controller
         $qry = "select * from(
                 select *,
                 (select value from lookups where id = p.lkp_type_permit_id) as type,
-                (select concat(id,' - ', ifnull(serial,'')) from machines where
-                id = p.machine_id and active=1) as game,
+                (select concat(m.id,' - ',l.value,' - ', ifnull(m.serial,'')) from machines m, lookups l where m.id = p.machine_id and m.active=1 and m.lkp_owner_id=l.id) as game,
                 (select active from machines where id = p.machine_id) as active
                 from permissions p) as tab1 where (tab1.active = 1 or tab1.active is null)";
         if(count($params) > 0){
@@ -184,14 +182,13 @@ class PermissionController extends Controller
     {
         $permission = Permission::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_permit')->get();
-        $machines = [];
         $machine = null;
+        $machines = [];
         if($permission->machine_id != null )
             $machine = Machine::findOrFail($permission->machine_id);
         else{
-          $qry = "select m.*,l.value from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id=l.id and m.id not in (select machine_id from permissions);";
-          $machines = DB::select($qry);          
-          $machines = Machine::with('permission','owner')->where('active',1)->get();
+          $qry = "select m.*,l.value,(select value from lookups where id=38) as owner from machines m, lookups l where m.active = 1 and m.lkp_owner_id = 38 and m.lkp_owner_id=l.id and m.active=1 and m.id not in (select machine_id from permissions where lkp_type_permit_id = ".$permission->lkp_type_permit_id." and machine_id is not null);";
+          $machines = DB::select($qry);   
         }
         return view('permissions.edit',compact('types','machines','permission','machine'));
     }

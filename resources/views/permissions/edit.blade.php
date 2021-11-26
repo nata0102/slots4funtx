@@ -9,6 +9,20 @@
 
         		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
+        		<div class="row">
+		          <div  class="col-12 col-sm-6 col-md-4">
+		            <div align="center" class="form-group">
+		                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px; margin-bottom: 10px; margin-left: 350px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
+		            </div>
+		          </div>
+		          <div id="div_cam" class="col-12 col-sm-6 col-md-4" hidden>
+		            <div class="form-group">        
+		              <video id="preview" width="100%"></video>
+		              <input type="text" name="text" id="text_qr">
+		            </div>
+		          </div>
+		        </div>
+
           		<form class="" action="{{action('PermissionController@update',$permission->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf
             		<input type="hidden" name="_method" value="PUT">
@@ -35,18 +49,18 @@
 			                <div class="form-group">
 			                  <label for="">Machine <span style="color:red">*</span></label>
 			                  @if($permission->machine_id == null)
-													<select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" required name="machine_id" data-live-search="true">
-														 <option value="" selected >-- Select Machine --</option>
-														 @foreach($machines as $machine)
-															 <option class="{{ $machine->permission ? 's-'.$machine->permission->lkp_type_permit_id : '' }}" value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner->value}} - {{$machine->serial}}</option>
-														 @endforeach
-												 </select>
-												 @error('machine_id')
-														 <span class="invalid-feedback" role="alert">
-																 <strong>{{ $message }}</strong>
-														 </span>
-												 @enderror
-				              	@else
+									<select id="machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" required name="machine_id" data-live-search="true">
+										 <option value="" selected >-- Select Machine --</option>
+										 @foreach($machines as $machine)
+											 <option value="{{$machine->id}}"  {{ $permission->machine_id == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner}} - {{$machine->serial}}</option>
+										 @endforeach
+								 </select>
+								 @error('machine_id')
+										 <span class="invalid-feedback" role="alert">
+												 <strong>{{ $message }}</strong>
+										 </span>
+								 @enderror
+				              @else
 				              		<input disabled="disabled" class="form-control @error('machine_id') is-invalid @enderror input100" value="{{$machine->id}} - {{$machine->serial}}">
 			                  @endif
 			                </div>
@@ -88,4 +102,14 @@
     	</div>
     </div>
 </div>
+<script>
+window.onload = function() {
+    var value_machine_id = document.getElementById("machine").value;
+    console.log("ID="+value_machine_id);
+    if(value_machine_id != "") {
+      /*fillMachines(document.getElementById("permit_type").value);  
+      selectMachine(value_machine_id);*/
+    }  
+  };
+</script>
 @stop

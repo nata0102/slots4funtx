@@ -15,4 +15,5 @@ class GameBrand extends Model
     public function brand(){
         return $this->hasOne('App\Models\MachineBrand', 'id', 'machine_brand_id');
     }
+
 }

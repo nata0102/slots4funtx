@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Machine;
 use App\Models\MachineHistory;
+use App\Models\GameCatalog;
 use App\Models\Part;
 use App\Models\PercentagePriceMachine;
 use Illuminate\Support\Facades\DB;
@@ -26,10 +27,10 @@ class MachineController extends Controller
                $res = $this->searchWithFilters($request->all());
             break;
             default:
-               $res = Machine::with('status','address.client','brand','owner')->where('active',1)->orderBy('id','desc')->take(20)->get();
+               $res = Machine::with('status','address.client','brand','owner','game')->where('active',1)->orderBy('id','desc')->take(20)->get();
             break;
         }
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
+        $games = DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
@@ -90,8 +91,7 @@ class MachineController extends Controller
      */
     public function create()
     {
-        //FALTA EN GAMES TRAER LOS QUE NO TIENEN ALMACEN Y DE LOS QUE SI HAY ALMACEN
-        $games =   DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
+        $games = GameCatalog::with('brands.brand')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')->where('addresses.active',1)->where('clients.active',1)
@@ -107,16 +107,21 @@ class MachineController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){  
+    public function store(Request $request)
+    { 
         $this->validate($request, [
             'lkp_game_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'unique:machines,serial|nullable',
-            'inventory' => 'unique:machines,inventory|nullable'
-        ]);    
+        ]);   
         try{
             $transaction = DB::transaction(function() use($request){                             
-                $arr = $request->except('parts_ids','_token','image');            
+                $arr = $request->except('parts_ids','_token','image','games_select');
+                if(array_key_exists('games_select', $request->all())){
+                     $arr['games'] = "";
+                    foreach ($request->games_select as $g_select) 
+                        $arr['games'] .= $g_select."&$";                    
+                }            
                 $parts = $request->parts_ids;
                 if($request->image)
                     $arr['image'] = $this->saveGetNameImage($request->image,'/images/machines/');
@@ -141,11 +146,10 @@ class MachineController extends Controller
                     );
                 }
                 $this->insertMachineHistory($machine->id);
-                return $notification;
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
-        }catch(\Exception $e){
+        }catch(\Exception $e){return $e->getMessage();
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            

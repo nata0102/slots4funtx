@@ -20,7 +20,7 @@
                         <select class="form-control" name="game">
                             <option value="">-- Select Game Title --</option>
                               @foreach($games as $tp)
-                                <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
+                                <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
                               @endforeach
                         </select>
 
@@ -62,7 +62,6 @@
                             <th style="width:100px; text-align: center;">Client</th>
                             <th style="width:150px; text-align: center;">Business</th>
                             <th style="width:150px; text-align: center;">Status</th>
-                            <th style="width:175px; text-align: center;">Date Sale</th>
                             <th style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
                         </tr>
@@ -79,12 +78,12 @@
                             @if($r->brand == null)
                                 <td></td>
                             @else
-                                <td>{{$r->brand->brand}} {{$r->brand->model}} {{$r->brand->weight}}</td>
+                                <td>{{$r->brand->brand}} {{$r->brand->model}}</td>
                             @endif
                             @if($r->game == null)
                                 <td></td>
                             @else
-                                <td>{{$r->game->value}}</td>
+                                <td>{{$r->game->name}}</td>
                             @endif                            
                             <td>{{$r->serial}}</td>
                             @if($r->address_id == null)
@@ -99,8 +98,6 @@
                             @else
                                 <td>{{$r->status->value}}</td>
                             @endif
-                            
-                            <td>{{$r->date_sale}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">
