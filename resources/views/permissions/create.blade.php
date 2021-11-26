@@ -10,21 +10,18 @@
 
         <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
-        <div class="row">
-          <div  class="col-12 col-sm-6 col-md-4">
-            <div align="center" class="form-group">
-                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px; margin-bottom: 10px; margin-left: 350px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
-            </div>
+        <div >
+          <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
+                transform: translateY(-50%);">
+                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
           </div>
-          <div id="div_cam" class="col-12 col-sm-6 col-md-4" hidden>
-            <div class="form-group">        
-              <video id="preview" width="100%"></video>
+          <div align="center" id="div_cam" hidden>       
+              <video align="center" id="preview" width="50%"></video>
               <input type="text" name="text" id="text_qr">
-            </div>
           </div>
 
         </div>
-        
+
         <form class="" action="{{action('PermissionController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf           
             <div class="row">
