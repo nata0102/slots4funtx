@@ -34,7 +34,7 @@
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">
 			                  <label disabled="disabled" for="">Machine <span style="color:red">*</span></label>
-			                  <input disabled="disabled" class="form-control" value="{{$machine->id}} - {{$machine->serial}}">
+			                  <input disabled="disabled" class="form-control" value="{{$machine->id}} - {{$machine->owner->value}} - {{$machine->game->name}} - {{$machine->serial}}">
 			                </div>
 			            </div>
 

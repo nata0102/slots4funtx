@@ -26,26 +26,26 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <input type="hidden" name="count_warehouse" value="0" />
-                  <label><input disabled type="checkbox" name="count_warehouse" value="1" {{$res->count_warehouse == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Without Warehouse</span></label>
+                  <input type="hidden" name="band_select" value="0" />
+                  <label><input disabled type="checkbox" name="band_select" value="1" {{$res->band_select == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
                 </div>
               </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Description</label>
-                  <textarea disabled class="form-control" name="description" value="{{$res->description}}"></textarea>
+                  <textarea disabled class="form-control" name="description">{{$res->description}}</textarea>
                 </div>
               </div>
 
-              <div>
+              <div class="table-responsive table-striped table-bordered">
                 <h4 align="center">Initial Brands</h4>          
                 <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                   <table class="table" style="width: 100%; table-layout: fixed;">
                     <thead>
                       <tr>
-                        <th style="width:200px; text-align: left;">Brand</th>
-                        <th style="width:175px; text-align: left;">Model</th>
+                        <th style="text-align: left;">Brand</th>
+                        <th style="text-align: left;">Model</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -60,14 +60,14 @@
                 </div>
               </div>
 
-             <div id="table">
+             <div style="margin-top: 10px;" class="table-responsive table-striped table-bordered" id="table">
               <h4 align="center">Games</h4>
               <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                 <table id="table_games" class="table" style="width: 100%; table-layout: fixed;">
                   <thead>
                     <tr>
-                      <th style="width:200px; text-align: left;">Game</th>
-                      <th style="width:175px; text-align: left;">License</th>
+                      <th style="text-align: left;">Game</th>
+                      <th style="text-align: left;">License</th>
                     </tr>
                   </thead>
                   <tbody>

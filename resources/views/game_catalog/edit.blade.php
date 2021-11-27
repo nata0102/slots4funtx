@@ -58,7 +58,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Description</label>
-                  <textarea class="form-control" name="description" value="{{$res->description}}"></textarea>
+                  <textarea class="form-control" name="description" value="{{$res->description}}">{{$res->description}}</textarea>
                 </div>
               </div>
 
@@ -70,7 +70,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Name Game</label>
-                  <input type="text" class="form-control @error('game_name') is-invalid @enderror input100" id="game_name" name="game_name" value="{{old('game_name')}}">
+                  <input type="text" class="form-control @error('game_name') is-invalid @enderror input100" id="game_name" name="game_name" value="{{$res->game_name}}">
                   @error('game_name')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -98,14 +98,14 @@
                 </div>
               </div>
 
-            <div id="table">
+            <div style="margin-top: 40px;" class="table-responsive table-striped table-bordered" id="table">
               <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                 <table id="table_games" class="table" style="width: 100%; table-layout: fixed;">
                   <thead>
                     <tr>
-                      <th style="width:200px; text-align: left;">Game</th>
-                      <th style="width:175px; text-align: left;">License</th>
-                      <th style="width:125px; text-align: center;"></th>
+                      <th style="text-align: left;">Game</th>
+                      <th style="text-align: left;">License</th>
+                      <th style="width:45px; text-align: center;"></th>
                     </tr>
                   </thead>
                   <tbody>  

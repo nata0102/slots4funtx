@@ -96,14 +96,14 @@
                 </div>
               </div>
 
-            <div id="table">
-              <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
+            <div style="margin-top: 40px;" class="table-responsive table-striped table-bordered"   id="table">
+              <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0;">
                 <table id="table_games" class="table" style="width: 100%; table-layout: fixed;">
                   <thead>
                     <tr>
-                      <th style="width:200px; text-align: left;">Game</th>
-                      <th style="width:175px; text-align: left;">License</th>
-                      <th style="width:125px; text-align: center;"></th>
+                      <th style=" text-align: left;">Game</th>
+                      <th style=" text-align: left;">License</th>
+                      <th style="width:45px; text-align: center;"></th>
                     </tr>
                   </thead>
                   <tbody>  
@@ -139,7 +139,8 @@
       var cell3 = row.insertCell(2);
       cell1.innerHTML = val1;
       cell2.innerHTML = val2;
-      cell3.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteGame('+rowCount+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>'; 
+      cell3.innerHTML = '<button onclick="deleteGame('+rowCount+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>';
+      /*cell3.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteGame('+rowCount+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>'; */
     }
 
     function addGame(){

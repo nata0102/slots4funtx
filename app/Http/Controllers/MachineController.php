@@ -7,7 +7,6 @@ use App\Models\Machine;
 use App\Models\MachineHistory;
 use App\Models\GameCatalog;
 use App\Models\Part;
-use App\Models\PercentagePriceMachine;
 use Illuminate\Support\Facades\DB;
 
 

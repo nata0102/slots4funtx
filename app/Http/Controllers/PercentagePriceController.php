@@ -30,7 +30,13 @@ class PercentagePriceController extends Controller
     }
 
     public function searchWithFilters($params){
-        $qry = "select tab1.*,concat(tab1.machine_id,' - ',ifnull(tab1.serial,'')) as machine_name from (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,(select value from lookups where id=p.lkp_periodicity_id) as type_periodicity from percentage_price_machine p, machines mc where mc.id=p.machine_id and mc.active =1) as tab1 ";
+        $qry = "select tab1.*,concat(tab1.machine_id,' - ',owner,' - ',game,' - ',ifnull(tab1.serial,'')) as machine_name from 
+          (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,
+          (select value from lookups where id=mc.lkp_owner_id) as owner,
+          (select name from game_catalog where id=mc.game_catalog_id) as game,
+          (select value from lookups where id=p.lkp_periodicity_id) as type_periodicity 
+          from percentage_price_machine p, machines mc 
+          where mc.id=p.machine_id and mc.active =1) as tab1 ";
         if(count($params)){
             if($params['type'] != "" || $params['machine'] != "" ||  $params['periodicity'] != "" )
                 $qry .= " where ";
@@ -63,7 +69,9 @@ class PercentagePriceController extends Controller
     {
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
-        $qry = "select m.* from machines m where m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
+        $qry = "select m.*,(select value from lookups where id=m.lkp_owner_id) as owner,
+        (select name from game_catalog where id=m.game_catalog_id) as game
+        from machines m where m.active = 1 and m.id not in (select machine_id from percentage_price_machine);";
         $machines = DB::select($qry);
         return view('percentage_price.create',compact('types','machines','payments'));
     }
@@ -85,7 +93,6 @@ class PercentagePriceController extends Controller
         try{
             $transaction = DB::transaction(function() use($request){                             
                 $arr = $request->except('_token');  
-                $arr['start_payment'] = date('Y-m-d');       
                 $percentage_price = PercentagePrice::create($arr);
                 if ($percentage_price) {
                     $notification = array(
@@ -136,7 +143,7 @@ class PercentagePriceController extends Controller
         $percentage_price = PercentagePrice::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
-        $machine = Machine::findOrFail($percentage_price->machine_id);
+        $machine = Machine::with('owner','game')->findOrFail($percentage_price->machine_id);
         return view('percentage_price.edit',compact('types','machine','percentage_price','payments'));
     }
 

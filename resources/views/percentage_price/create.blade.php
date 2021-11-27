@@ -9,6 +9,17 @@
 
         <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
+        <div>
+          <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
+                transform: translateY(-50%);">
+                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
+          </div>
+          <div align="center" id="div_cam" hidden>       
+              <video align="center" id="preview" width="50%"></video>
+              <input type="text" name="text" id="text_qr">
+          </div>
+        </div>
+
         <form class="" action="{{action('PercentagePriceController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
@@ -16,7 +27,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select id="percentage_type" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" required="">
+                  <select onchange="activateQR(this.value)" id="percentage_type" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" required="">
                     <option value=""></option>
                       @foreach($types as $type)
                         <option value="{{$type->id}}"  {{ old('lkp_type_id') == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
@@ -33,10 +44,10 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
+                  <select id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
                       <option value="" selected>-- Select Machine --</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->serial}}</option>
+                        <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
                       @endforeach
                   </select>
                   @error('machine_id')
@@ -89,6 +100,18 @@
                 </div>
               </div>
 
+              <div class="col-12 col-sm-6 col-md-4">
+                      <div class="form-group">
+                        <label for="">Start Payment <span style="color:red">*</span></label>
+                        <input type="date" class="form-control @error('date_permit') is-invalid @enderror input100" name="start_payment" value="{{old('')}}" id="datepicker" required="">
+                        @error('start_payment')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                      </div>
+                  </div>
+
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>
@@ -98,5 +121,69 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<script>
+  function readQR(){
+      let aux = document.getElementById('div_cam');
+      aux.removeAttribute("hidden");
+      let scanner = new Instascan.Scanner({ video: document.getElementById('preview')});
+      Instascan.Camera.getCameras().then(function(cameras){
+        if(cameras.length > 0){
+          if (cameras[1]) {
+              //use that by default
+              scanner.start(cameras[1]);
+          } else {
+              //else use front camera
+              scanner.start(cameras[0]);
+          }
+        }
+        else
+          alert("No cameras");
+      }).catch(function(e){
+      console.error(e);
+      });
+
+      scanner.addListener('scan', function(c){
+          document.getElementById("div_cam").hidden = true;
+          var arr = c.split("/");
+          selectMachine(arr[1]);          
+      });
+  }
+
+  function selectMachine(value_id){
+        var select_machine = document.getElementById("permission_machine").options;
+        for(var i =0; i< select_machine.length;i++){
+            if(select_machine[i].value == value_id){
+              $('.selectpicker').selectpicker('val', value_id);
+              $("#permission_machine").selectpicker("refresh");
+              break;
+            }
+        }
+  }
+
+  function activateQR(type){ 
+    if(type!="")
+        document.getElementById("boton_qr").hidden = false;
+    else
+        document.getElementById("boton_qr").hidden = true;
+  }
+
+  window.onload = function() {
+    var comp_type = document.getElementById("percentage_type");
+    if(comp_type.value !=""){
+        activateQR(comp_type.value);
+    }
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+    $('#datepicker').val(today);
+  };
+  </script>
 
 @stop
