@@ -27,7 +27,7 @@
                               @endforeach
                         </select>
 
-                        <select class="form-control" id="machine_index" name="machine">
+                        <select class="form-control selectpicker" id="machine_index" name="machine" data-live-search="true">
                             <option value="" >-- Machine --</option>
                             @foreach($machines as $machine)
                                 <option value="{{$machine->id}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>

@@ -19,7 +19,7 @@
                <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select onchange="fillBrand(this, {{$brands}})" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" required>
+                  <select id="parts_type" onchange="fillBrand(this.value, {{$brands}})" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --" required>
                     <option value=""></option>
                     @foreach($types as $type)
                       <option value="{{$type->id}}" {{$part->lkp_type_id == $type->id ? 'selected' : ''}}>{{$type->value}}</option>
@@ -36,7 +36,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand-Model </label>
-                  <select class="form-control @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" required>
+                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" data-live-search="true" title="-- Select Brand --" required>
                   </select>
                   @error('brand_id')
                       <span class="invalid-feedback" role="alert">
@@ -82,8 +82,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Serial</label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$part->serial}}">
+                  <label for="">Serial <span style="color:red">*</span></label>
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$part->serial}}" required>
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -147,35 +147,36 @@
 
 <script>
   function fillBrand(type, brands){
-    var select = document.getElementById("parts_brands");
-    var length = select.options.length;
-    for (i = length-1; i >= 0; i--) 
-      select.options[i] = null;
-
-    for(var i=0;i < brands.length; i++){      
-      if(type.value == brands[i].lkp_part_id){
-        var option = document.createElement("option");
-        option.value = brands[i].id;
-        option.text = brands[i].brand+" - "+brands[i].model;
-        option.select = 'selected';
-        select.appendChild(option);
+    $('#parts_brands').empty();
+    $('#parts_brands').append('<option value=""></option>');
+    for(var i=0; i < brands.length; i++){
+      if(type == brands[i].lkp_part_id){
+        $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
+    selectionBrand(type,brands);
   }
 
-  window.onload = function() {
-    let select = document.getElementById("parts_brands");
-    for(var i=0; i < {!!$brands!!}.length; i++){ 
-      if({!!$part->lkp_type_id!!} == {!!$brands!!}[i].lkp_part_id){
-          var option = document.createElement("option");
-          option.value = {!!$brands!!}[i].id;
-          option.text = {!!$brands!!}[i].brand+" - "+{!!$brands!!}[i].model;
-          if({!!$part->brand_id!!} == {!!$brands!!}[i].id)
-              option.selected = 'selected';
-          select.appendChild(option);
-      }
-    } 
-  };
+  function selectionBrand(value){  
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#parts_brands option[value='" + e + "']").prop("selected", true);
+      });
+      $("#parts_brands").selectpicker("refresh");  
+  }
+
+  window.onload = function() { 
+     if($('#parts_type').val() != ""){
+        fillBrand($('#parts_type').val(), {!!$brands!!});
+
+        var brand_id= "{{old('brand_id')}}";
+        if(brand_id=="")
+          brand_id = "{{$part->brand_id}}";        
+        if(brand_id){
+          selectionBrand(brand_id);
+        }       
+     }
+  }; 
 
   function valideKey(evt){    
       // code is the decimal ASCII representation of the pressed key.

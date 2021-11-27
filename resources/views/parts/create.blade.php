@@ -15,7 +15,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select onchange="fillBrand(this, {{$brands}})" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id">
+                  <select id="parts_type" onchange="fillBrand(this.value, {{$brands}})" class="form-control selectpicker @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --">
                     <option value=""></option>
                     @foreach($types as $type)
                       <option value="{{$type->id}}" {{ old('lkp_type_id') == $type->id ? 'selected' : '' }} >{{$type->value}}</option>
@@ -32,11 +32,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand-Model</label>
-                  <select class="form-control @error('brand_id') is-invalid @enderror input100" name="brand_id" id="parts_brands">
-                    <option value="">-- Select Brand --</option>
-                   <!-- @foreach($brands as $brand)
-                      <option value="{{$brand->id}}" {{ old('brand_id') == $brand->id ? 'selected' : '' }} >{{$brand->brand}} {{$brand->model}}</option>
-                    @endforeach-->
+                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id" id="parts_brands" data-live-search="true" title="-- Select Brand --">
                   </select>
                   @error('brand_id')
                       <span class="invalid-feedback" role="alert">
@@ -82,8 +78,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Serial</label>
-                  <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);"  class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}">
+                  <label for="">Serial <span style="color:red">*</span></label>
+                  <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);"  class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}" required>
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -142,25 +138,22 @@
 
 <script>
   function fillBrand(type, brands){
-    var select = document.getElementById("parts_brands");
-    var length = select.options.length;
-    for (i = length-1; i >= 0; i--) 
-      select.options[i] = null;
-
-    var option = document.createElement("option");
-    option.value = "";
-    option.text = "-- Select Brand --";
-    option.select = 'selected';
-    select.appendChild(option);
-
-    for(var i=0;i < brands.length; i++){      
-      if(type.value == brands[i].lkp_part_id){
-        var option = document.createElement("option");
-        option.value = brands[i].id;
-        option.text = brands[i].brand+" "+brands[i].model;
-        select.appendChild(option);
+    $('#parts_brands').empty();
+    $('#parts_brands').append('<option value=""></option>');
+    for(var i=0; i < brands.length; i++){
+      if(type == brands[i].lkp_part_id){
+        $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
+    selectionBrand(type,brands);
+  }
+
+  function selectionBrand(value){  
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#parts_brands option[value='" + e + "']").prop("selected", true);
+      });
+      $("#parts_brands").selectpicker("refresh");  
   }
 
   function valideKey(evt){    
@@ -175,5 +168,15 @@
         return false;
       }
   }
+
+  window.onload = function() { 
+     if($('#parts_type').val() != ""){
+        fillBrand($('#parts_type').val(), {!!$brands!!});
+        var brand_id= "{{ old('brand_id') }}";
+        if(brand_id){
+          selectionBrand(brand_id);
+        }       
+     }
+  }; 
 </script>
   @stop

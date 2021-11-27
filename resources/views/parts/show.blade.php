@@ -115,9 +115,9 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" style="padding: 0;">
+        <!--<div class="modal-body" style="padding: 0;">
           <img src="{{asset('/images/part')}}/{{$part->image}}" alt="" style="width: 100%;">
-        </div>
+        </div> -->
 
       </div>
     </div>

@@ -7,29 +7,29 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
           <div class="input-group mb-2">
-            <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
-            <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">Assign to Machine</p>
-            <a href="{{action('PartController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;margin-left: 250px;"><i class="fas fa-plus"></i></a>
+            <div style="width: 50%;height: 40px;">
+              <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
+              <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">Assign to Machine</p>
+            </div>
+            <div align="left" style="width: 50%;height: 40px;">
+              <a href="{{action('PartController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
                     <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>
+            </div>
           </div>
 
           <form method="GET" action="{{action('PartController@index')}}">
-              <div class="" style="position: absolute; right: 90px; margin: 10px 0; top: 13px;">
+              <div style="position: absolute; right: 90px; margin-top: 5px;">
                 <input type="hidden" name="active" value="{{ isset($_GET['active']) ? $_GET['active'] : '1' }}" id="check-input">
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
-              <div class="input-group mb-5">
-                  <select onchange="fillBrand(this, {{$brands}})" id="parts_type" class="form-control" name="type">
-                      <option value="" >-- Select Type --</option>
+              <div style="margin-top: 40px" class="input-group mb-5">
+                  <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- Select Type --">
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach                              
                   </select>
-                  <select class="form-control" name="brand" id="parts_brands" data-old="{{old('brand')}}">
+                  <select class="form-control selectpicker" name="brand" id="parts_brands" data-old="{{old('brand')}}" data-live-search="true" title="-- Select Brand --">
                       <option value="">-- Select Brand --</option>
-                        <!--@foreach($brands as $tp)
-                          <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
-                        @endforeach-->
                   </select>
 
                   <select class="form-control" name="status" >
@@ -86,7 +86,7 @@
                       @endif                      
                       @if($part->machine_id != null)
                         @if($part->machine->machine_brand_id != null)
-                          <td>{{$part->machine_id}} - {{$part->machine->brand->brand}} {{$part->machine->brand->model}} - {{$part->machine->serial}}</td>
+                          <td>{{$part->machine_id}} - {{$part->machine->owner->value}} - {{$part->machine->game->name}} - {{$part->machine->serial}}</td>
                         @else
                           <td></td>
                         @endif
@@ -127,43 +127,30 @@
 
 <script>
   function fillBrand(type, brands){
-    var select = document.getElementById("parts_brands");
-    var length = select.options.length;
-    for (i = length-1; i >= 0; i--) 
-      select.options[i] = null;
-
-    var option = document.createElement("option");
-    option.value = ""
-    option.text = "-- Select Brand --";
-    option.select = 'selected';
-    select.appendChild(option);
-
-    for(var i=0;i < brands.length; i++){      
-      if(type.value == brands[i].lkp_part_id){
-        var option = document.createElement("option");
-        option.value = brands[i].id;
-        option.text = brands[i].brand+" "+brands[i].model;
-        select.appendChild(option);
+    $('#parts_brands').empty();
+    $('#parts_brands').append('<option value=""></option>');
+    for(var i=0; i < brands.length; i++){
+      if(type == brands[i].lkp_part_id){
+        $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
+    $("#parts_brands").selectpicker("refresh");
+  }
+
+  function selectionBrand(value){  
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#parts_brands option[value='" + e + "']").prop("selected", true);
+      });
+      $("#parts_brands").selectpicker("refresh");  
   }
 
   window.onload = function() { 
-     let type = document.getElementById("parts_type");
-     if(type.value != ''){
-        let select = document.getElementById("parts_brands");
-        for(var i=0; i < {!!$brands!!}.length; i++){ 
-          if(type.value == {!!$brands!!}[i].lkp_part_id){
-              var option = document.createElement("option");
-              option.value = {!!$brands!!}[i].id;
-              option.text = {!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model;
-              @if(isset($_GET['brand']))
-                if({!!$_GET['brand']!!} == {!!$brands!!}[i].id)
-                    option.selected = 'selected';
-              @endif
-              select.appendChild(option);
-          }
-        } 
+     if($('#parts_type').val() != ""){
+        fillBrand($('#parts_type').val(), {!!$brands!!});
+        @if(isset($_GET['brand']))
+          selectionBrand("{{$_GET['brand']}}");
+        @endif       
      }
   }; 
 </script>

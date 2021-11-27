@@ -24,7 +24,7 @@ class PartController extends Controller
           $parts = $this->searchWithFilters($request->all());
         break;
         default:
-          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine.brand','brand')->take(20)->get();
+          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine.owner','machine.game','brand')->take(20)->get();
         break;
       }
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
@@ -69,7 +69,7 @@ class PartController extends Controller
       $this->validate($request, [
         'lkp_type_id' => 'required',
         'price' => 'numeric|nullable',
-        'serial' => 'unique:parts,serial|nullable',
+        'serial' => 'required|unique:parts,serial|nullable',
       ]);
 
       try{
@@ -135,7 +135,7 @@ class PartController extends Controller
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
-      $part = Part::where('id',$id)->with('machine')->first();
+      $part = Part::where('id',$id)->with('machine','brand')->first();
       return view('parts.edit',compact('part','types','protocols','status','machines','brands'));
     }
 
@@ -151,7 +151,7 @@ class PartController extends Controller
       $this->validate($request, [
         'lkp_type_id' => 'required',
         'price' => 'numeric|nullable',
-        'serial' => 'nullable|unique:parts,serial,'.$id,
+        'serial' => 'required|nullable|unique:parts,serial,'.$id,
       ]);
 
       try{
@@ -262,10 +262,10 @@ class PartController extends Controller
         }
         try{
             $transaction = DB::transaction(function() use($request){
-                $arr = $request->only('start_range','final_range');
+                $arr = $request->only('start_range','final_range','serial');
                 $arr_aux =  $request->except('_token');
                 for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
-                    $arr_aux['serial'] = $i;
+                    $arr_aux['serial'] = $arr['serial'] . $i;
                     $part = Part::create($arr_aux);
                     $this->insertPartHistory($part->id);
                 }
