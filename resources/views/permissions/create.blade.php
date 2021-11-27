@@ -112,8 +112,15 @@
       aux.removeAttribute("hidden");
       let scanner = new Instascan.Scanner({ video: document.getElementById('preview')});
       Instascan.Camera.getCameras().then(function(cameras){
-        if(cameras.length > 0)
-          scanner.start(cameras[0]);
+        if(cameras.length > 0){
+          if (cameras[1]) {
+              //use that by default
+              scanner.start(cameras[1]);
+          } else {
+              //else use front camera
+              scanner.start(cameras[0]);
+          }
+        }
         else
           alert("No cameras");
       }).catch(function(e){
@@ -121,7 +128,6 @@
       });
 
       scanner.addListener('scan', function(c){
-          //document.getElementById('text_qr').value = c;
           document.getElementById("div_cam").hidden = true;
           var arr = c.split("/");
           selectMachine(arr[1]);          
