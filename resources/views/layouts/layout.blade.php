@@ -60,7 +60,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/slick.css') }} ">
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/select2.min.css') }} ">
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/perfect-scrollbar.css') }} ">
-	
+
 	<!-- theme -->
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/theme.css') }} ">
 	<!-- styles -->
@@ -665,10 +665,12 @@
 	function selectMachineBrand(value){
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
+			document.getElementById('gallery').removeAttribute('hidden');
 			$(document.getElementById('combo-select')).attr('name',"part_id");
 			$(document.getElementById('combo-select')).attr('required',"");
 		}else{
 			$(document.getElementById('combo-content')).attr('hidden',"");
+			$(document.getElementById('gallery')).attr('hidden',"");
 			document.getElementById('combo-select').removeAttribute('name');
 			document.getElementById('combo-select').removeAttribute('required');
 		}

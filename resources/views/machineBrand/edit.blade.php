@@ -90,7 +90,7 @@
           </form>
 
 
-          <div class="card" style="margin: 0;">
+          <div class="card" style="margin: 0;" id="gallery" hidden>
             <div class="">
               <div>
                 <button data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-primary" style="color: #FFF;">Nueva imagen</button>
