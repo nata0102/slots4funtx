@@ -6,7 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
           <form class="" action="{{action('PartController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
 
@@ -98,7 +98,7 @@
                       </span>
                   @enderror
                 </div>
-              </div>      
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -148,18 +148,18 @@
     selectionBrand(type,brands);
   }
 
-  function selectionBrand(value){  
+  function selectionBrand(value){
       var arr = [value];
       $.each(arr, function(i,e){
         $("#parts_brands option[value='" + e + "']").prop("selected", true);
       });
-      $("#parts_brands").selectpicker("refresh");  
+      $("#parts_brands").selectpicker("refresh");
   }
 
-  function valideKey(evt){    
+  function valideKey(evt){
       // code is the decimal ASCII representation of the pressed key.
       var code = (evt.which) ? evt.which : evt.keyCode;
-      
+
       if(code==8) { // backspace.
         return true;
       } else if((code>=48 && code<=57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) { // is a number.
@@ -169,14 +169,14 @@
       }
   }
 
-  window.onload = function() { 
+  window.onload = function() {
      if($('#parts_type').val() != ""){
         fillBrand($('#parts_type').val(), {!!$brands!!});
         var brand_id= "{{ old('brand_id') }}";
         if(brand_id){
           selectionBrand(brand_id);
-        }       
+        }
      }
-  }; 
+  };
 </script>
   @stop

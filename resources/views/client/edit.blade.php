@@ -6,7 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
           <form class="" action="{{action('ClientController@update',$client->id)}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="_method" value="PUT">
@@ -126,7 +126,7 @@
                           <tr>
                             <td>{{$address->name_address}}</td>
                             <td>{{$address->business_name}}</td>
-                            @if($address->city)                            
+                            @if($address->city)
                               <td>{{ $address->city->value }}</td>
                             @else
                               <td>-</td>

@@ -15,7 +15,7 @@
                         <input type="hidden" name="active" value="{{ isset($_GET['active']) ? $_GET['active'] : '1' }}" id="check-input">
                         <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
                     </div>
-                    <div class="input-group mb-5">                        
+                    <div class="input-group mb-5">
                          <input class="form-control" name="name" autofocus placeholder="Software Name" value="{{ isset($_GET['name']) ? $_GET['name'] : '' }}">
 
                         <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
-                        <tr>                            
+                        <tr>
                             <td>{{$r->name}}</td>
 							<td>{{$r->license}}</td>
 							<td>{{$r->description}}</td>

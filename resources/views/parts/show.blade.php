@@ -6,7 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           <div class="row">
 
@@ -53,7 +53,7 @@
                 @endif
               </div>
             </div>
-           
+
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
@@ -67,7 +67,7 @@
                 <label for="">Price</label>
                 <input type="text" class="form-control" disabled name="price" value="{{$part->price}}">
               </div>
-            </div>                     
+            </div>
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">

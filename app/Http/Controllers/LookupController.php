@@ -33,7 +33,7 @@ class LookupController extends Controller
 
     public function searchWithFilters($params){
         $qry = "select tab1.*, l2.id, l2.value, l2.lkp_city_id,
-        (select value from lookups where id=l2.lkp_city_id) as city  
+        (select value from lookups where id=l2.lkp_city_id) as city
         from(select l.key_value as p_key_value, value as p_value from lookups l where band_add = 1 and type='configuration') as tab1, lookups l2  where l2.type = tab1.p_key_value";
         if (array_key_exists('type', $params) && $params['type']!="")
             $qry .= " and tab1.p_key_value ='".$params['type']."'";
@@ -58,6 +58,10 @@ class LookupController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
         $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
         return view('lookups.create',compact('types','cities'));
@@ -175,7 +179,7 @@ class LookupController extends Controller
                 if(array_key_exists('lkp_city_id', $arr))
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->whereNotIn('id',[$id])->get();
                 else
-                  $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->whereNotIn('id',[$id])->get();                  
+                  $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->whereNotIn('id',[$id])->get();
                 if(count($validation)==0){
                     $res = Lookup::findOrFail($id);
                     $key_value = $this->getKeyValue($arr['value']);

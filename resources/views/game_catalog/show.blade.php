@@ -6,7 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
           <form class="" action="{{action('GameCatalogController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
@@ -39,7 +39,7 @@
               </div>
 
               <div class="table-responsive table-striped table-bordered">
-                <h4 align="center">Initial Brands</h4>          
+                <h4 align="center">Initial Brands</h4>
                 <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0; margin-top: 18px;">
                   <table class="table" style="width: 100%; table-layout: fixed;">
                     <thead>

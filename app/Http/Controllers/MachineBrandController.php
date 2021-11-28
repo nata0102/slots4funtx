@@ -127,6 +127,10 @@ class MachineBrandController extends Controller
      */
     public function show($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $brand = MachineBrand::find($id);
       return view('machineBrand.show',compact('brand'));
     }

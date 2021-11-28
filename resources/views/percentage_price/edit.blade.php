@@ -7,7 +7,7 @@
   		<div class="container-fluid">
     		<div class="card" id="card-section">
 
-        		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        		<a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           		<form class="" action="{{action('PercentagePriceController@update',$percentage_price->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf
@@ -66,7 +66,7 @@
 			                      </span>
 			                  @enderror
 			                </div>
-			            </div> 
+			            </div>
 
 			            <div class="col-12 col-sm-6 col-md-4">
 			                <div class="form-group">

@@ -45,6 +45,10 @@ class ClientController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       return view('client.create');
     }
 
@@ -109,6 +113,10 @@ class ClientController extends Controller
      */
     public function show($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $client = Client::find($id);
       $addresses = Address::where('client_id',$id)->where('active',1)->get();
       return view('client.show',compact('client','addresses'));
@@ -122,6 +130,10 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $client = Client::find($id);
       $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
       $counties =  DB::table('lookups')->where('type','counties')->where('band_add',0)->orderBy('value')->get();

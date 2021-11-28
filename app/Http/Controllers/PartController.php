@@ -50,6 +50,10 @@ class PartController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
@@ -74,7 +78,7 @@ class PartController extends Controller
 
       try{
         return DB::transaction(function() use($request){
-          $part = Part::create($request->except('_token'));          
+          $part = Part::create($request->except('_token'));
           /*if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }*/
@@ -118,6 +122,10 @@ class PartController extends Controller
      */
     public function show($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $part = Part::with('type','protocol','brand','status','machine.brand')->find($id);
       return view('parts.show',compact('part'));
     }
@@ -130,6 +138,10 @@ class PartController extends Controller
      */
     public function edit($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
@@ -240,6 +252,10 @@ class PartController extends Controller
     }
 
     public function createByRank(){
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();

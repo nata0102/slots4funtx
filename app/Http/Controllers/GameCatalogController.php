@@ -36,7 +36,7 @@ class GameCatalogController extends Controller
                 $qry .= "  name like '%".$params['name']."%'";
             }
         }else
-            $qry .= " where active = 1 ";        
+            $qry .= " where active = 1 ";
         $qry .= " order by name;";
         return DB::select($qry);
     }
@@ -48,6 +48,10 @@ class GameCatalogController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
         return view('game_catalog.create',compact('brands'));
     }
@@ -101,6 +105,10 @@ class GameCatalogController extends Controller
      */
     public function show($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $res = GameCatalog::findOrFail($id);
         $brands = GameBrand::with('brand')->where('game_catalog_id',$id)->get();
         return view('game_catalog.show',compact('res','brands'));
@@ -114,13 +122,17 @@ class GameCatalogController extends Controller
      */
     public function edit($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $res = GameCatalog::findOrFail($id);
         $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
         $game_brands = GameBrand::where('game_catalog_id',$id)->get();
         $brands_ids = [];
         foreach ($game_brands as $b)
             array_push($brands_ids,(string) $b->machine_brand_id);
-        return view('game_catalog.edit',compact('brands_ids','res','brands')); 
+        return view('game_catalog.edit',compact('brands_ids','res','brands'));
     }
 
     /**
@@ -177,10 +189,10 @@ class GameCatalogController extends Controller
     public function destroy($id)
     {
         try{
-            $transaction = DB::transaction(function() use ($id){                
+            $transaction = DB::transaction(function() use ($id){
                 $game = GameCatalog::findOrFail($id);
                 $game->active = $game->active == 0 ? 1 : 0;
-                if($game->save())                
+                if($game->save())
                     return response()->json(200);
                 else
                     return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');

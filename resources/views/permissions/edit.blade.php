@@ -7,14 +7,14 @@
   		<div class="container-fluid">
     		<div class="card" id="card-section">
 
-        		<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        		<a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
         		<div>
 		          <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
 		                transform: translateY(-50%);">
 		                <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
 		          </div>
-		          <div align="center" id="div_cam" hidden>       
+		          <div align="center" id="div_cam" hidden>
 		              <video align="center" id="preview" width="50%"></video>
 		              <input type="text" name="text" id="text_qr">
 		          </div>
@@ -141,7 +141,7 @@ function readQR(){
           //document.getElementById('text_qr').value = c;
           document.getElementById("div_cam").hidden = true;
           var arr = c.split("/");
-          selectMachine(arr[1]);          
+          selectMachine(arr[1]);
       });
   }
 
@@ -162,7 +162,7 @@ window.onload = function() {
 	var comp_machine = document.getElementById("permission_machine");
 	if(comp_machine != null){
 		document.getElementById("boton_qr").hidden = false;
-	} 
+	}
   };
 </script>
 @stop

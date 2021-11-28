@@ -8,21 +8,21 @@
     <div class="container-fluid">
       <div class="card" id="card-section">
 
-        <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
         <div>
           <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
                 transform: translateY(-50%);">
                 <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
           </div>
-          <div align="center" id="div_cam" hidden>       
+          <div align="center" id="div_cam" hidden>
               <video align="center" id="preview" width="50%"></video>
               <input type="text" name="text" id="text_qr">
           </div>
         </div>
 
         <form class="" action="{{action('PermissionController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
-            @csrf           
+            @csrf
             <div class="row">
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -130,7 +130,7 @@
       scanner.addListener('scan', function(c){
           document.getElementById("div_cam").hidden = true;
           var arr = c.split("/");
-          selectMachine(arr[1]);          
+          selectMachine(arr[1]);
       });
   }
 
@@ -145,14 +145,14 @@
         }
   }
 
-  function fillMachines(type){ 
+  function fillMachines(type){
     if(type!="")
         document.getElementById("boton_qr").hidden = false;
     else
         document.getElementById("boton_qr").hidden = true;
-    
+
     $('#permission_machine').empty();
-    for(var i=0; i < {!!$machines!!}.length; i++){ 
+    for(var i=0; i < {!!$machines!!}.length; i++){
           var band = true;
           for(var j=0; j<{!!$machines!!}[i].permission.length;j++){
              if({!!$machines!!}[i].permission[j].lkp_type_permit_id == type){
@@ -163,7 +163,7 @@
           if(band){
             $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+{!!$machines!!}[i].id+" - "+{!!$machines!!}[i].owner.value+" - "+{!!$machines!!}[i].game.name+" - "+{!!$machines!!}[i].serial+'</option>');
           }
-    } 
+    }
     $("#permission_machine").selectpicker("refresh");
   }
 

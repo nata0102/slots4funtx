@@ -7,14 +7,14 @@
     <div class="container-fluid">
       <div class="card" id="card-section">
 
-        <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
         <div>
           <div align="center" style="margin-top: 10px;-ms-transform: translateY(-50%);
                 transform: translateY(-50%);">
                 <button align="center" id="boton_qr" hidden class="btn btn-info" style="width: 40px; height: 40px;" onclick="readQR()"><i class="fas fa-qrcode"></i></button>
           </div>
-          <div align="center" id="div_cam" hidden>       
+          <div align="center" id="div_cam" hidden>
               <video align="center" id="preview" width="50%"></video>
               <input type="text" name="text" id="text_qr">
           </div>
@@ -86,7 +86,7 @@
                       </span>
                   @enderror
                 </div>
-              </div>              
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -151,7 +151,7 @@
       scanner.addListener('scan', function(c){
           document.getElementById("div_cam").hidden = true;
           var arr = c.split("/");
-          selectMachine(arr[1]);          
+          selectMachine(arr[1]);
       });
   }
 
@@ -166,7 +166,7 @@
         }
   }
 
-  function activateQR(type){ 
+  function activateQR(type){
     if(type!="")
         document.getElementById("boton_qr").hidden = false;
     else

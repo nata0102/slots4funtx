@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           <form class="" action="{{action('LookupController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf

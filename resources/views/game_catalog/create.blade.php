@@ -6,7 +6,7 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
           <form class="" action="{{action('GameCatalogController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
@@ -64,7 +64,7 @@
                 <div class="form-group">
                 </div>
               </div>
- 
+
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Name Game</label>
@@ -106,7 +106,7 @@
                       <th style="width:45px; text-align: center;"></th>
                     </tr>
                   </thead>
-                  <tbody>  
+                  <tbody>
                   </tbody>
                 </table>
               </div>
@@ -131,7 +131,7 @@
   <script>
     function insertRow(val1, val2){
       var table = document.getElementById("table_games");
-      var rowCount = table.rows.length;  
+      var rowCount = table.rows.length;
       var row = table.insertRow(rowCount);
       row.setAttribute("id", "td_"+rowCount);
       var cell1 = row.insertCell(0);
@@ -144,11 +144,11 @@
     }
 
     function addGame(){
-      let game_name = document.getElementById("game_name"); 
+      let game_name = document.getElementById("game_name");
       let game_license = document.getElementById("game_license");
       let games = document.getElementById("games");
       if(game_name.value != ""){
-        insertRow(game_name.value,game_license.value);    
+        insertRow(game_name.value,game_license.value);
         games.value += game_name.value+"|$";
         if(game_license!="")
           games.value += game_license.value+"&$";
@@ -186,13 +186,13 @@
           var arr2 = arr1[i].split('|$');
           insertRow(arr2[0], arr2[1]);
         }
-      }      
+      }
     }
     function valideKey(evt){
-    
+
     // code is the decimal ASCII representation of the pressed key.
     var code = (evt.which) ? evt.which : evt.keyCode;
-    
+
     if(code==8) { // backspace.
       return true;
     } else if((code>=48 && code<=57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) { // is a number.

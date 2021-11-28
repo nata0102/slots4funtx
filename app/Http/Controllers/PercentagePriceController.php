@@ -26,16 +26,16 @@ class PercentagePriceController extends Controller
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $periodicities =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
 
-        return view('percentage_price.index',compact('res','types','periodicities'));  
+        return view('percentage_price.index',compact('res','types','periodicities'));
     }
 
     public function searchWithFilters($params){
-        $qry = "select tab1.*,concat(tab1.machine_id,' - ',owner,' - ',game,' - ',ifnull(tab1.serial,'')) as machine_name from 
+        $qry = "select tab1.*,concat(tab1.machine_id,' - ',owner,' - ',game,' - ',ifnull(tab1.serial,'')) as machine_name from
           (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,
           (select value from lookups where id=mc.lkp_owner_id) as owner,
           (select name from game_catalog where id=mc.game_catalog_id) as game,
-          (select value from lookups where id=p.lkp_periodicity_id) as type_periodicity 
-          from percentage_price_machine p, machines mc 
+          (select value from lookups where id=p.lkp_periodicity_id) as type_periodicity
+          from percentage_price_machine p, machines mc
           where mc.id=p.machine_id and mc.active =1) as tab1 ";
         if(count($params)){
             if($params['type'] != "" || $params['machine'] != "" ||  $params['periodicity'] != "" )
@@ -67,6 +67,10 @@ class PercentagePriceController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
         $qry = "select m.*,(select value from lookups where id=m.lkp_owner_id) as owner,
@@ -89,10 +93,10 @@ class PercentagePriceController extends Controller
             'lkp_type_id' => 'required',
             'lkp_periodicity_id' => 'required',
             'amount' => 'required',
-        ]);    
+        ]);
         try{
-            $transaction = DB::transaction(function() use($request){                             
-                $arr = $request->except('_token');  
+            $transaction = DB::transaction(function() use($request){
+                $arr = $request->except('_token');
                 $percentage_price = PercentagePrice::create($arr);
                 if ($percentage_price) {
                     $notification = array(
@@ -111,10 +115,10 @@ class PercentagePriceController extends Controller
 
             return redirect()->action('PercentagePriceController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';          
+            $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
@@ -140,6 +144,10 @@ class PercentagePriceController extends Controller
      */
     public function edit($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
         $percentage_price = PercentagePrice::findOrFail($id);
         $types =  DB::table('lookups')->where('type','type_price')->get();
         $payments =  DB::table('lookups')->where('type','payment_periodicity')->where('active',1)->orderBy('value')->get();
@@ -160,10 +168,10 @@ class PercentagePriceController extends Controller
             'lkp_type_id' => 'required',
             'lkp_periodicity_id' => 'required',
             'amount' => 'required',
-        ]);    
+        ]);
         try{
-            $transaction = DB::transaction(function() use($request, $id){                           
-                $arr = $request->except('_token','_method');       
+            $transaction = DB::transaction(function() use($request, $id){
+                $arr = $request->except('_token','_method');
                 $percentage_price = PercentagePrice::findOrFail($id);
                 if($arr['lkp_periodicity_id'] != 68)
                   $arr['payday'] = null;
@@ -186,10 +194,10 @@ class PercentagePriceController extends Controller
 
             return redirect()->action('PercentagePriceController@index')->with($transaction);
         }catch(\Exception $e){return $e->getMessage();
-            $cad = 'Oops! there was an error, please try again later.';          
+            $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
