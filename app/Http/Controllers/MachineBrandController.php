@@ -52,6 +52,10 @@ class MachineBrandController extends Controller
      */
     public function create()
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       return view('machineBrand.create', compact('types','parts'));
@@ -135,6 +139,10 @@ class MachineBrandController extends Controller
      */
     public function edit($id)
     {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::find($id);
       $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
