@@ -43,4 +43,10 @@ Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("clients","ClientController");
   Route::resource("address","AddressController");
   Route::resource("game_catalog","GameCatalogController");
+
+  Route::delete('/machine-brands/delete-image/{id}', 'MachineBrandController@deleteImage');
+  Route::post('/machine-brands/create-image/{id}', 'MachineBrandController@createImage');
+
+
+
 });

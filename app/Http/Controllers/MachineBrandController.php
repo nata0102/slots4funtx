@@ -7,6 +7,7 @@ use App\Models\MachineBrand;
 use App\Models\Part;
 use DB;
 use File;
+use App\PartImage;
 use Input;
 
 class MachineBrandController extends Controller
@@ -137,7 +138,8 @@ class MachineBrandController extends Controller
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::find($id);
       $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      return view('machineBrand.edit',compact('brand','types','parts'));
+      $images = PartImage::where('part_brand_id',$id)->get();
+      return view('machineBrand.edit',compact('brand','types','parts','images'));
     }
 
     /**
@@ -220,5 +222,71 @@ class MachineBrandController extends Controller
       }catch(\Exception $e){
         return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
       }
+    }
+
+    public function createImage(Request $request, $id){
+      $notification = array(
+          'message' => 'There is already a record with the same data.',
+          'alert-type' => 'info'
+      );
+
+      try{
+        return DB::transaction(function() use($request, $id){
+          $image = new PartImage;
+          $image->part_brand_id = $id;
+          if($request->image){
+              $image->name_image = $this->saveGetNameImage($request->image,'/images/part brand/');
+          }
+          $image->save();
+          $notification = array(
+              'message' => 'Successful!!',
+              'alert-type' => 'success'
+          );
+          return redirect() -> action('MachineBrandController@edit',$id)->with($notification);
+        });
+      }catch(\Exception $e){
+        $notification = array(
+            'message' => 'Oops! there was an error, please try again later.',
+            'alert-type' => 'error'
+        );
+      }
+      return redirect() -> action('MachineBrandController@edit',$id)->with($notification);
+    }
+
+    public function deleteImage($id){
+      $image = PartImage::where('id',$id)->first();
+      $notification = array(
+          'message' => 'Oops! there was an error, please try again later.',
+          'alert-type' => 'error'
+      );
+      if($image != NULL){
+        try{
+          return DB::transaction(function() use($image, $notification){
+            if(file_exists(public_path() . '/images/part brand/'.$image->name_image))
+            {
+              unlink(public_path() . '/images/part brand/'.$image->name_image);
+            }
+            $destroy = $image->delete();
+            if($destroy){
+              $notification = array(
+                'message' => 'Successful!!',
+                'alert-type' => 'success'
+              );
+            }
+            return redirect() -> action('MachineBrandController@edit',$image->part_brand_id)->with($notification);
+          });
+
+
+        }catch(\Exception $e){
+          $notification = array(
+            'message' => 'Oops! there was an error, please try again later.',
+            'alert-type' => 'error'
+          );
+          return redirect() -> action('MachineBrandController@edit',$image->part_brand_id)->with($notification);
+        }
+      }
+      return redirect() -> back()->with($notification);
+
+
     }
 }
