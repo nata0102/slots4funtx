@@ -7,7 +7,7 @@
     <div class="container-fluid">
       <div class="" id="card-section">
 
-        <h2>Hola "Nombre"</h2>
+        <h2>Hola</h2>
 
         <div class="row m-t-25">
 
@@ -98,7 +98,7 @@
               </div>
             </a>
           </div>
-          
+
         </div>
 
 
