@@ -13,6 +13,10 @@ class Lookup extends Model
         return $this->hasOne('App\Models\Lookup', 'key_value', 'type');
     }
 
+    public function brands(){
+        return $this->hasMany('App\Models\MachineBrand', 'lkp_part_id', 'id');
+    }
+
     public function user(){
         return $this->belongsTo('App\User');
     }

@@ -32,7 +32,7 @@
               <div class="col-12 col-sm-6 col-md-4" id="combo-content" hidden>
                 <div class="form-group">
                   <label for="">Parts <span style="color:red"></span></label>
-                  <select class="form-control" name="" required="" id="combo-select">
+                  <select class="form-control selectpicker" data-live-search="true" name="" required="" id="combo-select">
                     <option value="" selected disabled>-- Select Part --</option>
                     @foreach($parts as $part)
                       <option value="{{$part->id}}">{{$part->value}}</option>

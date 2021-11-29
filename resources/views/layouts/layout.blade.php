@@ -589,22 +589,24 @@
 
 	function selectBrand(value,search){
 		if(value == ""){
-			$(document.getElementById('part')).attr('hidden',"");
-			$(document.getElementById('machine')).attr('hidden',"");
-			document.getElementById('part').removeAttribute('name');
-			$(document.getElementById('machine')).attr('name',"brand_type");
+			$('#part').selectpicker('hide');
+			$('#machine').selectpicker('hide');
+			$('#part_brand').selectpicker('hide');
+			/*document.getElementById('part_brand').removeAttribute('name');
+			$(document.getElementById('machine')).attr('name',"brand_type");*/
 		}
 		if(value == "53"){
-			document.getElementById('machine').removeAttribute('hidden');
-			$(document.getElementById('machine')).attr('name',"brand_type");
-			document.getElementById('part').removeAttribute('name');
-			$(document.getElementById('part')).attr('hidden',"");
+			$('#part').selectpicker('hide');
+			$('#machine').selectpicker('show');
+			$('#part_brand').selectpicker('hide');
+			/*$(document.getElementById('machine')).attr('name',"brand_type");
+			document.getElementById('part_brand').removeAttribute('name');*/
 		}
 		if(value == "54"){
-			document.getElementById('part').removeAttribute('hidden');
-			$(document.getElementById('part')).attr('name',"brand_type");
-			document.getElementById('machine').removeAttribute('name');
-			$(document.getElementById('machine')).attr('hidden',"");
+			$('#part').selectpicker('show');
+			$('#machine').selectpicker('show');
+			/*$(document.getElementById('part_brand')).attr('name',"brand_type");
+			$(document.getElementById('machine')).attr('hidden',"");*/
 		}
 		if(search==0){
 			document.getElementById("part").selectedIndex = 0;
@@ -663,14 +665,19 @@
 	}
 
 	function selectMachineBrand(value){
+		var gallery = null;
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
-			document.getElementById('gallery').removeAttribute('hidden');
+			gallery = document.getElementById('gallery');
+			if (gallery != null) 
+				gallery.removeAttribute('hidden');
 			$(document.getElementById('combo-select')).attr('name',"part_id");
 			$(document.getElementById('combo-select')).attr('required',"");
 		}else{
 			$(document.getElementById('combo-content')).attr('hidden',"");
-			$(document.getElementById('gallery')).attr('hidden',"");
+			gallery = document.getElementById('gallery');
+			if (gallery != null) 
+				$(gallery).attr('hidden',"");
 			document.getElementById('combo-select').removeAttribute('name');
 			document.getElementById('combo-select').removeAttribute('required');
 		}

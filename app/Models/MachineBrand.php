@@ -23,20 +23,26 @@ class MachineBrand extends Model
   }
 
   public function scopeModel($query, $model) {
-  	if ($model) {
-  		return $query->where('model','like',"%$model%");
-  	}
+    if ($model) {
+      return $query->where('model','like',"%$model%");
+    }
   }
 
   public function scopeBrand($query, $brand) {
-  	if ($brand) {
-  		return $query->where('brand','like',"%$brand%");
-  	}
+    if ($brand) {
+      return $query->where('brand','like',"%$brand%")->orWhere('model', 'like', "%$brand%");
+    }
   }
 
   public function scopeType($query, $type) {
   	if ($type) {
   		return $query->where('lkp_type_id','like',"%$type%");
   	}
+  }
+
+  public function scopePart($query, $part) {
+    if ($part) {
+      return $query->where('lkp_part_id','=',$part);
+    }
   }
 }

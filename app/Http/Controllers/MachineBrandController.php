@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MachineBrand;
 use App\Models\Part;
+use App\Models\Lookup;
 use DB;
 use File;
 use App\PartImage;
@@ -30,10 +31,11 @@ class MachineBrandController extends Controller
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brands_types =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)
                       ->orderBy('brand')->groupBy('brand')->select('brand')->get();
-      $brands_types2 =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)
-                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();
+      /*$brands_types2 =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)
+                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();*/
+      $parts =  Lookup::with('brands')->where('type','part_type')->where('active',1)->orderBy('value')->get();
 
-      return view('machineBrand.index',compact('brands','types','brands_types','brands_types2'));
+      return view('machineBrand.index',compact('parts','brands','types','brands_types'));
     }
 
     public function searchWithFilters($params){
@@ -41,6 +43,7 @@ class MachineBrandController extends Controller
       ->model($params['model'])
       ->brand($params['brand_type'])
       ->type($params['type'])
+      ->part($params['part_id'])
       ->where('active',$params['active'])->orderBy('lkp_part_id')->orderBy('brand')->orderBy('model')->get();
       return $res;
     }
@@ -148,7 +151,7 @@ class MachineBrandController extends Controller
         session(['urlBack' => url()->previous()]);
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
-      $brand = MachineBrand::find($id);
+      $brand = MachineBrand::with('type')->findOrFail($id);
       $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $images = PartImage::where('part_brand_id',$id)->get();
       return view('machineBrand.edit',compact('brand','types','parts','images'));
@@ -162,10 +165,9 @@ class MachineBrandController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {//return $request->all();
       $this->validate($request, [
         'brand' => 'required',
-        'lkp_type_id' => 'required',
         'weight' => 'numeric|nullable',
       ]);
 
@@ -183,7 +185,10 @@ class MachineBrandController extends Controller
           $brand = MachineBrand::find($id);
           $brand->brand = $request->brand;
           $brand->model = $request->model;
-          $brand->lkp_part_id = $request->part_id;
+          if($request->lkp_type_id == 53)
+            $brand->lkp_part_id = null;
+          else
+            $brand->lkp_part_id = $request->part_id;
           $brand->weight = $request->weight;
           $brand->lkp_type_id = $request->lkp_type_id;
           $created = $brand->save();
