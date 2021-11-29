@@ -6,9 +6,9 @@
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
-          
+
           <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
-          
+
           <form class="" action="{{action('MachineController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
             <div class="row">
@@ -44,7 +44,7 @@
                       </span>
                   @enderror
                 </div>
-              </div>    
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4" id="div_contained_games" hidden>
                 <div class="form-group">
@@ -52,7 +52,7 @@
                   <select id="contained_games" class="form-control selectpicker show-menu-arrow @error('games_select') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Games --" multiple="multiple" name="games_select[]">
                   </select>
                 </div>
-              </div>     
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
                 <div class="form-group">
@@ -60,14 +60,14 @@
                   <textarea onkeydown="return false;" id="contained_games_2"></textarea>
                   <textarea onkeydown="return false;" id="text_games" name="games"  value="{{old('games')}}" hidden></textarea>
                 </div>
-              </div>     
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4" id="div_description_game" hidden>
                 <div class="form-group">
                   <label for="">Description Game</label>
                   <textarea disabled id="description_game"></textarea>
                 </div>
-              </div>   
+              </div>
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -80,7 +80,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Serial</label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" >
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}" style="text-transform:uppercase;" onkeyup="this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" >
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -112,7 +112,7 @@
                   </select>
                 </div>
               </div>
-              
+
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Components</label>
@@ -140,7 +140,7 @@
                   <input class="photo" type="file" name="image" value="{{old('image')}}" id="img-btn-3" data-id2="img-new-3" accept="image/*" hidden>
                   <input class="mg" type="text" value="" id="img-new-3" accept="image/*" hidden>
                 </div>
-              </div>           
+              </div>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>
@@ -156,13 +156,13 @@
   function fillContainedGames(game, index) {
       //LLena combo de description Games
       index = index-2;
-      if(game != ""){             
+      if(game != ""){
         $('#contained_games').empty();
         var arr1 = {!!$games!!}[index].games.split("&$");
         if({!!$games!!}[index].band_select == 1){
-            document.getElementById("div_contained_games").hidden=false; 
-            document.getElementById("div_contained_games_2").hidden=true;        
-        
+            document.getElementById("div_contained_games").hidden=false;
+            document.getElementById("div_contained_games_2").hidden=true;
+
             for(var i=0; i< arr1.length; i++){
                 if(arr1[i] != ""){
                     var arr2 = arr1[i].split('|$');
@@ -178,7 +178,7 @@
             @endif
             $("#contained_games").selectpicker("refresh");
         }else{
-            document.getElementById("div_contained_games").hidden=true; 
+            document.getElementById("div_contained_games").hidden=true;
             var container2 = document.getElementById("div_contained_games_2");
             container2.hidden=false;
             container2.value = {!!$games!!}[index].games;
@@ -188,11 +188,11 @@
                     var arr2 = arr1[i].split('|$');
                     cad_final += arr2[0]+" "+arr2[1]+'\n';
                 }
-            } 
+            }
 
             document.getElementById("contained_games_2").value = cad_final;
             document.getElementById("text_games").value  = {!!$games!!}[index].games;
-        } 
+        }
         if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
             document.getElementById("div_description_game").hidden=false;
             document.getElementById("description_game").value = {!!$games!!}[index].description;
@@ -223,7 +223,7 @@
           $('#machine_brands').append('<option value="">OTHER</option>');
           $("#machine_brands").selectpicker("refresh");
       }
-  }  
+  }
 
   function checkFillBrand(brand_id){
       if($("#machine_brands option[value='"+brand_id+"']").length == 0)
@@ -236,7 +236,7 @@
   }
 
   window.onload = function() {
-      var select_game = document.getElementById("select_game");     
+      var select_game = document.getElementById("select_game");
       if(select_game.value != ""){
           fillContainedGames(select_game.value,select_game.selectedIndex + 1);
           var brand_id = "{{old('machine_brand_id')}}";
@@ -245,10 +245,10 @@
       }
   };
 
-  function valideKey(evt){    
+  function valideKey(evt){
       // code is the decimal ASCII representation of the pressed key.
       var code = (evt.which) ? evt.which : evt.keyCode;
-      
+
       if(code==8) { // backspace.
         return true;
       } else if((code>=48 && code<=57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) { // is a number.
