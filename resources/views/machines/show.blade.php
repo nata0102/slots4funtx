@@ -7,16 +7,9 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-          <a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-long-arrow-alt-left"></i></a>
 
-        	<div class="row">
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
-                  <label for="">Game Title</label>
-                  <input type="text" class="form-control" disabled value="{{$machine->game->value}}">
-                </div>
-              </div>
+        	<div class="row">              
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -24,6 +17,31 @@
                   <input type="text" class="form-control" disabled value="{{$machine->owner->value}}">
                 </div>
               </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Game Title</label>
+                  <input type="text" class="form-control" disabled value="{{$machine->game->name}}">
+                </div>
+              </div>
+
+              @if($machine->game->description)
+                <div class="col-12 col-sm-6 col-md-4">
+                  <div class="form-group">
+                    <label for="">Description Game</label>
+                    <textarea disabled="">{{$machine->game->description}}</textarea>
+                  </div>
+                </div>
+              @endif
+
+              @if($machine->games)
+                <div class="col-12 col-sm-6 col-md-4" >
+                  <label for="">Detail Games</label>
+                  <div class="form-group">
+                    <textarea style="margin-top: 10px" disabled="" id="contained_games_2"></textarea>
+                  </div>
+                </div>
+              @endif
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -64,7 +82,15 @@
                   @endif
                 </div>
               </div>
-              
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
+                  <label for="">Notes</label>
+                  <textarea class="form-control" name="notes" disabled>{{$machine->notes}}</textarea>
+                </div>
+              </div>              
+
+              @if($machine->image)
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Image @if($machine->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
@@ -75,11 +101,12 @@
                   </div>
                 </div>
               </div>
+              @endif
 
               @if(count($machine->parts) > 0)
-              <div class="form-group">
-              	<label for="">Parts</label>
-	              <div class=" table-responsive table-striped table-bordered" >
+              <div style="margin-top: 10px;" class="form-group">
+                <h3 style="text-align: center">Components</h3>
+	              <div style="margin-top: 10px;" class=" table-responsive table-striped table-bordered" >
 	                <table id="example" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
 	                    <thead>
 	                        <tr>
@@ -93,8 +120,8 @@
 	                    	@foreach($machine->parts as $part)
 	                        <tr>
 	                            <td>{{$part->type->value}}</td>
-	                            <td>{{$part->brand}}</td>
-	                            <td>{{$part->model}}</td>
+	                            <td>{{$part->brand->brand}}</td>
+	                            <td>{{$part->brand->model}}</td>
 	                            <td>{{$part->serial}}</td>
 	                        </tr>
 	                        @endforeach
@@ -103,7 +130,6 @@
 	                </div>
 	            </div>
               @endif
-
             </div>
         </div>
   	  </div>
@@ -120,12 +146,30 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" style="padding: 0;">
-        <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" style="width: 100%;">
-      </div>
-
+      @if($machine->image!=null)
+        <div class="modal-body" style="padding: 0;">
+          <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" style="width: 100%;">
+        </div>
+      @endif
     </div>
   </div>
 </div>
+
+<script>
+  window.onload = function() {
+    var games = {!!$machine!!}.games;
+    if(games){
+      var arr1 = games.split("&$");
+      var cad_final = "";
+      for(var i=0; i< arr1.length; i++){
+          if(arr1[i] != ""){
+              var arr2 = arr1[i].split('|$');
+              cad_final += arr2[0]+" "+arr2[1]+'\n';
+          }
+      } 
+      document.getElementById("contained_games_2").value = cad_final;
+    }
+  };
+</script>
 
 @stop

@@ -7,30 +7,13 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-        	<a href="{{url()->previous()}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+        	<a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
 
           	<form class="" action="{{action('MachineController@update',$machine->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf
-            	<input type="hidden" name="_method" value="PUT">
-            	<div class="row">            		
-		            <div class="col-12 col-sm-6 col-md-4">
-		                <div class="form-group">
-		                  <label for="">Game Title <span style="color:red">*</span></label>
-		                  <select class="form-control @error('lkp_game_id') is-invalid @enderror input100" name="lkp_game_id" required="">
-		                    <option value=""></option>
-		                      @foreach($games as $game)
-		                        <option value="{{$game->id}}"  {{ $machine->lkp_game_id == $game->id ? 'selected' : '' }}>{{$game->value}}</option>
-		                      @endforeach
-		                  </select>
-		                  @error('lkp_game_id')
-		                      <span class="invalid-feedback" role="alert">
-		                          <strong>{{ $message }}</strong>
-		                      </span>
-		                  @enderror
-		                </div>
-		            </div>
-
-		            <div class="col-12 col-sm-6 col-md-4">
+            	<input type="hidden" name="_method" value="PUT">           	
+            	<div class="row"> 
+	            	<div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Owner <span style="color:red">*</span></label>
 		                  <select class="form-control @error('lkp_owner_id') is-invalid @enderror input100" name="lkp_owner_id" required="">
@@ -45,12 +28,52 @@
 		                      </span>
 		                  @enderror
 		                </div>
-		            </div>
+		            </div>  
+
+		            <div class="col-12 col-sm-6 col-md-4">
+		                <div class="form-group">
+		                  <label for="">Game Title <span style="color:red">*</span></label>
+		                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" required="" data-live-search="true">
+		                    <option value=""></option>
+		                      @foreach($games as $game)
+		                        <option value="{{$game->id}}"  {{ $machine->game_catalog_id == $game->id ? 'selected' : '' }}>{{$game->name}}</option>
+		                      @endforeach
+		                  </select>
+		                  @error('game_catalog_id')
+		                      <span class="invalid-feedback" role="alert">
+		                          <strong>{{ $message }}</strong>
+		                      </span>
+		                  @enderror
+		                </div>
+		            </div>	
+
+		            <div class="col-12 col-sm-6 col-md-4" id="div_contained_games" hidden>
+		                <div class="form-group">
+		                  <label for="">Contained Games</label>
+		                  <select id="contained_games" class="form-control selectpicker show-menu-arrow @error('games_select') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Games --" multiple="multiple" name="games_select[]">
+		                  </select>
+		                </div>
+		              </div>     
+
+		              <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
+		                <div class="form-group">
+		                  <label for="">Contained Games</label>
+		                  <textarea onkeydown="return false;" id="contained_games_2"></textarea>
+		                  <textarea onkeydown="return false;" id="text_games" name="games"  value="{{$machine->games}}" hidden>{{$machine->games}}</textarea>
+		                </div>
+		              </div>     
+
+		              <div class="col-12 col-sm-6 col-md-4" id="div_description_game" hidden>
+		                <div class="form-group">
+		                  <label for="">Description Game</label>
+		                  <textarea disabled id="description_game"></textarea>
+		                </div>
+		              </div> 	            
 
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Brand</label>
-		                  <select class="form-control @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id">
+		                  <select onchange="changeBrand(this.value)" id="machine_brands" class="form-control selectpicker @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id" data-live-search="true" title="-- Select Brand --">
 		                    <option value=""></option>
 		                      @foreach($brands as $brand)
 		                        <option value="{{$brand->id}}" {{ $machine->machine_brand_id == $brand->id ? 'selected' : '' }}>{{$brand->brand}} {{$brand->model}} {{$brand->weight}}</option>
@@ -67,7 +90,7 @@
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Serial</label>
-		                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$machine->serial}}">
+		                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$machine->serial}}" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);">
 		                  @error('serial')
 		                      <span class="invalid-feedback" role="alert">
 		                          <strong>{{ $message }}</strong>
@@ -79,7 +102,7 @@
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Address</label>
-		                  <select class="form-control @error('address_id') is-invalid @enderror input100" name="address_id">
+		                  <select class="form-control selectpicker @error('address_id') is-invalid @enderror input100" name="address_id" data-live-search="true" title="-- Select Address --">
 		                    <option value=""></option>
 		                      @foreach($addresses as $address)
 		                        <option value="{{$address->id}}" {{ $machine->address_id == $address->id ? 'selected' : '' }}>{{$address->name}} - {{$address->name_address}}</option>
@@ -112,7 +135,7 @@
 
 		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
-		                  <label for="">Parts</label>
+		                  <label for="">Components</label>
 		                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]">
 		                  @foreach($parts as $part)
 		                    <option {{ in_array($part->id, $parts_ids) ? 'selected' : '' }}  value="{{$part->id}}">{{$part->serial}} - {{$part->value}}</option>
@@ -123,6 +146,13 @@
 		                          <strong>{{ $message }}</strong>
 		                      </span>
 		                  @enderror
+		                </div>
+		              </div>
+
+		              <div class="col-12 col-sm-6 col-md-4">
+		                <div class="form-group">
+		                  <label for="">Notes</label>
+		                  <textarea class="form-control" name="notes" value="{{$machine->notes}}">{{$machine->notes}}</textarea>
 		                </div>
 		              </div>
 
@@ -163,12 +193,125 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      @if($machine->image)
       <div class="modal-body" style="padding: 0;">
         <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" style="width: 100%;">
       </div>
+      @endif
 
     </div>
   </div>
 </div>
+
+<script>
+  //Llena los games,
+  function fillContainedGames(game, index) {
+      //LLena combo de description Games
+      index = index-1;
+      if(game != ""){           
+        $('#contained_games').empty();
+        var arr1 = {!!$games!!}[index].games.split("&$");
+        if({!!$games!!}[index].band_select == 1){
+            document.getElementById("div_contained_games").hidden=false; 
+            document.getElementById("div_contained_games_2").hidden=true;        
+        
+            for(var i=0; i< arr1.length; i++){
+                if(arr1[i] != ""){
+                    var arr2 = arr1[i].split('|$');
+                    $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
+                }
+            }
+            var machine_games = {!!$machine!!}.games;
+            if(machine_games){
+              var arr_games = machine_games.split('&$');
+              arr_games = arr_games.filter(function(item) {
+			    return item !== "";
+			  })
+              $.each(arr_games, function(i,e){
+                $("#contained_games option[value='" + e + "']").prop("selected", true);
+              });
+          	}
+            $("#contained_games").selectpicker("refresh");
+        }else{
+            document.getElementById("div_contained_games").hidden=true; 
+            var container2 = document.getElementById("div_contained_games_2");
+            container2.hidden=false;
+            container2.value = {!!$games!!}[index].games;
+            var cad_final = "";
+            for(var i=0; i< arr1.length; i++){
+                if(arr1[i] != ""){
+                    var arr2 = arr1[i].split('|$');
+                    cad_final += arr2[0]+" "+arr2[1]+'\n';
+                }
+            } 
+
+            document.getElementById("contained_games_2").value = cad_final;
+            document.getElementById("text_games").value  = {!!$games!!}[index].games;
+        } 
+        if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
+            document.getElementById("div_description_game").hidden=false;
+            document.getElementById("description_game").value = {!!$games!!}[index].description;
+        }else
+          document.getElementById("div_description_game").hidden=true;
+      }
+      fillSelectBrands(index);
+  }
+
+  function fillSelectBrands(index){
+    //LLena combo de Brands
+      $('#machine_brands').empty();
+      if(index >= 0){
+        for(var i=0; i<{!!$games!!}[index].brands.length; i++){
+             $('#machine_brands').append('<option value="'+{!!$games!!}[index].brands[i].machine_brand_id+'">'+{!!$games!!}[index].brands[i].brand.brand+" "+{!!$games!!}[index].brands[i].brand.model+'</option>');
+        }
+        $('#machine_brands').append('<option value="">OTHER</option>');
+      }
+      $("#machine_brands").selectpicker("refresh");
+  }
+
+  function changeBrand(brand_value){
+      if(brand_value == ""){
+          $('#machine_brands').empty();
+          for(var i=0; i<{!!$brands!!}.length; i++){
+            $('#machine_brands').append('<option value="'+{!!$brands!!}[i].id+'">'+{!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model+'</option>');
+          }
+          $('#machine_brands').append('<option value="">OTHER</option>');
+          $("#machine_brands").selectpicker("refresh");
+      }
+  }  
+
+  function checkFillBrand(brand_id){
+      if($("#machine_brands option[value='"+brand_id+"']").length == 0)
+          changeBrand("");
+      $.each([brand_id], function(i,e){
+          $("#machine_brands option[value='" + e + "']").prop("selected", true);
+      });
+      $("#machine_brands").selectpicker("refresh");
+
+  }
+
+  window.onload = function() {
+      var select_game = document.getElementById("select_game");     
+      if(select_game.value != ""){
+          fillContainedGames(select_game.value,select_game.selectedIndex);
+          var brand_id = {!!$machine!!}.machine_brand_id;
+          if(brand_id)
+            checkFillBrand(brand_id);
+      }
+  };
+
+  function valideKey(evt){    
+      // code is the decimal ASCII representation of the pressed key.
+      var code = (evt.which) ? evt.which : evt.keyCode;
+      
+      if(code==8) { // backspace.
+        return true;
+      } else if((code>=48 && code<=57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) { // is a number.
+        return true;
+      } else{ // other keys.
+        return false;
+      }
+  }
+</script>
 
   @stop

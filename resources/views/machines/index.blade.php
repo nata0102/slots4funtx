@@ -17,8 +17,8 @@
                         <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
                     </div>
                     <div class="input-group mb-5">
-                        <select class="form-control" name="game">
-                            <option value="">-- Select Game Title --</option>
+                        <select class="form-control selectpicker" name="game" data-live-search="true" title="-- Select Game --">
+                            <option value=""></option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
                               @endforeach
@@ -31,15 +31,15 @@
                               @endforeach
                         </select>                        
 
-                        <select class="form-control" name="status" >
+                        <select class="form-control" name="status">
                             <option value="">-- Select Status --</option>
                               @foreach($status as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
-                        <select class="form-control" name="brand">
-                            <option value="">-- Select Brand --</option>
+                        <select class="form-control selectpicker" name="brand" data-live-search="true" title="-- Select Brand --">
+                            <option value=""></option>
                               @foreach($brands as $tp)
                                 <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
                               @endforeach

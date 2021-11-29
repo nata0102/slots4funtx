@@ -90,6 +90,10 @@ class MachineController extends Controller
      */
     public function create()
     {
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+        }
         $games = GameCatalog::with('brands.brand')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
@@ -107,9 +111,9 @@ class MachineController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         $this->validate($request, [
-            'lkp_game_id' => 'required',
+            'game_catalog_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'unique:machines,serial|nullable',
         ]);   
@@ -126,11 +130,11 @@ class MachineController extends Controller
                     $arr['image'] = $this->saveGetNameImage($request->image,'/images/machines/');
                 $machine = Machine::create($arr);
                 if($parts != null){
-                    foreach ($parts as $part) {
-                        $part = Part::findOrFail(intval($part));
+                    foreach ($parts as $part_id) {
+                        $part = Part::findOrFail(intval($part_id));
                         $part->machine_id = $machine->id;
                         $part->save();
-                        $this->insertPartHistory(intval($part));
+                        $this->insertPartHistory(intval($part_id));
                     }
                 }
                 if ($machine) {
@@ -145,10 +149,11 @@ class MachineController extends Controller
                     );
                 }
                 $this->insertMachineHistory($machine->id);
+                return $notification;
             });
 
             return redirect()->action('MachineController@index')->with($transaction);
-        }catch(\Exception $e){return $e->getMessage();
+        }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $pos = strpos($message, 'machines.serial');            
@@ -174,7 +179,11 @@ class MachineController extends Controller
      */
     public function show($id)
     {
-        $machine = Machine::with('game','status','address.client','brand','owner','parts.type')->findOrFail($id);
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+          }
+        $machine = Machine::with('game','status','address.client','brand','owner','parts.type','parts.brand')->findOrFail($id);//return $machine;
         return view('machines.show',compact('machine'));
     }
 
@@ -186,7 +195,11 @@ class MachineController extends Controller
      */
     public function edit($id)
     {
-        $games =   DB::table('lookups')->where('type','game_titles')->where('active',1)->orderBy('value')->get();
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+          }
+        $games = GameCatalog::with('brands.brand')->where('active',1)->orderBy('name')->get();
         $machine = Machine::findOrFail($id);
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
@@ -213,8 +226,8 @@ class MachineController extends Controller
             }                
         }
         if($parts != null){
-            foreach ($parts as $part){
-                $part = Part::findOrFail($part);
+            foreach ($parts as $part_id){
+                $part = Part::findOrFail($part_id);
                 $part->machine_id = $machine_id;
                 $part->save();
                 $this->insertPartHistory($part->id);
@@ -232,14 +245,18 @@ class MachineController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'lkp_game_id' => 'required',
+            'game_catalog_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'nullable|unique:machines,serial,'.$id,
-            'inventory' => 'nullable|unique:machines,inventory,'.$id,
         ]); 
         try{
             $transaction = DB::transaction(function() use($request, $id){                  
-                $arr = $request->except('parts_ids','_token','image','_method');            
+                $arr = $request->except('parts_ids','_token','image','_method','games_select');
+                if(array_key_exists('games_select', $request->all())){
+                     $arr['games'] = "";
+                    foreach ($request->games_select as $g_select) 
+                        $arr['games'] .= $g_select."&$";                    
+                }                        
                 $parts = $request->parts_ids;
                 $this->updateMachineParts($parts, $id);
                 $machine = Machine::findOrFail($id);
@@ -264,7 +281,6 @@ class MachineController extends Controller
                 }
                 return $notification;
             }); 
-
             return redirect()->action('MachineController@index')->with($transaction);
         }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
@@ -305,7 +321,6 @@ class MachineController extends Controller
                     return response()->json(200);
                 }else
                     return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
-//return response()->json(422);
             });
             return $transaction;
         }catch(\Exception $e){
