@@ -11,8 +11,8 @@
 
           	<form class="" action="{{action('MachineController@update',$machine->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
             	@csrf
-            	<input type="hidden" name="_method" value="PUT">           	
-            	<div class="row"> 
+            	<input type="hidden" name="_method" value="PUT">
+            	<div class="row">
 	            	<div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Owner <span style="color:red">*</span></label>
@@ -28,7 +28,7 @@
 		                      </span>
 		                  @enderror
 		                </div>
-		            </div>  
+		            </div>
 
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
@@ -45,7 +45,7 @@
 		                      </span>
 		                  @enderror
 		                </div>
-		            </div>	
+		            </div>
 
 		            <div class="col-12 col-sm-6 col-md-4" id="div_contained_games" hidden>
 		                <div class="form-group">
@@ -53,7 +53,7 @@
 		                  <select id="contained_games" class="form-control selectpicker show-menu-arrow @error('games_select') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Games --" multiple="multiple" name="games_select[]">
 		                  </select>
 		                </div>
-		              </div>     
+		              </div>
 
 		              <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
 		                <div class="form-group">
@@ -61,14 +61,14 @@
 		                  <textarea onkeydown="return false;" id="contained_games_2"></textarea>
 		                  <textarea onkeydown="return false;" id="text_games" name="games"  value="{{$machine->games}}" hidden>{{$machine->games}}</textarea>
 		                </div>
-		              </div>     
+		              </div>
 
 		              <div class="col-12 col-sm-6 col-md-4" id="div_description_game" hidden>
 		                <div class="form-group">
 		                  <label for="">Description Game</label>
 		                  <textarea disabled id="description_game"></textarea>
 		                </div>
-		              </div> 	            
+		              </div>
 
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
@@ -90,7 +90,7 @@
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Serial</label>
-		                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$machine->serial}}" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);">
+		                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$machine->serial}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);">
 		                  @error('serial')
 		                      <span class="invalid-feedback" role="alert">
 		                          <strong>{{ $message }}</strong>
@@ -208,13 +208,13 @@
   function fillContainedGames(game, index) {
       //LLena combo de description Games
       index = index-1;
-      if(game != ""){           
+      if(game != ""){
         $('#contained_games').empty();
         var arr1 = {!!$games!!}[index].games.split("&$");
         if({!!$games!!}[index].band_select == 1){
-            document.getElementById("div_contained_games").hidden=false; 
-            document.getElementById("div_contained_games_2").hidden=true;        
-        
+            document.getElementById("div_contained_games").hidden=false;
+            document.getElementById("div_contained_games_2").hidden=true;
+
             for(var i=0; i< arr1.length; i++){
                 if(arr1[i] != ""){
                     var arr2 = arr1[i].split('|$');
@@ -233,7 +233,7 @@
           	}
             $("#contained_games").selectpicker("refresh");
         }else{
-            document.getElementById("div_contained_games").hidden=true; 
+            document.getElementById("div_contained_games").hidden=true;
             var container2 = document.getElementById("div_contained_games_2");
             container2.hidden=false;
             container2.value = {!!$games!!}[index].games;
@@ -243,11 +243,11 @@
                     var arr2 = arr1[i].split('|$');
                     cad_final += arr2[0]+" "+arr2[1]+'\n';
                 }
-            } 
+            }
 
             document.getElementById("contained_games_2").value = cad_final;
             document.getElementById("text_games").value  = {!!$games!!}[index].games;
-        } 
+        }
         if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
             document.getElementById("div_description_game").hidden=false;
             document.getElementById("description_game").value = {!!$games!!}[index].description;
@@ -278,7 +278,7 @@
           $('#machine_brands').append('<option value="">OTHER</option>');
           $("#machine_brands").selectpicker("refresh");
       }
-  }  
+  }
 
   function checkFillBrand(brand_id){
       if($("#machine_brands option[value='"+brand_id+"']").length == 0)
@@ -291,7 +291,7 @@
   }
 
   window.onload = function() {
-      var select_game = document.getElementById("select_game");     
+      var select_game = document.getElementById("select_game");
       if(select_game.value != ""){
           fillContainedGames(select_game.value,select_game.selectedIndex);
           var brand_id = {!!$machine!!}.machine_brand_id;
@@ -300,10 +300,10 @@
       }
   };
 
-  function valideKey(evt){    
+  function valideKey(evt){
       // code is the decimal ASCII representation of the pressed key.
       var code = (evt.which) ? evt.which : evt.keyCode;
-      
+
       if(code==8) { // backspace.
         return true;
       } else if((code>=48 && code<=57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) { // is a number.
