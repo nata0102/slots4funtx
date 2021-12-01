@@ -669,14 +669,14 @@
 		if(value == '54'){
 			document.getElementById('combo-content').removeAttribute('hidden');
 			gallery = document.getElementById('gallery');
-			if (gallery != null) 
+			if (gallery != null)
 				gallery.removeAttribute('hidden');
 			$(document.getElementById('combo-select')).attr('name',"part_id");
 			$(document.getElementById('combo-select')).attr('required',"");
 		}else{
 			$(document.getElementById('combo-content')).attr('hidden',"");
 			gallery = document.getElementById('gallery');
-			if (gallery != null) 
+			if (gallery != null)
 				$(gallery).attr('hidden',"");
 			document.getElementById('combo-select').removeAttribute('name');
 			document.getElementById('combo-select').removeAttribute('required');
@@ -1003,6 +1003,21 @@
 					});
 			  }
 			});
+		});
+
+		$("input.find-serial").bind('keypress', function(event) {
+	    var regex = new RegExp("^[a-zA-Z0-9]+$");
+	    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+	    if (!regex.test(key)) {
+	      event.preventDefault();
+	      return false;
+	   }
+	  });
+
+		$(document).on('input', '.find-serial', function(){
+			str = this.value;
+			string = str.replace(/[^a-zA-Z0-9]/g, '');
+			this.value = string;
 		});
 
 

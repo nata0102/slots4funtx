@@ -80,7 +80,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Serial</label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" onkeyup="this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" >
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100 find-serial" name="serial" value="{{old('serial')}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" >
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -245,9 +245,9 @@
       }
   };
 
-  function valideKey(evt){
+  function valideKey(e){
       // code is the decimal ASCII representation of the pressed key.
-      var code = (evt.which) ? evt.which : evt.keyCode;
+      /*var code = (evt.which) ? evt.which : evt.keyCode;
 
       if(code==8) { // backspace.
         return true;
@@ -255,7 +255,13 @@
         return true;
       } else{ // other keys.
         return false;
-      }
+      }*/
+
+
+
   }
+
+
+
 </script>
   @stop
