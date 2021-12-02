@@ -26,7 +26,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Software License</label>
-                  <input type="text" class="form-control @error('license') is-invalid @enderror input100" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" id="sfw_license" name="license" value="{{old('license')}}">
+                  <input type="text" class="form-control @error('license') is-invalid @enderror input100 find-serial" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" id="sfw_license" name="license" value="{{old('license')}}">
                   @error('license')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -80,7 +80,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">License Game</label>
-                  <input type="text" class="form-control @error('game_license') is-invalid @enderror input100" id="game_license" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" name="game_license" value="{{old('game_license')}}" >
+                  <input type="text" class="form-control @error('game_license') is-invalid @enderror input100 find-serial" id="game_license" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" name="game_license" value="{{old('game_license')}}" >
                   @error('game_license')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

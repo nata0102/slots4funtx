@@ -79,7 +79,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Serial <span style="color:red">*</span></label>
-                  <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);"  class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{old('serial')}}" required>
+                  <input type="text" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" class="form-control @error('serial') is-invalid @enderror input100 find-serial" name="serial" value="{{old('serial')}}" required>
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

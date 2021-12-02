@@ -83,7 +83,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Serial <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100" name="serial" value="{{$part->serial}}" required>
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100 find-serial" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" name="serial" value="{{$part->serial}}" required>
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
