@@ -9,7 +9,7 @@
           <div class="input-group mb-2">
             <div style="width: 50%;height: 40px;">
               <a href="{{action('PartController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
-              <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">Assign to Machine</p>
+              <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">Add</p>
             </div>
             <div align="left" style="width: 50%;height: 40px;">
               <a href="{{action('PartController@createByRank')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>

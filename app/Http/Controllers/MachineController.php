@@ -183,7 +183,7 @@ class MachineController extends Controller
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
           }
-        $machine = Machine::with('game','status','address.client','brand','owner','parts.type','parts.brand')->findOrFail($id);//return $machine;
+        $machine = Machine::with('game','status','address.client','brand','owner','parts.type','parts.brand')->findOrFail($id);
         return view('machines.show',compact('machine'));
     }
 

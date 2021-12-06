@@ -93,7 +93,7 @@
 
             <div class="col-12">
               <div class="form-group">
-                <label for="">Description</label>
+                <label for="">Notes</label>
                 <textarea name="description" class="form-control" rows="8" cols="80" style="width: 100%; height:  5rem;" disabled>{{$part->description}}</textarea>
               </div>
             </div>

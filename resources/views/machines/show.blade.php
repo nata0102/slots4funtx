@@ -120,8 +120,14 @@
 	                    	@foreach($machine->parts as $part)
 	                        <tr>
 	                            <td>{{$part->type->value}}</td>
-	                            <td>{{$part->brand->brand}}</td>
-	                            <td>{{$part->brand->model}}</td>
+                              @if($part->brand != null)
+	                               <td>{{$part->brand->brand}}</td>
+	                               <td>{{$part->brand->model}}</td>
+                              @else
+                                 <td></td>
+                                 <td></td>
+                              @endif
+
 	                            <td>{{$part->serial}}</td>
 	                        </tr>
 	                        @endforeach

@@ -35,8 +35,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Brand-Model </label>
-                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" data-live-search="true" title="-- Select Brand --" required>
+                  <label for="">Brand-Model</label>
+                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" data-live-search="true" title="-- Select Brand --">
                   </select>
                   @error('brand_id')
                       <span class="invalid-feedback" role="alert">
@@ -65,8 +65,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Status</label>
-                  <select class="form-control @error('lkp_status_id') is-invalid @enderror input100" name="lkp_status_id">
+                  <label for="">Status <span style="color:red">*</span></label>
+                  <select class="form-control @error('lkp_status_id') is-invalid @enderror input100" name="lkp_status_id" required>
                     <option value=""></option>
                     @foreach($status as $status)
                       <option value="{{$status->id}}" {{$part->lkp_status_id == $status->id ? 'selected' : ''}}>{{$status->value}}</option>
@@ -82,8 +82,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Serial <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100 find-serial" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" name="serial" value="{{$part->serial}}" required>
+                  <label for="">Serial</label>
+                  <input type="text" class="form-control @error('serial') is-invalid @enderror input100 find-serial" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" name="serial" value="{{$part->serial}}">
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -121,7 +121,7 @@
 
               <div class="col-12">
                 <div class="form-group">
-                  <label for="">Description</label>
+                  <label for="">Notes</label>
                   <textarea name="description" class="form-control @error('description') is-invalid @enderror input100" rows="8" cols="80" style="width: 100%; height:  5rem;">{{$part->description}}</textarea>
                   @error('description')
                       <span class="invalid-feedback" role="alert">

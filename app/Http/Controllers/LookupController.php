@@ -178,8 +178,10 @@ class LookupController extends Controller
                 $arr = $request->except('_token','_method');
                 if(array_key_exists('lkp_city_id', $arr))
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->whereNotIn('id',[$id])->get();
-                else
+                else{
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->whereNotIn('id',[$id])->get();
+                  $arr['lkp_city_id'] = null;
+                }
                 if(count($validation)==0){
                     $res = Lookup::findOrFail($id);
                     $key_value = $this->getKeyValue($arr['value']);

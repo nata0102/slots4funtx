@@ -61,7 +61,7 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Status</label>
+                  <label for="">Status <span style="color:red">*</span></label>
                   <select class="form-control @error('lkp_status_id') is-invalid @enderror input100" name="lkp_status_id">
                     <option value=""></option>
                     @foreach($status as $status)
@@ -78,8 +78,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Serial <span style="color:red">*</span></label>
-                  <input type="text" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" class="form-control @error('serial') is-invalid @enderror input100 find-serial" name="serial" value="{{old('serial')}}" required>
+                  <label for="">Serial</label>
+                  <input type="text" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" class="form-control @error('serial') is-invalid @enderror input100 find-serial" name="serial" value="{{old('serial')}}">
                   @error('serial')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -113,7 +113,7 @@
 
               <div class="col-12">
                 <div class="form-group">
-                  <label for="">Description</label>
+                  <label for="">Notes</label>
                   <textarea name="description" class="form-control @error('description') is-invalid @enderror input100" rows="8" cols="80" style="width: 100%; height:  5rem;">{{old('description')}}</textarea>
                   @error('description')
                       <span class="invalid-feedback" role="alert">

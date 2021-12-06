@@ -60,8 +60,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Status</label>
-                  <select class="form-control @error('lkp_status_id') is-invalid @enderror input100" name="lkp_status_id">
+                  <label for="">Status <span style="color:red">*</span></label>
+                  <select class="form-control @error('lkp_status_id') is-invalid @enderror input100" name="lkp_status_id" required>
                     <option value=""></option>
                     @foreach($status as $status)
                       <option value="{{$status->id}}" {{ old('lkp_status_id') == $status->id ? 'selected' : '' }}>{{$status->value}}</option>

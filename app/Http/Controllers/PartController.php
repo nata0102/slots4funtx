@@ -72,8 +72,9 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'lkp_type_id' => 'required',
+        'lkp_status_id' => 'required',
         'price' => 'numeric|nullable',
-        'serial' => 'required|unique:parts,serial|nullable',
+        'serial' => 'unique:parts,serial|nullable',
       ]);
 
       try{
@@ -162,8 +163,9 @@ class PartController extends Controller
     {
       $this->validate($request, [
         'lkp_type_id' => 'required',
+        'lkp_status_id' => 'required',
         'price' => 'numeric|nullable',
-        'serial' => 'required|nullable|unique:parts,serial,'.$id,
+        'serial' => 'nullable|unique:parts,serial,'.$id,
       ]);
 
       try{
@@ -266,6 +268,7 @@ class PartController extends Controller
     public function storeByRank(Request $request){
         $this->validate($request, [
             'lkp_type_id' => 'required',
+            'lkp_status_id' => 'required',
             'start_range' => 'required',
             'final_range' => 'required',
         ]);
