@@ -59,6 +59,17 @@
                 </div>
               </div>
 
+              <div class="col-12 col-sm-6 col-md-4" id="part_type_brand" hidden>
+                <div class="form-group">
+                  <label for="">Brands</label>
+                  <select class="form-control selectpicker show-menu-arrow @error('brands') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Brands --" multiple="multiple" name="brands_ids[]">
+                  @foreach($brands as $brand)
+                    <option  {{ (collect(old('brands_ids'))->contains($brand->id)) ? 'selected':'' }}  value="{{$brand->id}}">{{$brand->brand}} - {{$brand->model}}</option>
+                  @endforeach
+                  </select>
+                </div>
+              </div>
+
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>

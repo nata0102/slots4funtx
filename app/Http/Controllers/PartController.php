@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Part;
 use App\Models\Lookup;
+use App\Models\LkpPartBrand;
 use App\Models\Machine;
 use DB;
 use File;
@@ -54,7 +55,10 @@ class PartController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
+
+      $qry = "select * from parts_lkp_brands l, machine_brands b
+      where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
+      $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
@@ -69,7 +73,7 @@ class PartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {return $request->all();
       $this->validate($request, [
         'lkp_type_id' => 'required',
         'lkp_status_id' => 'required',

@@ -23,20 +23,8 @@
                       @endforeach
                   </select>
 
-                  <select onchange="fillBrand(this.value,this.selectedIndex)" class="form-control selectpicker" title="-- Select Part --" id="part" data-live-search="true" name="part_id" hidden>
-                      <option value=""></option>
-                      @foreach($parts as $tp)
-                          <option value="{{$tp->id}}" {{ isset($_GET['part_id']) ? $_GET['part_id'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
-                      @endforeach
-                  </select>
-
                   <select class="form-control selectpicker" title="-- Select Brand --" data-live-search="true" id="machine" name="brand_type" hidden>
-                      <!--<option value=""></option>
-                      @foreach($brands_types as $tp)
-                          <option value="{{$tp->brand}}" {{ isset($_GET['brand_type']) ? $_GET['brand_type'] == $tp->brand ? 'selected' : '' : ''}}>{{$tp->brand}}</option>
-                      @endforeach-->
                   </select>                 
-
                   
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
 
@@ -59,12 +47,8 @@
               </thead>
               <tbody>
               	@foreach($brands as $brand)
-                  <tr>
-                    @if($brand->lkp_part_id == null)
-                      <td>{{$brand->type->value}}</td>
-                    @else
-                      <td>{{$brand->type->value}} => {{$brand->part->value}}</td>
-                    @endif
+                  <tr>                    
+                    <td>{{$brand->type->value}}</td>
                     <td>{{$brand->brand}}</td>
                     <td>{{$brand->model}}</td>
                     <!--td>{{$brand->weight}}</td-->
@@ -97,56 +81,36 @@
   <script>
     function fillMachineBrands(type_id){
       $('#machine').empty();
-      if(type_id==53){
+      if(type_id){
         $('#machine').append('<option value=""></option>'); 
-        var brands = {!!$brands_types!!};console.log(brands);
+        var brands = {!!$brands_types!!};
         if(brands){
-          for(var i =0; i<brands.length; i++)
-            $('#machine').append('<option value="'+brands[i].brand+'">'+brands[i].brand+'</option>'); 
+          for(var i =0; i<brands.length; i++){
+            if(brands[i].lkp_type_id == type_id)
+              $('#machine').append('<option value="'+brands[i].brand+'">'+brands[i].brand+'</option>'); 
+          }
         }  
       }
       $("#machine").selectpicker("refresh");
     }
 
-    function fillBrand(part_id,index){
-      $('#machine').selectpicker('show');
-      index = index-2;    
-      if(part_id != ""){                    
-        $('#machine').empty();
-        $('#machine').append('<option value=""></option>'); 
-        var brands = {!!$parts!!}[index].brands;
-        if(brands){
-          for(var i =0; i<brands.length; i++){
-            var cad="";
-            var cad_id="";
-            if(brands[i].brand){
-              cad += brands[i].brand;
-              cad_id = brands[i].brand;
-            }
-            if(brands[i].model){
-              cad += brands[i].model;
-              if(cad_id == "")
-                cad_id = brands[i].model;
-            }
-            $('#machine').append('<option value="'+cad_id+'">'+cad+'</option>'); 
-          }
-        }        
-      }
+    function selectionBrand(value){
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#machine option[value='" + e + "']").prop("selected", true);
+      });
       $("#machine").selectpicker("refresh");
     }
+
     window.onload = function() {
       @if(isset($_GET['type']))
-        var type = {!!$_GET['type']!!};
-        console.log(type);
-        if(type == 54){
-          console.log("Entre 54");
-          $('#part').selectpicker('show');
-          var part = document.getElementById("part");  
-          fillBrand(part.value,part.selectedIndex);
-        }else{
-          if(type == 53)
+        @if($_GET['type'])
+          var type = {!!$_GET['type']!!};
+          console.log(type);
+          if(type != "")
             fillMachineBrands(type);
-        }
+        @endif
+        
         @if(isset($_GET['brand_type']))
             @if($_GET['brand_type'])
               var brand_id = "{!!$_GET['brand_type']!!}";
@@ -156,15 +120,7 @@
             @endif
         @endif
       @endif
-    };
-
-    function selectionBrand(value){
-      var arr = [value];
-      $.each(arr, function(i,e){
-        $("#machine option[value='" + e + "']").prop("selected", true);
-      });
-      $("#machine").selectpicker("refresh");
-    }
+    };        
   </script>
 
   @stop

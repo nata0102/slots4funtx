@@ -33,18 +33,6 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4" id="combo-content" hidden>
-                <div class="form-group">
-                  <label for="">Parts <span style="color:red"></span></label>
-                  <select class="form-control" name="" required="" id="combo-select">
-                    <option value="" selected disabled>-- Select Part --</option>
-                    @foreach($parts as $part)
-                      <option value="{{$part->id}}" {{ $brand->lkp_part_id == $part->id ? "selected" : '' }}>{{$part->value}}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand <span style="color:red">*</span></label>

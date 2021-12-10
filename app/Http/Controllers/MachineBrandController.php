@@ -25,26 +25,21 @@ class MachineBrandController extends Controller
           $brands = $this->searchWithFilters($request->all());
         break;
         default:
-          $brands = MachineBrand::where('active',1)->orderBy('lkp_part_id')->orderBy('brand')->orderBy('model')->get();
+          $brands = MachineBrand::where('active',1)->orderBy('brand')->orderBy('model')->get();
         break;
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
-      $brands_types =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)
-                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();
-      /*$brands_types2 =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)
-                      ->orderBy('brand')->groupBy('brand')->select('brand')->get();*/
-      $parts =  Lookup::with('brands')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-
-      return view('machineBrand.index',compact('parts','brands','types','brands_types'));
+      $brands_types =  DB::table('machine_brands')->where('active',1)
+                      ->orderBy('brand')->groupBy('brand','lkp_type_id')->select('brand','lkp_type_id')->get();
+      return view('machineBrand.index',compact('brands','types','brands_types'));
     }
 
     public function searchWithFilters($params){
-      $res = MachineBrand::with('type','part')
+      $res = MachineBrand::with('type')
       ->model($params['model'])
       ->brand($params['brand_type'])
       ->type($params['type'])
-      ->part($params['part_id'])
-      ->where('active',$params['active'])->orderBy('lkp_part_id')->orderBy('brand')->orderBy('model')->get();
+      ->where('active',$params['active'])->orderBy('brand')->orderBy('model')->get();
       return $res;
     }
 
@@ -60,8 +55,7 @@ class MachineBrandController extends Controller
         session(['urlBack' => url()->previous()]);
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
-      $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      return view('machineBrand.create', compact('types','parts'));
+      return view('machineBrand.create', compact('types'));
     }
 
     /**
@@ -93,7 +87,6 @@ class MachineBrandController extends Controller
           $brand->brand = $request->brand;
           $brand->model = $request->model;
           $brand->weight = $request->weight;
-          $brand->lkp_part_id = $request->part_id;
           $brand->lkp_type_id = $request->lkp_type_id;
           $brand->active = 1;
           $created = $brand->save();
@@ -152,9 +145,8 @@ class MachineBrandController extends Controller
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::with('type')->findOrFail($id);
-      $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $images = PartImage::where('part_brand_id',$id)->get();
-      return view('machineBrand.edit',compact('brand','types','parts','images'));
+      return view('machineBrand.edit',compact('brand','types','images'));
     }
 
     /**
@@ -185,10 +177,6 @@ class MachineBrandController extends Controller
           $brand = MachineBrand::find($id);
           $brand->brand = $request->brand;
           $brand->model = $request->model;
-          if($request->lkp_type_id == 53)
-            $brand->lkp_part_id = null;
-          else
-            $brand->lkp_part_id = $request->part_id;
           $brand->weight = $request->weight;
           $brand->lkp_type_id = $request->lkp_type_id;
           $created = $brand->save();

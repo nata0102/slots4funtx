@@ -30,7 +30,7 @@ class MachineBrand extends Model
 
   public function scopeBrand($query, $brand) {
     if ($brand) {
-      return $query->where('brand','like',"%$brand%")->orWhere('model', 'like', "%$brand%");
+      return $query->where('brand','like',"%$brand%");//->orWhere('model', 'like', "%$brand%");
     }
   }
 

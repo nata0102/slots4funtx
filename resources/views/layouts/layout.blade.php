@@ -587,33 +587,7 @@
 
 	<script>
 
-	function selectBrand(value,search){
-		if(value == ""){
-			$('#part').selectpicker('hide');
-			$('#machine').selectpicker('hide');
-			$('#part_brand').selectpicker('hide');
-			/*document.getElementById('part_brand').removeAttribute('name');
-			$(document.getElementById('machine')).attr('name',"brand_type");*/
-		}
-		if(value == "53"){
-			$('#part').selectpicker('hide');
-			$('#machine').selectpicker('show');
-			$('#part_brand').selectpicker('hide');
-			/*$(document.getElementById('machine')).attr('name',"brand_type");
-			document.getElementById('part_brand').removeAttribute('name');*/
-		}
-		if(value == "54"){
-			$('#part').selectpicker('show');
-			$('#machine').selectpicker('show');
-			/*$(document.getElementById('part_brand')).attr('name',"brand_type");
-			$(document.getElementById('machine')).attr('hidden',"");*/
-		}
-		if(search==0){
-			document.getElementById("part").selectedIndex = 0;
-			document.getElementById("machine").selectedIndex = 0;
-		}
-	}
-
+	
 	//////////////////////
 
 	function selectPaymentType(value){
@@ -653,33 +627,17 @@
 	///////////////
 
 	function selectCityLookup(value){
+		$(document.getElementById('part_type_brand')).attr('hidden',"");
 		if(value == 'counties'){
 			document.getElementById('city-form').removeAttribute('hidden');
 			$(document.getElementById('city-select')).attr('name',"lkp_city_id");
 			$(document.getElementById('city-select')).attr('required',"");
 		}else{
+			if(value == 'part_type')
+				document.getElementById('part_type_brand').removeAttribute('hidden');
 			$(document.getElementById('city-form')).attr('hidden',"");
 			document.getElementById('city-select').removeAttribute('name');
 			document.getElementById('city-select').removeAttribute('required');
-		}
-	}
-
-	function selectMachineBrand(value){
-		var gallery = null;
-		if(value == '54'){
-			document.getElementById('combo-content').removeAttribute('hidden');
-			gallery = document.getElementById('gallery');
-			if (gallery != null)
-				gallery.removeAttribute('hidden');
-			$(document.getElementById('combo-select')).attr('name',"part_id");
-			$(document.getElementById('combo-select')).attr('required',"");
-		}else{
-			$(document.getElementById('combo-content')).attr('hidden',"");
-			gallery = document.getElementById('gallery');
-			if (gallery != null)
-				$(gallery).attr('hidden',"");
-			document.getElementById('combo-select').removeAttribute('name');
-			document.getElementById('combo-select').removeAttribute('required');
 		}
 	}
 
@@ -788,11 +746,6 @@
 			selectCityLookup(type);
 		}
 
-		if(document.getElementById('type')){
-			type = document.getElementById('type').value;
-			selectBrand(type,1);
-		}
-
 		if(document.getElementById('permit_type')){
 			type = document.getElementById('permit_type').value;
 			permitSelect(type,0);
@@ -801,11 +754,6 @@
 		if(document.getElementById('permit_type_index')){
 			type = document.getElementById('permit_type_index').value;
 			permitSelectIndex(type,0);
-		}
-
-		if(document.getElementById('machine_brand_type')){
-			type = document.getElementById('machine_brand_type').value;
-			selectMachineBrand(type);
 		}
 
 		if(document.getElementById('percentage_type')){
@@ -818,18 +766,6 @@
 			selectPaymentType(type);
 		}
 	});
-
-	if(document.getElementById('type')){
-		document.getElementById('type').addEventListener('change', function() {
-			selectBrand(this.value,0);
-		});
-	}
-
-	if(document.getElementById('machine_brand_type')){
-		document.getElementById('machine_brand_type').addEventListener('change', function() {
-			selectMachineBrand(this.value);
-		});
-	}
 
 	if(document.getElementById('percentage_type')){
 		document.getElementById('percentage_type').addEventListener('change', function() {

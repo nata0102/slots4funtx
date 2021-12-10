@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Lookup;
+use App\Models\MachineBrand;
+use App\Models\LkpPartBrand;
 use Illuminate\Support\Facades\DB;
 
 class LookupController extends Controller
@@ -64,7 +66,8 @@ class LookupController extends Controller
       }
         $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
         $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
-        return view('lookups.create',compact('types','cities'));
+        $brands = MachineBrand::where('lkp_type_id',54)->orderBy('brand')->orderBy('model')->get();
+        return view('lookups.create',compact('types','cities','brands'));
     }
 
     public function getKeyValue($cadena){
@@ -110,6 +113,11 @@ class LookupController extends Controller
                     $arr['key_value'] = $this->getKeyValue($arr['value']);
                     $lookup = Lookup::create($arr);
                     if ($lookup) {
+                        if(array_key_exists('brands_ids', $arr)){
+                          foreach ($request->brands_ids as $brand_id) {
+                            LkpPartBrand::create(['lkp_part_id'=>$lookup->id,'brand_id'=>$brand_id]);
+                          }
+                        }
                         $notification = array(
                           'message' => 'Successful!!',
                           'alert-type' => 'success'
