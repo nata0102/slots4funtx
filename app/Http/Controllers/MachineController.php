@@ -94,7 +94,7 @@ class MachineController extends Controller
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
         }
-        $games = GameCatalog::with('brands.brand')->where('active',1)->orderBy('name')->get();
+        $games = GameCatalog::with('brands.brand','type')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')->where('addresses.active',1)->where('clients.active',1)
@@ -199,7 +199,7 @@ class MachineController extends Controller
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
           }
-        $games = GameCatalog::with('brands.brand')->where('active',1)->orderBy('name')->get();
+        $games = GameCatalog::with('brands.brand', 'type')->where('active',1)->orderBy('name')->get();
         $machine = Machine::findOrFail($id);
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();

@@ -14,6 +14,23 @@
             <div class="row">
 
               <div class="col-12 col-sm-6 col-md-4">
+                  <div class="form-group">
+                    <label for="">Type <span style="color:red">*</span></label>
+                    <select onchange="visibleControls(this.selectedIndex)" id="type_game_catalog" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id">
+                      <option value=""></option>
+                        @foreach($types as $type)
+                          <option value="{{$type->id}}"  {{ $res->lkp_type_id == $type->id ? 'selected' : '' }}>{{$type->value}}</option>
+                        @endforeach
+                    </select>
+                    @error('lkp_type_id')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                  </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Software Name <span style="color:red">*</span></label>
                   <input type="text" class="form-control @error('name') is-invalid @enderror input100" name="name" value="{{$res->name}}" required>
@@ -39,13 +56,6 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <input type="hidden" name="band_select" value="0" />
-                  <label><input type="checkbox" class="@error('band_select') is-invalid @enderror input100" name="band_select" value="1" {{$res->band_select == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="form-group">
                   <label for="">Brands</label>
                   <select class="form-control selectpicker show-menu-arrow @error('brands') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Brands --" multiple="multiple" name="brands_ids[]">
                   @foreach($brands as $brand)
@@ -62,12 +72,14 @@
                 </div>
               </div>
 
-               <div class="col-12 col-sm-6 col-md-4">
+               <div class="col-12 col-sm-6 col-md-4" id="div_group1">
                 <div class="form-group">
+                  <input type="hidden" name="band_select" value="0" />
+                  <label><input type="checkbox" class="@error('band_select') is-invalid @enderror input100" name="band_select" value="1" {{$res->band_select == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="div_group2">
                 <div class="form-group">
                   <label for="">Name Game</label>
                   <input type="text" class="form-control @error('game_name') is-invalid @enderror input100" id="game_name" name="game_name" value="{{$res->game_name}}">
@@ -79,7 +91,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="div_group3">
                 <div class="form-group">
                   <label for="">License Game</label>
                   <input type="text" class="form-control @error('game_license') is-invalid @enderror input100" id="game_license" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" onkeypress="return valideKey(event);" name="game_license" value="{{old('game_license')}}" >
@@ -91,7 +103,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="div_group4">
                 <div class="form-group">
                   <label for=""></label>
                   <button type="button" onclick="addGame()" class="btn btn-info" style="width: 40px; margin-top: 35px; position: absolute;"><i class="fas fa-plus"></i></button>
@@ -113,14 +125,12 @@
                 </table>
               </div>
 
-              <input onchange="fillTable()" type="hidden" class="form-control" id="games" name="games" value="{{$res->games}}" >
-
-              <div style="margin-top: 10px;" class="col-12">
+              <input onchange="fillTable()" type="hidden" class="form-control" id="games" name="games" value="{{$res->games}}" >             
+            </div>
+            <div style="margin-top: 10px;" class="col-12">
                 <div class="form-group">
                   <button type="submit" class="btn btn-success">Save</button>
                 </div>
-              </div>
-
             </div>
           </form>
         </div>
@@ -200,7 +210,30 @@
           insertRow(arr2[0], arr2[1]);
         }
       }
+      var type_game = document.getElementById("type_game_catalog");
+      visibleControls(type_game.selectedIndex);
     };
+
+    function visibleControls(index){  
+        var type = "";
+        if(index > 0)
+            type = {!!$types!!}[index-1].key_value;
+        if(type == 'group'){
+          document.getElementById("div_group1").hidden = false;
+          document.getElementById("div_group2").hidden = false;
+          document.getElementById("div_group3").hidden = false;
+          document.getElementById("div_group4").hidden = false;
+          document.getElementById("table").hidden = false;
+        }else{
+          document.getElementById("games").value = "";
+          $("#table_games tr").remove(); 
+          document.getElementById("div_group1").hidden = true;
+          document.getElementById("div_group2").hidden = true;
+          document.getElementById("div_group3").hidden = true;
+          document.getElementById("div_group4").hidden = true;
+          document.getElementById("table").hidden = true;
+        }
+    }
 
     function valideKey(evt){
       // code is the decimal ASCII representation of the pressed key.

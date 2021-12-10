@@ -27,6 +27,7 @@
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
+                            <th style="width:100px; text-align: center;">Type</th>
                             <th style="width:100px; text-align: center;">Software Name</th>
                             <th style="width:100px; text-align: center;">Software License</th>
                             <th style="width:100px; text-align: center;">Description</th>
@@ -36,9 +37,10 @@
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
+                          <td>{{$r->type}}</td>
                             <td>{{$r->name}}</td>
-							<td>{{$r->license}}</td>
-							<td>{{$r->description}}</td>
+							               <td>{{$r->license}}</td>
+							             <td>{{$r->description}}</td>
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">

@@ -204,55 +204,71 @@
 </div>
 
 <script>
+
+	function addOptionsSelectGames(games_cad){
+      document.getElementById("div_contained_games").hidden=false;
+      var arr1 = games_cad.split("&$");
+      for(var i=0; i< arr1.length; i++){
+          if(arr1[i] != ""){
+              var arr2 = arr1[i].split('|$');
+              $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
+          }
+      }
+      //select de las opciones previamente guardadas
+      var machine_games = {!!$machine!!}.games;
+	  if(machine_games){
+	      var arr_games = machine_games.split('&$');
+	      arr_games = arr_games.filter(function(item) {
+		    return item !== "";
+		  })
+	      $.each(arr_games, function(i,e){
+	        $("#contained_games option[value='" + e + "']").prop("selected", true);
+	      });
+	  }
+  }
+
+  function addOptionsTextArea(games_cad){
+      var container2 = document.getElementById("div_contained_games_2");
+      container2.hidden=false;
+      container2.value = games_cad;
+      var arr1 = games_cad.split("&$");
+      var cad_final = "";
+      for(var i=0; i< arr1.length; i++){
+          if(arr1[i] != ""){
+              var arr2 = arr1[i].split('|$');
+              cad_final += arr2[0]+" "+arr2[1]+'\n';
+          }
+      }
+      document.getElementById("contained_games_2").value = cad_final;
+      document.getElementById("text_games").value  = games_cad;
+  }
+
   //Llena los games,
   function fillContainedGames(game, index) {
       //LLena combo de description Games
       index = index-1;
+      var games_cad = {!!$games!!}[index].games;
+      var band_select = {!!$games!!}[index].band_select;
+      var type_game = {!!$games!!}[index].type.key_value;
+      $('#contained_games').empty();
+      document.getElementById("text_games").value = "";
+      document.getElementById("contained_games_2").value = "";
+      document.getElementById("div_contained_games").hidden = true;
+      document.getElementById("div_contained_games_2").hidden = true;
+      document.getElementById("div_description_game").hidden = true;
       if(game != ""){
-        $('#contained_games').empty();
-        var arr1 = {!!$games!!}[index].games.split("&$");
-        if({!!$games!!}[index].band_select == 1){
-            document.getElementById("div_contained_games").hidden=false;
-            document.getElementById("div_contained_games_2").hidden=true;
-
-            for(var i=0; i< arr1.length; i++){
-                if(arr1[i] != ""){
-                    var arr2 = arr1[i].split('|$');
-                    $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
-                }
+      	if(type_game == "group"){
+            if(band_select == 1){
+                addOptionsSelectGames(games_cad);
+            }else{
+                addOptionsTextArea(games_cad);
             }
-            var machine_games = {!!$machine!!}.games;
-            if(machine_games){
-              var arr_games = machine_games.split('&$');
-              arr_games = arr_games.filter(function(item) {
-			    return item !== "";
-			  })
-              $.each(arr_games, function(i,e){
-                $("#contained_games option[value='" + e + "']").prop("selected", true);
-              });
-          	}
-            $("#contained_games").selectpicker("refresh");
-        }else{
-            document.getElementById("div_contained_games").hidden=true;
-            var container2 = document.getElementById("div_contained_games_2");
-            container2.hidden=false;
-            container2.value = {!!$games!!}[index].games;
-            var cad_final = "";
-            for(var i=0; i< arr1.length; i++){
-                if(arr1[i] != ""){
-                    var arr2 = arr1[i].split('|$');
-                    cad_final += arr2[0]+" "+arr2[1]+'\n';
-                }
-            }
-
-            document.getElementById("contained_games_2").value = cad_final;
-            document.getElementById("text_games").value  = {!!$games!!}[index].games;
-        }
-        if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
+        }  
+      }      
+      $("#contained_games").selectpicker("refresh");
+       if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
             document.getElementById("div_description_game").hidden=false;
             document.getElementById("description_game").value = {!!$games!!}[index].description;
-        }else
-          document.getElementById("div_description_game").hidden=true;
       }
       fillSelectBrands(index);
   }

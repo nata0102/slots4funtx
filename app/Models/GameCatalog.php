@@ -13,4 +13,8 @@ class GameCatalog extends Model
 	public function brands(){
       return $this->hasMany('App\Models\GameBrand','game_catalog_id','id');
     }
+
+    public function type(){
+      return $this->hasOne('App\Models\Lookup','id','lkp_type_id');
+    }
 }

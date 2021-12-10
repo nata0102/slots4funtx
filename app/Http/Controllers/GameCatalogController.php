@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\MachineBrand;
 use App\Models\GameCatalog;
 use App\Models\GameBrand;
+use App\Models\Lookup;
 use Illuminate\Support\Facades\DB;
 
 class GameCatalogController extends Controller
@@ -22,7 +23,7 @@ class GameCatalogController extends Controller
     }
 
     public function searchWithFilters($params){
-        $qry = "select * from game_catalog ";
+        $qry = "select *,(select value from lookups where id=game_catalog.lkp_type_id) as type from game_catalog ";
         if(count($params)>0){
             $qry.= " where ";
             if (array_key_exists('active', $params) && $params['active']!=""){
@@ -52,8 +53,9 @@ class GameCatalogController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-        $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
-        return view('game_catalog.create',compact('brands'));
+      $types = Lookup::where('type','game_type')->orderBy('value')->get();
+      $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
+      return view('game_catalog.create',compact('brands','types'));
     }
 
     /**
@@ -63,10 +65,10 @@ class GameCatalogController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        try {
+    {  
+      try {
             return DB::transaction(function() use($request){
-              $arr = $request->except('_token','brands_ids','game_name','game_license');
+              $arr = $request->except('_token','brands_ids');
               $created = GameCatalog::create($arr);
               if (array_key_exists('brands_ids', $request->all())){
                   foreach ($request->brands_ids as $brand_id)
@@ -127,12 +129,13 @@ class GameCatalogController extends Controller
         session(['urlBack' => url()->previous()]);
       }
         $res = GameCatalog::findOrFail($id);
+        $types = Lookup::where('type','game_type')->orderBy('value')->get();
         $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
         $game_brands = GameBrand::where('game_catalog_id',$id)->get();
         $brands_ids = [];
         foreach ($game_brands as $b)
             array_push($brands_ids,(string) $b->machine_brand_id);
-        return view('game_catalog.edit',compact('brands_ids','res','brands'));
+        return view('game_catalog.edit',compact('brands_ids','res','brands','types'));
     }
 
     /**

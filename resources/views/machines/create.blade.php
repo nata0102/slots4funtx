@@ -11,7 +11,7 @@
 
           <form class="" action="{{action('MachineController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf
-            <div class="row">
+            <div class="row">             
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
@@ -57,7 +57,7 @@
               <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
                 <div class="form-group">
                   <label for="">Contained Games</label>
-                  <textarea onkeydown="return false;" id="contained_games_2"></textarea>
+                  <textarea disabled onkeydown="return false;" id="contained_games_2"></textarea>
                   <textarea onkeydown="return false;" id="text_games" name="games"  value="{{old('games')}}" hidden></textarea>
                 </div>
               </div>
@@ -152,52 +152,67 @@
   </div>
 
 <script>
+
+  function addOptionsSelectGames(games_cad){
+      document.getElementById("div_contained_games").hidden=false;
+      var arr1 = games_cad.split("&$");
+      for(var i=0; i< arr1.length; i++){
+          if(arr1[i] != ""){
+              var arr2 = arr1[i].split('|$');
+              $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
+          }
+      }
+      @if(old('games_select') != null)
+        var count= "{{ count(old('games_select')) }}";
+        var a3 = @json(old('games_select'));
+        $.each(a3, function(i,e){
+          $("#contained_games option[value='" + e + "']").prop("selected", true);
+        });
+      @endif
+  }
+
+  function addOptionsTextArea(games_cad){
+      var container2 = document.getElementById("div_contained_games_2");
+      container2.hidden=false;
+      container2.value = games_cad;
+      var arr1 = games_cad.split("&$");
+      var cad_final = "";
+      for(var i=0; i< arr1.length; i++){
+          if(arr1[i] != ""){
+              var arr2 = arr1[i].split('|$');
+              cad_final += arr2[0]+" "+arr2[1]+'\n';
+          }
+      }
+      document.getElementById("contained_games_2").value = cad_final;
+      document.getElementById("text_games").value  = games_cad;
+  }
+
   //Llena los games
   function fillContainedGames(game, index) {
       //LLena combo de description Games
       index = index-2;
+      var games_cad = {!!$games!!}[index].games;
+      var band_select = {!!$games!!}[index].band_select;
+      var type_game = {!!$games!!}[index].type.key_value;
+      $('#contained_games').empty();
+      document.getElementById("text_games").value = "";
+      document.getElementById("contained_games_2").value = "";
+      document.getElementById("div_contained_games").hidden = true;
+      document.getElementById("div_contained_games_2").hidden = true;
+      document.getElementById("div_description_game").hidden = true;
       if(game != ""){
-        $('#contained_games').empty();
-        var arr1 = {!!$games!!}[index].games.split("&$");
-        if({!!$games!!}[index].band_select == 1){
-            document.getElementById("div_contained_games").hidden=false;
-            document.getElementById("div_contained_games_2").hidden=true;
-
-            for(var i=0; i< arr1.length; i++){
-                if(arr1[i] != ""){
-                    var arr2 = arr1[i].split('|$');
-                    $('#contained_games').append('<option value="'+arr1[i]+'" data {{ (collect(old("games_select"))->contains('+arr1[i]+')) ? "selected":"" }}>'+arr2[0]+" "+arr2[1]+'</option>');
-                }
+        if(type_game == "group"){
+            if(band_select == 1){
+                addOptionsSelectGames(games_cad);
+            }else{
+                addOptionsTextArea(games_cad);
             }
-            @if(old('games_select') != null)
-              var count= "{{ count(old('games_select')) }}";
-              var a3 = @json(old('games_select'));
-              $.each(a3, function(i,e){
-                $("#contained_games option[value='" + e + "']").prop("selected", true);
-              });
-            @endif
-            $("#contained_games").selectpicker("refresh");
-        }else{
-            document.getElementById("div_contained_games").hidden=true;
-            var container2 = document.getElementById("div_contained_games_2");
-            container2.hidden=false;
-            container2.value = {!!$games!!}[index].games;
-            var cad_final = "";
-            for(var i=0; i< arr1.length; i++){
-                if(arr1[i] != ""){
-                    var arr2 = arr1[i].split('|$');
-                    cad_final += arr2[0]+" "+arr2[1]+'\n';
-                }
-            }
-
-            document.getElementById("contained_games_2").value = cad_final;
-            document.getElementById("text_games").value  = {!!$games!!}[index].games;
-        }
+        }        
+        $("#contained_games").selectpicker("refresh");
         if({!!$games!!}[index].description != null && {!!$games!!}[index].description != ""){
             document.getElementById("div_description_game").hidden=false;
             document.getElementById("description_game").value = {!!$games!!}[index].description;
-        }else
-          document.getElementById("div_description_game").hidden=true;
+        }
       }
       fillSelectBrands(index);
   }
