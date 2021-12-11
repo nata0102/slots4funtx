@@ -136,6 +136,8 @@
     </div>
   </div>
 
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+
 <script>
   function fillBrand(type, brands){
     $('#parts_brands').empty();
@@ -145,7 +147,8 @@
         $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
-    selectionBrand(type,brands);
+    console.log("Type = "+type);
+    selectionBrand(type);
   }
 
   function selectionBrand(value){
@@ -154,6 +157,14 @@
         $("#parts_brands option[value='" + e + "']").prop("selected", true);
       });
       $("#parts_brands").selectpicker("refresh");
+  }
+
+  function selectionPart(value){
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#parts_type option[value='" + e + "']").prop("selected", true);
+      });
+      $("#parts_type").selectpicker("refresh");
   }
 
   function valideKey(evt){
@@ -169,14 +180,16 @@
       }
   }
 
+  $(document).ready(function() {
+    selectionPart($('#parts_type').val());
+     console.log("VALUE = "+$('#parts_type').val());
+  });
+
   window.onload = function() {
-     if($('#parts_type').val() != ""){
-        fillBrand($('#parts_type').val(), {!!$brands!!});
-        var brand_id= "{{ old('brand_id') }}";
-        if(brand_id){
-          selectionBrand(brand_id);
-        }
-     }
-  };
+    selectionPart($('#parts_type').val());
+     console.log("VALUE ON LOAD = "+$('#parts_type').val());
+    };
+
+  
 </script>
   @stop
