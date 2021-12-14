@@ -65,7 +65,7 @@ class GameCatalogController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
+    {  return $request;
       try {
             return DB::transaction(function() use($request){
               $arr = $request->except('_token','brands_ids');

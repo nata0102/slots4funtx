@@ -125,7 +125,11 @@
                 </table>
               </div>
 
-              <input onchange="fillTable()" type="hidden" class="form-control" id="games" name="games" value="{{old('games')}}" >
+              <div hidden>
+                <input onchange="fillTable()" class="form-control" id="games" name="games" value="{{old('games')}}" >
+              </div>
+
+              
             </div>
             <div style="margin-top: 10px;" class="col-12">
                 <div class="form-group">
@@ -138,7 +142,7 @@
     </div>
   </div>
   <!--<script>-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 
   <script>
     function visibleControls(index){  
@@ -152,7 +156,7 @@
           document.getElementById("div_group4").hidden = false;
           document.getElementById("table").hidden = false;
         }else{
-          document.getElementById("games").value = "";
+          document.getElementById("games").value = null;
           $("#table_games tr").remove(); 
           document.getElementById("div_group1").hidden = true;
           document.getElementById("div_group2").hidden = true;
@@ -160,6 +164,7 @@
           document.getElementById("div_group4").hidden = true;
           document.getElementById("table").hidden = true;
         }
+
     }
 
     function insertRow(val1, val2){
@@ -220,6 +225,7 @@
         }
       }
     }
+
     function valideKey(evt){
         // code is the decimal ASCII representation of the pressed key.
         var code = (evt.which) ? evt.which : evt.keyCode;
@@ -234,23 +240,9 @@
     }
 
     $('document').ready(function(){
-        @if (old('lkp_type_id') == 139)
-          console.log("individual");
-        @else
-          @if(old('lkp_type_id') == 140)
-            console.log("grupal");
-          @else
-            console.log("vacío");
-          @endif
-        @endif
-        var type_game = document.getElementById("type_game_catalog");
-      console.log(type_game);
-      console.log(type_game.value);
+      visibleControls($("#type_game_catalog option:selected").index());
+      fillTable();
     });
 
-    window.onload = function() {
-      
-     
-    };
   </script>
   @stop
