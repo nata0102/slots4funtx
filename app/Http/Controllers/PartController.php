@@ -73,7 +73,7 @@ class PartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {return $request;
+    {
       $this->validate($request, [
         'lkp_type_id' => 'required',
         'lkp_status_id' => 'required',
@@ -83,7 +83,7 @@ class PartController extends Controller
 
       try{
         return DB::transaction(function() use($request){
-          $part = Part::create($request->except('_token'));
+          $part = Part::create($request->except('_token','old_brand_id'));
           /*if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }*/
@@ -177,7 +177,7 @@ class PartController extends Controller
       try{
         return DB::transaction(function() use($request, $id){
           $part = Part::findOrFail($id);
-          $part->update($request->except('_method','_token'));
+          $part->update($request->except('_method','_token','old_brand_id'));
           $part->save();
           /*if($request->image){
             if($part->image != NULL && file_exists(public_path().'/images/part/'.$part->image)){
@@ -264,14 +264,17 @@ class PartController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
+      $qry = "select * from parts_lkp_brands l, machine_brands b
+      where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
+      $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       return view('parts.createByRank',compact('types','protocols','status','brands'));
     }
 
-    public function storeByRank(Request $request){
+    public function storeByRank(Request $request)
+    {
         $this->validate($request, [
             'lkp_type_id' => 'required',
             'lkp_status_id' => 'required',

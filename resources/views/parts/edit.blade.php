@@ -19,7 +19,7 @@
                <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select id="parts_type" onchange="fillBrand(this.value, {{$brands}})" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --" required>
+                  <select id="parts_type" onchange="fillBrand(this.value)" class="form-control @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --" required>
                     <option value=""></option>
                     @foreach($types as $type)
                       <option value="{{$type->id}}" {{$part->lkp_type_id == $type->id ? 'selected' : ''}}>{{$type->value}}</option>
@@ -36,7 +36,10 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand-Model</label>
-                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" data-live-search="true" title="-- Select Brand --">
+                  <div hidden>
+                    <input  id="old_brand_id" name="old_brand_id" value="{{$part->brand_id}}">
+                  </div>
+                  <select onchange="setInput(this.value)" class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id"  id="parts_brands" data-live-search="true" title="-- Select Brand --">
                   </select>
                   @error('brand_id')
                       <span class="invalid-feedback" role="alert">
@@ -146,7 +149,8 @@
   </div>
 
 <script>
-  function fillBrand(type, brands){
+  function fillBrand(type){
+    var brands = {!!$brands!!};
     $('#parts_brands').empty();
     $('#parts_brands').append('<option value=""></option>');
     for(var i=0; i < brands.length; i++){
@@ -154,7 +158,19 @@
         $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
-    selectionBrand(type,brands);
+    $("#parts_brands").selectpicker("refresh");
+  }
+
+  function setInput(value){
+    document.getElementById('old_brand_id').value=value;
+  }
+
+  function selectionPart(value){
+      var arr = [value];
+      $.each(arr, function(i,e){
+        $("#parts_type option[value='" + e + "']").prop("selected", true);
+      });
+      $("#parts_type").selectpicker("refresh");
   }
 
   function selectionBrand(value){
@@ -165,18 +181,13 @@
       $("#parts_brands").selectpicker("refresh");
   }
 
-  window.onload = function() {
-     if($('#parts_type').val() != ""){
-        fillBrand($('#parts_type').val(), {!!$brands!!});
-
-        var brand_id= "{{old('brand_id')}}";
-        if(brand_id=="")
-          brand_id = "{{$part->brand_id}}";
-        if(brand_id){
-          selectionBrand(brand_id);
-        }
-     }
-  };
+  $(document).ready(function() {
+    var p_type = document.getElementById('parts_type');
+    selectionPart(p_type.value);   
+    fillBrand(p_type.value); 
+    selectionBrand(document.getElementById('old_brand_id').value);
+    $("#machines").selectpicker("refresh");    
+  });
 
   function valideKey(evt){
       // code is the decimal ASCII representation of the pressed key.
