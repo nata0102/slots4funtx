@@ -147,7 +147,9 @@ class PartController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-      $brands =  DB::table('machine_brands')->where('lkp_type_id',54)->where('active',1)->orderBy('brand')->orderBy('model')->get();
+      $qry = "select * from parts_lkp_brands l, machine_brands b
+      where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
+      $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();

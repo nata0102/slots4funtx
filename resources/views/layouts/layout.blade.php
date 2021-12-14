@@ -82,7 +82,10 @@
 		  border: 1px solid #ddd !important;
 		}
 	</style>
-
+<script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
+	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
 </head>
 <body class="animsition">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -308,11 +311,8 @@
 
 
 	<!-- Jquery JS -->
-	<script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
-	<!-- Bootstrap JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
-	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
+	
+	<!-- Bootstrap JS -->	
 	<script src="{{ asset('adminjs/toastr.js') }}"></script>
 	<script src="{{ asset('adminjs/cropper.js') }}"></script>
 	<script src="{{ asset('adminjs/datatables.js') }}"></script>

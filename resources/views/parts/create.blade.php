@@ -32,7 +32,10 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand-Model</label>
-                  <select class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id" id="parts_brands" data-live-search="true" title="-- Select Brand --">
+                  <div hidden>
+                  <input  id="old_brand_id" name="old_brand_id" value="{{old('old_brand_id')}}">
+                </div>
+                  <select onchange="setInput(this.value)" class="form-control selectpicker @error('brand_id') is-invalid @enderror input100" name="brand_id" id="parts_brands" data-live-search="true" title="-- Select Brand --">
                   </select>
                   @error('brand_id')
                       <span class="invalid-feedback" role="alert">
@@ -136,7 +139,6 @@
     </div>
   </div>
 
-<script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 
 <script>
   function fillBrand(type){
@@ -148,10 +150,15 @@
         $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
-    selectionBrand(type);
+    $("#parts_brands").selectpicker("refresh");
+  }
+
+   function setInput(value){
+ document.getElementById('old_brand_id').value=value;
   }
 
   function selectionBrand(value){
+     
       var arr = [value];
       $.each(arr, function(i,e){
         $("#parts_brands option[value='" + e + "']").prop("selected", true);
@@ -182,10 +189,10 @@
 
   $(document).ready(function() {
     var p_type = document.getElementById('parts_type');
-    console.log(p_type.value);
     selectionPart(p_type.value);   
     fillBrand(p_type.value); 
-    console.log("{{old('brand_id')}}");
+    console.log("{{old('old_brand_id')}}");
+    console.log(document.getElementById('old_brand_id').value);
   });
   
 </script>

@@ -74,7 +74,7 @@
               <div class="col-12 col-sm-6 col-md-4" hidden id="div_group1">
                 <div class="form-group">
                   <input type="hidden" name="band_select" value="0" />
-                  <label><input type="checkbox" class="@error('band_select') is-invalid @enderror input100" name="band_select" value="1" {{old('band_select') == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
+                  <label><input type="checkbox" id="check_band" class="@error('band_select') is-invalid @enderror input100" name="band_select" value="1" {{old('band_select') == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Allow Select Games</span></label>
                 </div>
               </div>
 
@@ -142,8 +142,6 @@
     </div>
   </div>
   <!--<script>-->
-  <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
-
   <script>
     function visibleControls(index){  
         var type = "";
@@ -163,6 +161,7 @@
           document.getElementById("div_group3").hidden = true;
           document.getElementById("div_group4").hidden = true;
           document.getElementById("table").hidden = true;
+          document.getElementById("check_band").checked = false;         
         }
 
     }
