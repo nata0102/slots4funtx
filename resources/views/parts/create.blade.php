@@ -15,7 +15,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Type <span style="color:red">*</span></label>
-                  <select id="parts_type" onchange="fillBrand(this.value, {{$brands}})" class="form-control selectpicker @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --">
+                  <select id="parts_type" onchange="fillBrand(this.value)" class="form-control selectpicker @error('lkp_type_id') is-invalid @enderror input100" name="lkp_type_id" data-live-search="true" title="-- Select Type --">
                     <option value=""></option>
                     @foreach($types as $type)
                       <option value="{{$type->id}}" {{ old('lkp_type_id') == $type->id ? 'selected' : '' }} >{{$type->value}}</option>
@@ -136,10 +136,11 @@
     </div>
   </div>
 
-<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 
 <script>
-  function fillBrand(type, brands){
+  function fillBrand(type){
+    var brands = {!!$brands!!};
     $('#parts_brands').empty();
     $('#parts_brands').append('<option value=""></option>');
     for(var i=0; i < brands.length; i++){
@@ -147,7 +148,6 @@
         $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
-    console.log("Type = "+type);
     selectionBrand(type);
   }
 
@@ -181,15 +181,12 @@
   }
 
   $(document).ready(function() {
-    selectionPart($('#parts_type').val());
-     console.log("VALUE = "+$('#parts_type').val());
+    var p_type = document.getElementById('parts_type');
+    console.log(p_type.value);
+    selectionPart(p_type.value);   
+    fillBrand(p_type.value); 
+    console.log("{{old('brand_id')}}");
   });
-
-  window.onload = function() {
-    selectionPart($('#parts_type').val());
-     console.log("VALUE ON LOAD = "+$('#parts_type').val());
-    };
-
   
 </script>
   @stop

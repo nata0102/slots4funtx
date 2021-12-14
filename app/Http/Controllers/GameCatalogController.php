@@ -146,7 +146,7 @@ class GameCatalogController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {return $request;
         try {
             return DB::transaction(function() use ($request, $id){
               $arr = $request->except('_method','_token','brands_ids','game_name','game_license');

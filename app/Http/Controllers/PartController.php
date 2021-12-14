@@ -73,7 +73,7 @@ class PartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {return $request->all();
+    {return $request;
       $this->validate($request, [
         'lkp_type_id' => 'required',
         'lkp_status_id' => 'required',

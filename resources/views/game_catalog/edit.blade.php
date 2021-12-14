@@ -124,8 +124,9 @@
                   </tbody>
                 </table>
               </div>
-
-              <input onchange="fillTable()" type="hidden" class="form-control" id="games" name="games" value="{{$res->games}}" >             
+               <div hidden>
+                  <input onchange="fillTable()" class="form-control" id="games" name="games" value="{{$res->games}}" >   
+                </div>          
             </div>
             <div style="margin-top: 10px;" class="col-12">
                 <div class="form-group">
@@ -138,7 +139,7 @@
     </div>
   </div>
   <!--<script>-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 
   <script>
     function insertRow(val1, val2){
@@ -200,20 +201,6 @@
       }
     }
 
-    window.onload = function() {
-      let games = document.getElementById("games");
-      var resume_table = document.getElementById("table_games");
-      var arr1 = games.value.split('&$');
-      for(var i=0;i < arr1.length; i++){
-        if(arr1[i] != ""){
-          var arr2 = arr1[i].split('|$');
-          insertRow(arr2[0], arr2[1]);
-        }
-      }
-      var type_game = document.getElementById("type_game_catalog");
-      visibleControls(type_game.selectedIndex);
-    };
-
     function visibleControls(index){  
         var type = "";
         if(index > 0)
@@ -246,5 +233,10 @@
         return false;
       }
   }
+
+   $('document').ready(function(){
+      visibleControls($("#type_game_catalog option:selected").index());
+      fillTable();
+    });
   </script>
   @stop
