@@ -72,6 +72,9 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Brand</label>
+                  <div hidden>
+                    <input  id="old_machine_brand_id" name="old_machine_brand_id" value="{{old('old_machine_brand_id')}}">
+                  </div>
                   <select onchange="changeBrand(this.value)" id="machine_brands" class="form-control selectpicker @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id" title="-- Select Brand --" data-live-search="true">
                   </select>
                 </div>
@@ -92,7 +95,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Address</label>
-                  <select class="form-control selectpicker @error('address_id') is-invalid @enderror input100" name="address_id" data-live-search="true" title="-- Select Client Address --">
+                  <select id="machine_address" class="form-control selectpicker @error('address_id') is-invalid @enderror input100" name="address_id" data-live-search="true" title="-- Select Client Address --">
                     <option value=""></option>
                       @foreach($addresses as $address)
                         <option value="{{$address->id}}" {{ old('address_id') == $address->id ? 'selected' : '' }}>{{$address->name}} - {{$address->name_address}}</option>
@@ -154,6 +157,7 @@
 <script>
 
   function addOptionsSelectGames(games_cad){
+    if(games_cad!= null && games_cad != ""){
       document.getElementById("div_contained_games").hidden=false;
       var arr1 = games_cad.split("&$");
       for(var i=0; i< arr1.length; i++){
@@ -169,9 +173,11 @@
           $("#contained_games option[value='" + e + "']").prop("selected", true);
         });
       @endif
+    }
   }
 
   function addOptionsTextArea(games_cad){
+    if(games_cad!= null && games_cad != ""){
       var container2 = document.getElementById("div_contained_games_2");
       container2.hidden=false;
       container2.value = games_cad;
@@ -185,6 +191,7 @@
       }
       document.getElementById("contained_games_2").value = cad_final;
       document.getElementById("text_games").value  = games_cad;
+    }
   }
 
   //Llena los games
@@ -230,35 +237,29 @@
   }
 
   function changeBrand(brand_value){
-      if(brand_value == ""){
-          $('#machine_brands').empty();
-          for(var i=0; i<{!!$brands!!}.length; i++){
-            $('#machine_brands').append('<option value="'+{!!$brands!!}[i].id+'">'+{!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model+'</option>');
-          }
-          $('#machine_brands').append('<option value="">OTHER</option>');
-          $("#machine_brands").selectpicker("refresh");
-      }
+      document.getElementById('old_machine_brand_id').value=brand_value;
+      if(brand_value == "")
+          fillOtherBrands();
+  }
+
+  function fillOtherBrands(){
+    $('#machine_brands').empty();
+    for(var i=0; i<{!!$brands!!}.length; i++){
+      $('#machine_brands').append('<option value="'+{!!$brands!!}[i].id+'">'+{!!$brands!!}[i].brand+" "+{!!$brands!!}[i].model+'</option>');
+    }
+    $('#machine_brands').append('<option value="">OTHER</option>');
+    $("#machine_brands").selectpicker("refresh");
   }
 
   function checkFillBrand(brand_id){
       if($("#machine_brands option[value='"+brand_id+"']").length == 0)
-          changeBrand("");
+          fillOtherBrands();
       $.each([brand_id], function(i,e){
           $("#machine_brands option[value='" + e + "']").prop("selected", true);
       });
       $("#machine_brands").selectpicker("refresh");
 
   }
-
-  window.onload = function() {
-      var select_game = document.getElementById("select_game");
-      if(select_game.value != ""){
-          fillContainedGames(select_game.value,select_game.selectedIndex + 1);
-          var brand_id = "{{old('machine_brand_id')}}";
-          if(brand_id != "")
-            checkFillBrand(brand_id);
-      }
-  };
 
   function valideKey(e){
       // code is the decimal ASCII representation of the pressed key.
@@ -271,12 +272,19 @@
       } else{ // other keys.
         return false;
       }*/
-
-
-
   }
 
-
+   $(document).ready(function() {
+      $("#select_game").selectpicker("refresh");
+      $("#machine_address").selectpicker("refresh");      
+      var select_game = document.getElementById("select_game");
+      if(select_game.value){
+        fillContainedGames(select_game.value, select_game.selectedIndex);
+        var brand_id = document.getElementById('old_machine_brand_id').value;
+        if(brand_id != "")
+            checkFillBrand(brand_id);
+      }    
+  });
 
 </script>
   @stop
