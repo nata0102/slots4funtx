@@ -24,6 +24,7 @@
               </div>
               <div style="margin-top: 40px" class="input-group mb-5">
                   <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- Select Type --">
+                      <option value=""></option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach                              
