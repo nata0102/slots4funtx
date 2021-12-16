@@ -64,7 +64,7 @@
 			                  <label for="">Brands</label>
 			                  <select class="form-control selectpicker show-menu-arrow @error('brands') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Brands --" multiple="multiple" name="brands_ids[]">
 			                  @foreach($brands as $brand)
-			                  	<option {{ in_array($brand->id, $brands_ids) ? 'selected' : '' }}  value="{{$brand->id}}">{{$brand->brand}} - {{$brand->model}}</option>
+			                  	<option {{ in_array($brand->id, $brands_ids) ? 'selected' : '' }}  value="{{$brand->id}}">{{$brand->brand}} {{$brand->model}}</option>
 			                  @endforeach
 			                  </select>
 			                </div>

@@ -17,7 +17,6 @@ class LookupController extends Controller
      */
     public function index(Request $request)
     {
-      $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
       $res = [];
       $types = [];
       switch ($request->option) {
@@ -27,10 +26,10 @@ class LookupController extends Controller
           default:
               $res = $this->searchWithFilters($request->all());
               $types = DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
-              $params = $request->all();
+              //$params = $request->all();
           break;
       }
-      return view('lookups.index',compact('res','types','params','cities'));
+      return view('lookups.index',compact('res','types'));
     }
 
     public function searchWithFilters($params){
