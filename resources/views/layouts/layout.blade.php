@@ -81,6 +81,39 @@
 		.table-bordered {
 		  border: 1px solid #ddd !important;
 		}
+
+		input{
+			text-transform: uppercase;
+		}
+
+		input, textarea, select, .form-control, .form-control:focus, .bootstrap-select > .dropdown-toggle, .bootstrap-select .dropdown-menu {
+		  background-color : #efefef;
+		}
+
+		select{
+			background: #eee;
+		}
+
+		.card{
+			background: #dedede;
+		}
+
+		th{
+			background: #bbb;
+		}
+
+		td{
+			background: #ddd;
+		}
+
+		.table-bordered th, .table-bordered td {
+	    border: 1px solid #666;
+		}
+
+		.menu-sidebar__content, .header-desktop, .menu-sidebar .logo {
+			background: #dfdfdf;
+		}
+
 	</style>
 <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -311,8 +344,8 @@
 
 
 	<!-- Jquery JS -->
-	
-	<!-- Bootstrap JS -->	
+
+	<!-- Bootstrap JS -->
 	<script src="{{ asset('adminjs/toastr.js') }}"></script>
 	<script src="{{ asset('adminjs/cropper.js') }}"></script>
 	<script src="{{ asset('adminjs/datatables.js') }}"></script>
@@ -587,7 +620,7 @@
 
 	<script>
 
-	
+
 	//////////////////////
 
 	function selectPaymentType(value){
