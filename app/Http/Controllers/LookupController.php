@@ -139,7 +139,7 @@ class LookupController extends Controller
             });
 
             return $transaction;
-        }catch(\Exception $e){return $e->getMessage();
+        }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $message = $e->getMessage();
             $transaction = array(
@@ -169,7 +169,19 @@ class LookupController extends Controller
      */
     public function edit($id)
     {
-        //
+        if( url()->previous() != url()->current() ){
+          session()->forget('urlBack');
+          session(['urlBack' => url()->previous()]);
+        }
+        $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
+        $lookup = Lookup::findOrFail($id);
+        $cities = DB::table('lookups')->where('type','cities')->where('active',1)->orderBy('value')->get();    
+        $brands = MachineBrand::where('lkp_type_id',54)->orderBy('brand')->orderBy('model')->get();
+        $brands_on_part = DB::table('parts_lkp_brands')->where('lkp_part_id',$id)->get();
+        $brands_ids = [];
+        foreach ($brands_on_part as $brand_p )
+            array_push($brands_ids,(string) $brand_p->brand_id);
+        return view('lookups.edit',compact('types','lookup','cities','brands','brands_ids'));
     }
 
     /**
@@ -193,9 +205,15 @@ class LookupController extends Controller
                 if(count($validation)==0){
                     $res = Lookup::findOrFail($id);
                     $key_value = $this->getKeyValue($arr['value']);
-                    $res->update(['value'=>$arr['value'], 'key_value'=>$key_value, 'lkp_city_id'=>$arr['lkp_city_id']]);
+                    $res->update(['value'=>$arr['value'], 'key_value'=>$key_value, 'lkp_city_id'=>$arr['lkp_city_id'],'type'=>$arr['type']]);
                     $res->save();
                     if ($res) {
+                        LkpPartBrand::where('lkp_part_id', $id)->delete();
+                        if(array_key_exists('brands_ids', $arr) && $arr['type']=='part_type'){
+                          foreach ($request->brands_ids as $brand_id) {
+                            LkpPartBrand::create(['lkp_part_id'=>$id,'brand_id'=>$brand_id]);
+                          }
+                        }
                         $notification = array(
                           'message' => 'Successful!!',
                           'alert-type' => 'success'
