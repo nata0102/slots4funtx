@@ -100,6 +100,22 @@
 
           </div>
 
+          <div class="card" style="margin: 0;" id="gallery" >
+            <div class="">
+              <div>
+                <h4>Imagenes</h4>
+              </div>
+              <br>
+              <div class="row">
+                @foreach($images as $image)
+                  <div class="col-6 col-sm-3 col-md-3 col-lg-2">
+                    <img src="{{asset('images/part brand').'/'.$image->name_image}}" class="img-fluid">
+                  </div>
+                @endforeach
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

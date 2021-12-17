@@ -27,7 +27,7 @@
                       <option value=""></option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
-                      @endforeach                              
+                      @endforeach
                   </select>
                   <select class="form-control selectpicker" name="brand" id="parts_brands" data-old="{{old('brand')}}" data-live-search="true" title="-- Select Brand --">
                       <option value="">-- Select Brand --</option>
@@ -84,7 +84,7 @@
                         <td>{{$part->status->value}}</td>
                       @else
                         <td></td>
-                      @endif                      
+                      @endif
                       @if($part->machine_id != null)
                         @if($part->machine->machine_brand_id != null)
                           <td>{{$part->machine_id}} - {{$part->machine->owner->value}} - {{$part->machine->game->name}} - {{$part->machine->serial}}</td>
@@ -96,19 +96,23 @@
                       @endif
                       <td>
                         <div class="row" style="margin-right: 0; margin-left: 0;">
-                          <div class="col-4" style="padding: 0;">
+                          <div class="col-3" style="padding: 0;">
                             <a href="{{action('PartController@show',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                           </div>
 
-                          <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
+                          <div class="col-3" style="padding: 0;">
+                            <a href="{{action('PartController@gallery',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-images"></i></a>
+                          </div>
+
+                          <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-3 active" style="padding: 0;">
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                           </div>
 
-                          <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
+                          <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-3 active" style="padding: 0;">
                             <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                           </div>
 
-                          <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }}  class="col-8 inactive" style="padding: 0;">
+                          <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }}  class="col-6 inactive" style="padding: 0;">
                             <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this part?" data-message2="Activated" data-message3="Activated part." data-method="DELETE" data-action="{{action('PartController@destroy',$part->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
                           </div>
 
@@ -138,21 +142,21 @@
     $("#parts_brands").selectpicker("refresh");
   }
 
-  function selectionBrand(value){  
+  function selectionBrand(value){
       var arr = [value];
       $.each(arr, function(i,e){
         $("#parts_brands option[value='" + e + "']").prop("selected", true);
       });
-      $("#parts_brands").selectpicker("refresh");  
+      $("#parts_brands").selectpicker("refresh");
   }
 
-  window.onload = function() { 
+  window.onload = function() {
      if($('#parts_type').val() != ""){
         fillBrand($('#parts_type').val(), {!!$brands!!});
         @if(isset($_GET['brand']))
           selectionBrand("{{$_GET['brand']}}");
-        @endif       
+        @endif
      }
-  }; 
+  };
 </script>
 @stop

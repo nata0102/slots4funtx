@@ -16,7 +16,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Name <span style="color:red">*</span></label>
-                  <input type="text" class="form-control @error('name') is-invalid @enderror input100" required name="name" value="{{$client->name}}">
+                  <input style="text-transform: none;" type="text" class="form-control @error('name') is-invalid @enderror input100" required name="name" value="{{$client->name}}">
                   @error('name')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -28,7 +28,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Email <span style="color:red">*</span></label>
-                  <input type="email" class="form-control @error('email') is-invalid @enderror input100" required name="email" value="{{$client->email}}">
+                  <input style="text-transform: lowercase;" type="email" class="form-control @error('email') is-invalid @enderror input100" required name="email" value="{{$client->email}}">
                   @error('email')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -64,7 +64,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Referral</label>
-                  <input type="text" class="form-control @error('referral') is-invalid @enderror input100" name="referral" value="{{$client->referral}}">
+                  <input style="text-transform: none;" type="text" class="form-control @error('referral') is-invalid @enderror input100" name="referral" value="{{$client->referral}}">
                   @error('referral')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>

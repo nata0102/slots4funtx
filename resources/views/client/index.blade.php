@@ -16,9 +16,9 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div class="input-group mb-5">
-                  <input class="form-control" type="text" name="name" value="{{ isset($_GET['name']) ? $_GET['name'] : '' }}" placeholder="Name">
-                  <input class="form-control" type="text" name="phone" value="{{ isset($_GET['phone']) ? $_GET['phone'] : '' }}" placeholder="Phone">
-                  <input class="form-control" type="text" name="email" value="{{ isset($_GET['email']) ? $_GET['email'] : '' }}" placeholder="Email">
+                  <input style="text-transform: none;" class="form-control" type="text" name="name" value="{{ isset($_GET['name']) ? $_GET['name'] : '' }}" placeholder="Name">
+                  <input style="text-transform: none;" class="form-control" type="text" name="phone" value="{{ isset($_GET['phone']) ? $_GET['phone'] : '' }}" placeholder="Phone">
+                  <input style="text-transform: none;" class="form-control" type="text" name="email" value="{{ isset($_GET['email']) ? $_GET['email'] : '' }}" placeholder="Email">
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>
                       <span class="glyphicon glyphicon-search"></span>
