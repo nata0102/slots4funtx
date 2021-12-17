@@ -121,6 +121,9 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request){                             
                 $arr = $request->except('parts_ids','_token','image','games_select',
                     'old_machine_brand_id');
+                $arr['serial'] = strtoupper($arr['serial']);
+                $arr['games'] = strtoupper($arr['games']);
+                $arr['notes'] = strtoupper($arr['notes']);
                 if(array_key_exists('games_select', $request->all())){
                      $arr['games'] = "";
                     foreach ($request->games_select as $g_select) 
@@ -254,6 +257,9 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request, $id){                  
                 $arr = $request->except('parts_ids','_token','image','_method','games_select',
                     'old_machine_brand_id');
+                $arr['serial'] = strtoupper($arr['serial']);
+                $arr['games'] = strtoupper($arr['games']);
+                $arr['notes'] = strtoupper($arr['notes']);
                 if(array_key_exists('games_select', $request->all())){
                      $arr['games'] = "";
                     foreach ($request->games_select as $g_select) 

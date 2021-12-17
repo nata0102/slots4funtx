@@ -69,6 +69,11 @@ class GameCatalogController extends Controller
       try {
             return DB::transaction(function() use($request){
               $arr = $request->except('_token','brands_ids');
+              $arr['name'] = strtoupper($arr['name']); 
+              $arr['license'] = strtoupper($arr['license']);
+              $arr['description'] = strtoupper($arr['description']);
+              $arr['games'] = strtoupper($arr['games']);
+
               $created = GameCatalog::create($arr);
               if (array_key_exists('brands_ids', $request->all())){
                   foreach ($request->brands_ids as $brand_id)
@@ -150,6 +155,10 @@ class GameCatalogController extends Controller
         try {
             return DB::transaction(function() use ($request, $id){
               $arr = $request->except('_method','_token','brands_ids','game_name','game_license');
+              $arr['name'] = strtoupper($arr['name']); 
+              $arr['license'] = strtoupper($arr['license']);
+              $arr['description'] = strtoupper($arr['description']);
+              $arr['games'] = strtoupper($arr['games']);
               $game = GameCatalog::findOrFail($id);
               $game->update($arr);
               $game->save();

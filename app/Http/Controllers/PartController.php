@@ -85,7 +85,10 @@ class PartController extends Controller
 
       try{
         return DB::transaction(function() use($request){
-          $part = Part::create($request->except('_token','old_brand_id'));
+          $arr = $request->except('_token','old_brand_id');
+          $arr['description'] = strtoupper($arr['description']);
+          $arr['serial'] = strtoupper($arr['serial']);
+          $part = Part::create($arr);
           /*if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }*/
@@ -179,7 +182,10 @@ class PartController extends Controller
       try{
         return DB::transaction(function() use($request, $id){
           $part = Part::findOrFail($id);
-          $part->update($request->except('_method','_token','old_brand_id'));
+          $arr = $request->except('_method','_token','old_brand_id');
+          $arr['description'] = strtoupper($arr['description']);
+          $arr['serial'] = strtoupper($arr['serial']);
+          $part->update($arr);
           $part->save();
           /*if($request->image){
             if($part->image != NULL && file_exists(public_path().'/images/part/'.$part->image)){
@@ -293,6 +299,7 @@ class PartController extends Controller
         try{
             $transaction = DB::transaction(function() use($request){
                 $arr = $request->only('start_range','final_range','serial');
+                $arr['serial'] = strtoupper($arr['serial']);
                 $arr_aux =  $request->except('_token');
                 for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
                     $arr_aux['serial'] = $arr['serial'] . $i;

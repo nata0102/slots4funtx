@@ -103,6 +103,7 @@ class LookupController extends Controller
         try{
             $transaction = DB::transaction(function() use ($request){
                 $arr = $request->except('_token');
+                $arr['value'] = strtoupper($arr['value']);
                 if(array_key_exists('lkp_city_id', $arr)){
                     $validation = Lookup::where('type',$arr['type'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->get();
                 }else {
@@ -195,6 +196,7 @@ class LookupController extends Controller
         try{
             $transaction = DB::transaction(function() use ($request, $id){
                 $arr = $request->except('_token','_method');
+                $arr['value'] = strtoupper($arr['value']);
                 if(array_key_exists('lkp_city_id', $arr))
                   $validation = Lookup::where('type',$arr['p_key_value'])->where('value',$arr['value'])->where('lkp_city_id',$arr['lkp_city_id'])->whereNotIn('id',[$id])->get();
                 else{

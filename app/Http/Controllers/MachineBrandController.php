@@ -84,8 +84,8 @@ class MachineBrandController extends Controller
       try {
         return DB::transaction(function() use($request){
           $brand = new MachineBrand;
-          $brand->brand = $request->brand;
-          $brand->model = $request->model;
+          $brand->brand = strtoupper($request->brand);
+          $brand->model = strtoupper($request->model);
           $brand->weight = $request->weight;
           $brand->lkp_type_id = $request->lkp_type_id;
           $brand->active = 1;
@@ -163,7 +163,7 @@ class MachineBrandController extends Controller
         'weight' => 'numeric|nullable',
       ]);
 
-      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',$request->model)->where('brand',$request->brand)->where('id','!=',$id)->first();
+      $brand = MachineBrand::where('lkp_type_id',$request->lkp_type_id)->where('model',strtoupper($request->model))->where('brand',strtoupper($request->brand))->where('id','!=',$id)->first();
       if($brand){
         $notification = array(
             'message' => 'There is already a record with the same data.',
@@ -175,8 +175,8 @@ class MachineBrandController extends Controller
       try {
         return DB::transaction(function() use($request, $id){
           $brand = MachineBrand::find($id);
-          $brand->brand = $request->brand;
-          $brand->model = $request->model;
+          $brand->brand = strtoupper($request->brand);
+          $brand->model = strtoupper($request->model);
           $brand->weight = $request->weight;
           $brand->lkp_type_id = $request->lkp_type_id;
           $created = $brand->save();
