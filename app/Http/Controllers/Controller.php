@@ -33,6 +33,7 @@ class Controller extends BaseController
     }
 
     public function insertMachineHistory($id){
+        date_default_timezone_set('America/Chicago');
         $machine = Machine::with('owner')->findOrFail($id);
         $price_machine = DB::table('percentage_price_machine')->join('lookups', 'percentage_price_machine.lkp_type_id', '=', 'lookups.id')
         ->join('lookups as l2', 'percentage_price_machine.lkp_periodicity_id', '=', 'l2.id')
@@ -85,6 +86,7 @@ class Controller extends BaseController
     }
 
     public function insertPartHistory($id){
+      date_default_timezone_set('America/Chicago');
       $part = Part::findOrFail($id);
       $history = PartHistory::where('part_id',$id)->orderBy('id','desc')->first();
       $status = false;
