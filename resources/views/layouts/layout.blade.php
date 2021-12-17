@@ -114,13 +114,23 @@
 			background: #dfdfdf;
 		}
 
+		#sub-header ul li:hover,
+		body.home li.home,
+		body.contact li.contact { background-color: #eee;}
+
+		#sub-header ul li:hover a,
+		body.home li.home a,
+		body.contact li.contact a { color: #fff; }
+
+
+
 	</style>
 <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
 	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
 </head>
-<body class="animsition">
+<body class="animsition home">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
     <div class="page-wrapper">
 
@@ -181,33 +191,33 @@
 		            </div>
 		        </div>
 		        <nav class="navbar-mobile">
-		            <div class="container-fluid">
+		            <div class="container-fluid" id="sub-header">
 		                <ul class="navbar-mobile__list list-unstyled">
-												<li>
+												<li class='Dashboard'>
 				                    <a href="{{ action('MainController@index') }}">Dashboard</a>
 				                </li>
-												<li>
+												<li class='Machines'>
 														<a href="{{action('MachineController@index')}}">Machines</a>
 												</li>
-												<li>
+												<li class='Stock'>
 														<a href="{{action('PartController@index')}}">Stock Components</a>
 												</li>
-												<li>
+												<li class='Brands'>
 														<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
 												</li>
-												<li>
+												<li class='Games'>
 														<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
 												</li>
-												<li>
-												<a href="{{action('PermissionController@index')}}">Permissions</a>
+												<li class='Permissions'>
+													<a href="{{action('PermissionController@index')}}">Permissions</a>
 												</li>
-												<li>
-												<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
+												<li class='Percentage'>
+													<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
 												</li>
-												<li>
+												<li class='Clients'>
 													<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
 												</li>
-												<li>
+												<li class='Configuration'>
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
 
@@ -225,35 +235,35 @@
 			        </a>
 			    </div>
 			    <div class="menu-sidebar__content js-scrollbar1">
-			        <nav class="navbar-sidebar">
+			        <nav class="navbar-sidebar" id="sub-header2">
 			            <ul class="list-unstyled navbar__list">
-			                <li>
-			                    <a href="{{ action('MainController@index') }}">Dashboard</a>
-			                </li>
-											<li>
-													<a href="{{action('MachineController@index')}}">Machines</a>
-											</li>
-											<li>
-													<a href="{{action('PartController@index')}}">Stock Components</a>
-											</li>
-											<li>
-													<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
-											</li>
-											<li>
-														<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
-												</li>
-											<li>
-												<a href="{{action('PermissionController@index')}}">Permissions</a>
-											</li>
-											<li>
-												<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
-												</li>
-											<li>
-												<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
-											</li>
-											<li>
-												<a href="{{action('LookupController@index')}}">Configuration</a>
-											</li>
+										<li class='Dashboard'>
+												<a href="{{ action('MainController@index') }}">Dashboard</a>
+										</li>
+										<li class='Machines'>
+												<a href="{{action('MachineController@index')}}">Machines</a>
+										</li>
+										<li class='Stock'>
+												<a href="{{action('PartController@index')}}">Stock Components</a>
+										</li>
+										<li class='Brands'>
+												<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
+										</li>
+										<li class='Games'>
+												<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
+										</li>
+										<li class='Permissions'>
+											<a href="{{action('PermissionController@index')}}">Permissions</a>
+										</li>
+										<li class='Percentage'>
+											<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
+										</li>
+										<li class='Clients'>
+											<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
+										</li>
+										<li class='Configuration'>
+											<a href="{{action('LookupController@index')}}">Configuration</a>
+										</li>
 
 
 			            </ul>
@@ -373,6 +383,37 @@
 
 	<script >
 		$("[data-toggle=tooltip]").tooltip();
+	</script>
+
+	<script>
+	$(function(){
+		// this will get the full URL at the address bar
+		var url = window.location.href;
+
+		// passes on every "a" tag
+		$("#sub-header a").each(function() {
+						// checks if its the same on the address bar
+						console.log(this.href);
+						console.log(url);
+				if(url == (this.href)) {
+						$(this).closest("li").addClass("active");
+				}
+		});
+	});
+
+	$(function(){
+		// this will get the full URL at the address bar
+		var url = window.location.href;
+
+		// passes on every "a" tag
+		$("#sub-header2 a").each(function() {
+						// checks if its the same on the address bar
+				console.log(this.href);
+				if(url == (this.href)) {
+						$(this).closest("li").addClass("active");
+				}
+		});
+	});
 	</script>
 
 	<script >
