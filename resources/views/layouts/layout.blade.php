@@ -122,6 +122,13 @@
 		body.home li.home a,
 		body.contact li.contact a { color: #fff; }
 
+		.navbar-sidebar .navbar__list li.active > a {
+			color: green;
+		}
+		.navbar-sidebar .navbar__list li a:hover {
+			color: green;
+		}
+
 
 
 	</style>
