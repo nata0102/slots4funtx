@@ -31,6 +31,10 @@ class Part extends Model
         return $this->hasOne('App\Models\MachineBrand', 'id', 'brand_id');
   }
 
+  public function details(){
+      return $this->hasMany('App\Models\PartDetail', 'part_id', 'id');
+  }
+
   public static function scopeStatus1($query, $status) {
   	if ($status) {
 

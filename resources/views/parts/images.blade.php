@@ -7,6 +7,7 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
+          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
           <div class="card" style="margin: 0;" id="gallery" >
             <div class="">
               <div>

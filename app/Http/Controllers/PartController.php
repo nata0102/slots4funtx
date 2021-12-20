@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Part;
 use App\Models\Lookup;
 use App\Models\LkpPartBrand;
+use App\Models\PartDetail;
 use App\Models\Machine;
-use App\PartImage;
+use App\Models\PartImage;
 use DB;
 use File;
 use Input;
@@ -26,7 +27,7 @@ class PartController extends Controller
           $parts = $this->searchWithFilters($request->all());
         break;
         default:
-          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine.owner','machine.game','brand')->take(20)->get();
+          $parts = Part::where('active',1)->orderBy('id','desc')->with('machine.owner','machine.game','brand','details.detail')->take(20)->get();
         break;
       }
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
@@ -63,10 +64,10 @@ class PartController extends Controller
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
+      $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
-      return view('parts.create',compact('types','protocols','status','machines','brands'));
+      return view('parts.create',compact('types','details','status','machines','brands'));
     }
 
     /**
@@ -86,10 +87,20 @@ class PartController extends Controller
 
       try{
         return DB::transaction(function() use($request){
-          $arr = $request->except('_token','old_brand_id');
+          if($request->serial != null){
+            $arr = $request->except('_token','old_brand_id','details_ids','old_details_ids');
+            $arr['serial'] = strtoupper($arr['serial']);
+          }
+          else
+            $arr = $request->except('_token','old_brand_id','details_ids','old_details_ids','serial');
           $arr['description'] = strtoupper($arr['description']);
-          $arr['serial'] = strtoupper($arr['serial']);
+          
           $part = Part::create($arr);
+          if(array_key_exists('details_ids', $request->all())){
+              PartDetail::where('part_id',$part->id)->delete();
+              foreach ($request->details_ids as $detail_id) 
+                  PartDetail::create(['part_id'=>$part->id,'lkp_detail_id'=>$detail_id]);
+          }
           /*if($request->image){
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }*/
@@ -111,7 +122,7 @@ class PartController extends Controller
             return back()->with($notification)->withInput($request->all());
           }
         });
-      }catch(\Exception $e){
+      }catch(\Exception $e){return $e->getMessage();
         $cad='Oops! there was an error, please try again later.';
         $message = $e->getMessage();
         $pos = strpos($message, 'part.serial');
@@ -137,8 +148,12 @@ class PartController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-      $part = Part::with('type','protocol','brand','status','machine.brand')->find($id);
+      $part = Part::with('type','brand','status','machine.brand','details.detail')->find($id);
       $images = PartImage::where('part_id',$id)->get();
+      $aux = "";
+      foreach ($part->details as $detail) 
+         $aux .= $detail->detail->value."\n";
+      $part->cad_details = $aux;
       return view('parts.show',compact('part','images'));
     }
 
@@ -158,11 +173,17 @@ class PartController extends Controller
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
+      $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
+      $details_part = DB::table('parts_details')->where('part_id',$id)->get();
+      $details_aux_ids = [];
+      foreach ($details_part as $detail)
+          array_push($details_aux_ids, (string)$detail->lkp_detail_id);
+      $details_aux_ids = json_encode($details_aux_ids);
       $part = Part::where('id',$id)->with('machine','brand')->first();
-      return view('parts.edit',compact('part','types','protocols','status','machines','brands'));
+      return view('parts.edit',compact('part','types','details','status','machines','brands',
+        'details_aux_ids'));
     }
 
     /**
@@ -184,9 +205,12 @@ class PartController extends Controller
       try{
         return DB::transaction(function() use($request, $id){
           $part = Part::findOrFail($id);
-          $arr = $request->except('_method','_token','old_brand_id');
+          if($request->serial != null){
+            $arr = $request->except('_method','_token','old_brand_id');
+            $arr['serial'] = strtoupper($arr['serial']);
+          }else
+            $arr = $request->except('_method','_token','old_brand_id','serial');
           $arr['description'] = strtoupper($arr['description']);
-          $arr['serial'] = strtoupper($arr['serial']);
           $part->update($arr);
           $part->save();
           /*if($request->image){
@@ -196,6 +220,11 @@ class PartController extends Controller
             $part->image = $this->saveGetNameImage($request->image,'/images/part/');
           }*/
           if ($part) {
+            if(array_key_exists('details_ids', $request->all())){
+              PartDetail::where('part_id',$part->id)->delete();
+              foreach ($request->details_ids as $detail_id) 
+                  PartDetail::create(['part_id'=>$part->id,'lkp_detail_id'=>$detail_id]);
+            }
             ///historial de pieza
             $this->insertPartHistory($part->id);
             $notification = array(
@@ -278,9 +307,9 @@ class PartController extends Controller
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $protocols =  DB::table('lookups')->where('type','part_protocol')->where('active',1)->orderBy('value')->get();
+      $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
-      return view('parts.createByRank',compact('types','protocols','status','brands'));
+      return view('parts.createByRank',compact('types','details','status','brands'));
     }
 
     public function storeByRank(Request $request)
@@ -302,11 +331,16 @@ class PartController extends Controller
             $transaction = DB::transaction(function() use($request){
                 $arr = $request->only('start_range','final_range','serial');
                 $arr['serial'] = strtoupper($arr['serial']);
-                $arr_aux =  $request->except('_token');
+                $arr_aux =  $request->except('_token','details_ids','old_details_ids');
                 for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
                     $arr_aux['serial'] = $arr['serial'] . $i;
                     $part = Part::create($arr_aux);
                     $this->insertPartHistory($part->id);
+                    if(array_key_exists('details_ids', $request->all())){
+                        PartDetail::where('part_id',$part->id)->delete();
+                        foreach ($request->details_ids as $detail_id) 
+                            PartDetail::create(['part_id'=>$part->id,'lkp_detail_id'=>$detail_id]);
+                    }
                 }
                 $notification = array(
                   'message' => 'Successful!!',

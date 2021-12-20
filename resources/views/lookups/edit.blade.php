@@ -68,7 +68,19 @@
 			                  @endforeach
 			                  </select>
 			                </div>
-			            </div>		      
+			            </div>	
+
+			            <div class="col-12 col-sm-6 col-md-4" id="component_type" hidden>
+			                <div class="form-group">
+			                  <label for="">Components</label>
+			                  <select class="form-control selectpicker show-menu-arrow @error('lkp_city_id') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Component --" name="lkp_city_id">
+			                    @foreach($parts as $part)
+			                      <option value="{{$part->id}}" {{ $lookup->lkp_city_id == $part->id ? 'selected' : '' }} >{{$part->value}}</option>
+			                    @endforeach
+			                  </select>
+			                </div>
+			            </div>
+
             		</div>
             		<div class="col-12 col-sm-6 col-md-4">
                 		<div class="form-group">

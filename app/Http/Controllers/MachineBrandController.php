@@ -8,7 +8,7 @@ use App\Models\Part;
 use App\Models\Lookup;
 use DB;
 use File;
-use App\PartImage;
+use App\Models\PartImage;
 use Input;
 
 class MachineBrandController extends Controller

@@ -63,10 +63,12 @@ class LookupController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-        $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
-        $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
-        $brands = MachineBrand::where('lkp_type_id',54)->orderBy('brand')->orderBy('model')->get();
-        return view('lookups.create',compact('types','cities','brands'));
+
+      $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
+      $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
+      $cities =  DB::table('lookups')->where('type','cities')->where('band_add',0)->orderBy('value')->get();
+      $brands = MachineBrand::where('lkp_type_id',54)->orderBy('brand')->orderBy('model')->get();
+      return view('lookups.create',compact('types','cities','brands','parts'));
     }
 
     public function getKeyValue($cadena){
@@ -173,6 +175,7 @@ class LookupController extends Controller
           session()->forget('urlBack');
           session(['urlBack' => url()->previous()]);
         }
+        $parts = DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
         $types =  DB::table('lookups')->where('type','configuration')->where('band_add',1)->orderBy('value')->get();
         $lookup = Lookup::findOrFail($id);
         $cities = DB::table('lookups')->where('type','cities')->where('active',1)->orderBy('value')->get();    
@@ -181,7 +184,7 @@ class LookupController extends Controller
         $brands_ids = [];
         foreach ($brands_on_part as $brand_p )
             array_push($brands_ids,(string) $brand_p->brand_id);
-        return view('lookups.edit',compact('types','lookup','cities','brands','brands_ids'));
+        return view('lookups.edit',compact('types','lookup','cities','brands','brands_ids','parts'));
     }
 
     /**

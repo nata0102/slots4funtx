@@ -44,16 +44,15 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="container_details">
                 <div class="form-group">
-                  <label for="">Protocol</label>
-                  <select class="form-control @error('lkp_protocol_id') is-invalid @enderror input100" name="lkp_protocol_id">
-                    <option value=""></option>
-                    @foreach($protocols as $protocol)
-                      <option value="{{$protocol->id}}" {{ old('lkp_protocol_id') == $protocol->id ? 'selected' : '' }} >{{$protocol->value}}</option>
-                    @endforeach
+                  <label for="">Details</label>
+                  <div hidden>
+                    <input  id="old_details_ids" name="old_details_ids" value="{{old('old_details_ids')}}">
+                  </div>
+                  <select onchange="setInputDetail(this.value)" class="form-control @error('details_ids') is-invalid @enderror input100" name="details_ids[]" id="detail_id" title="-- Select Details --" multiple="multiple">
                   </select>
-                  @error('lkp_protocol_id')
+                  @error('details_ids')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -150,6 +149,19 @@
       }
     }
     $("#parts_brands").selectpicker("refresh");
+    
+    var details = {!!$details!!};
+    $('#detail_id').empty();
+    for(var i=0; i < details.length; i++){
+      if(type == details[i].lkp_city_id){
+        $('#detail_id').append('<option value="'+details[i].id+'">'+details[i].value+'</option>');
+      }
+    }
+    if($('#detail_id option').length == 0)
+      document.getElementById("container_details").hidden=true;
+    else
+      document.getElementById("container_details").hidden=false;
+    $("#detail_id").selectpicker("refresh");
   }
 
   function selectionBrand(value){
@@ -164,12 +176,24 @@
     document.getElementById('old_brand_id').value=value;
   }
 
+   function setInputDetail(value){
+    document.getElementById('old_details_ids').value = $('#detail_id').val();
+  }
+
   function selectionPart(value){
       var arr = [value];
       $.each(arr, function(i,e){
         $("#parts_type option[value='" + e + "']").prop("selected", true);
       });
       $("#parts_type").selectpicker("refresh");
+  }
+
+  function selectionDetail(value){
+    var arr = [value];
+    $.each(arr, function(i,e){
+      $("#detail_id option[value='" + e + "']").prop("selected", true);
+    });
+    $("#detail_id").selectpicker("refresh");
   }
 
   function valideKey(evt){
@@ -189,7 +213,10 @@
     selectionPart(p_type.value);   
     fillBrand(p_type.value); 
     selectionBrand(document.getElementById('old_brand_id').value);
-    $("#machines").selectpicker("refresh");    
+    $("#machines").selectpicker("refresh");  
+    var values_detail= document.getElementById('old_details_ids').value.split(',');
+    for(var i =0; i< values_detail.length; i++)
+      selectionDetail(values_detail[i]);  
   });
 </script>
   @stop

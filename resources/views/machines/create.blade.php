@@ -57,15 +57,15 @@
               <div class="col-12 col-sm-6 col-md-4" id="div_contained_games_2" hidden>
                 <div class="form-group">
                   <label for="">Contained Games</label>
-                  <textarea disabled onkeydown="return false;" id="contained_games_2"></textarea>
-                  <textarea onkeydown="return false;" id="text_games" name="games"  value="{{old('games')}}" hidden></textarea>
+                  <textarea class="form-control" disabled onkeydown="return false;" id="contained_games_2"></textarea>
+                  <textarea class="form-control" onkeydown="return false;" id="text_games" name="games"  value="{{old('games')}}" hidden></textarea>
                 </div>
               </div>
 
               <div class="col-12 col-sm-6 col-md-4" id="div_description_game" hidden>
                 <div class="form-group">
                   <label for="">Description Game</label>
-                  <textarea disabled id="description_game"></textarea>
+                  <textarea class="form-control" disabled id="description_game"></textarea>
                 </div>
               </div>
 

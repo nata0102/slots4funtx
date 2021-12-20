@@ -207,7 +207,7 @@
 														<a href="{{action('MachineController@index')}}">Machines</a>
 												</li>
 												<li class='Stock'>
-														<a href="{{action('PartController@index')}}">Stock Components</a>
+														<a href="{{action('PartController@index')}}">Components</a>
 												</li>
 												<li class='Brands'>
 														<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
@@ -251,7 +251,7 @@
 												<a href="{{action('MachineController@index')}}">Machines</a>
 										</li>
 										<li class='Stock'>
-												<a href="{{action('PartController@index')}}">Stock Components</a>
+												<a href="{{action('PartController@index')}}">Components</a>
 										</li>
 										<li class='Brands'>
 												<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
@@ -709,6 +709,8 @@
 
 	function selectCityLookup(value){
 		$(document.getElementById('part_type_brand')).attr('hidden',"");
+		$(document.getElementById('component_type')).attr('hidden',"");
+		
 		if(value == 'counties'){
 			document.getElementById('city-form').removeAttribute('hidden');
 			$(document.getElementById('city-select')).attr('name',"lkp_city_id");
@@ -716,6 +718,8 @@
 		}else{
 			if(value == 'part_type')
 				document.getElementById('part_type_brand').removeAttribute('hidden');
+			if(value == 'details')
+				document.getElementById('component_type').removeAttribute('hidden');
 			$(document.getElementById('city-form')).attr('hidden',"");
 			document.getElementById('city-select').removeAttribute('name');
 			document.getElementById('city-select').removeAttribute('required');

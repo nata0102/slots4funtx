@@ -34,12 +34,8 @@
 
             <div class="col-12 col-sm-6 col-md-4">
               <div class="form-group">
-                <label for="">Protocol</label>
-                @if($part->lkp_protocol_id != NULL)
-                <input type="text" class="form-control" disabled name="machine_id" value="{{$part->protocol->value}}">
-                @else
-                <input type="text" class="form-control" disabled name="machine_id" value="">
-                @endif
+                <label for="">Details</label>
+                <textarea class="form-control">{{$part->cad_details}}</textarea>
               </div>
             </div>
 

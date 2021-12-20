@@ -52,7 +52,7 @@
                     <tr>
                       <th style="width:100px; text-align: center;">Type</th>
                       <th style="width:100px; text-align: center;">Brand-Model</th>
-                      <th style="width:150px; text-align: center;">Protocol</th>
+                      <th style="width:150px; text-align: center;">Details</th>
                       <th style="width:100px; text-align: center;">Serial</th>
                       <th style="width:85px; text-align: center;">Price</th>
                       <th style="width:135px; text-align: center;">Status</th>
@@ -73,8 +73,12 @@
                       @else
                         <td></td>
                       @endif
-                      @if($part->protocol != NULL)
-                        <td>{{$part->protocol->value}}</td>
+                      @if($part->details != NULL)
+                        <td>
+                        @foreach($part->details as $detail)
+                          <p>{{$detail->detail->value}}</p>
+                        @endforeach
+                        </td>
                       @else
                         <td></td>
                       @endif
