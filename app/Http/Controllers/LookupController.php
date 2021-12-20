@@ -117,7 +117,12 @@ class LookupController extends Controller
                     if ($lookup) {
                         if(array_key_exists('brands_ids', $arr)){
                           foreach ($request->brands_ids as $brand_id) {
-                            LkpPartBrand::create(['lkp_part_id'=>$lookup->id,'brand_id'=>$brand_id]);
+                            LkpPartBrand::create(['lkp_id'=>$lookup->id,'brand_id'=>$brand_id]);
+                          }
+                        }
+                        if(array_key_exists('parts_ids', $arr)){
+                          foreach ($request->parts_ids as $part_id) {
+                            LkpPartBrand::create(['lkp_id'=>$lookup->id,'part_id'=>$part_id]);
                           }
                         }
                         $notification = array(
@@ -180,11 +185,16 @@ class LookupController extends Controller
         $lookup = Lookup::findOrFail($id);
         $cities = DB::table('lookups')->where('type','cities')->where('active',1)->orderBy('value')->get();    
         $brands = MachineBrand::where('lkp_type_id',54)->orderBy('brand')->orderBy('model')->get();
-        $brands_on_part = DB::table('parts_lkp_brands')->where('lkp_part_id',$id)->get();
+        $brands_on_part = DB::table('parts_lkp_brands')->where('lkp_id',$id)->whereNull('part_id')->get();
         $brands_ids = [];
         foreach ($brands_on_part as $brand_p )
             array_push($brands_ids,(string) $brand_p->brand_id);
-        return view('lookups.edit',compact('types','lookup','cities','brands','brands_ids','parts'));
+
+        $components = DB::table('parts_lkp_brands')->where('lkp_id',$id)->whereNull('brand_id')->get();
+        $parts_ids = [];
+        foreach ($components as $comp)
+            array_push($parts_ids,(string) $comp->part_id);
+        return view('lookups.edit',compact('parts_ids','types','lookup','cities','brands','brands_ids','parts'));
     }
 
     /**
@@ -212,10 +222,16 @@ class LookupController extends Controller
                     $res->update(['value'=>$arr['value'], 'key_value'=>$key_value, 'lkp_city_id'=>$arr['lkp_city_id'],'type'=>$arr['type']]);
                     $res->save();
                     if ($res) {
-                        LkpPartBrand::where('lkp_part_id', $id)->delete();
+                        LkpPartBrand::where('lkp_id', $id)->whereNull('part_id')->delete();
                         if(array_key_exists('brands_ids', $arr) && $arr['type']=='part_type'){
                           foreach ($request->brands_ids as $brand_id) {
                             LkpPartBrand::create(['lkp_part_id'=>$id,'brand_id'=>$brand_id]);
+                          }
+                        }
+                        LkpPartBrand::where('lkp_id', $id)->whereNull('brand_id')->delete();
+                        if(array_key_exists('parts_ids', $arr)){
+                          foreach ($request->parts_ids as $part_id) {
+                            LkpPartBrand::create(['lkp_id'=>$res->id,'part_id'=>$part_id]);
                           }
                         }
                         $notification = array(

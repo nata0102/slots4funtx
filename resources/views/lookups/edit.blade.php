@@ -73,9 +73,9 @@
 			            <div class="col-12 col-sm-6 col-md-4" id="component_type" hidden>
 			                <div class="form-group">
 			                  <label for="">Components</label>
-			                  <select class="form-control selectpicker show-menu-arrow @error('lkp_city_id') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Component --" name="lkp_city_id">
+			                  <select class="form-control selectpicker show-menu-arrow @error('lkp_city_id') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Component --" name="parts_ids[]" multiple="multiple">
 			                    @foreach($parts as $part)
-			                      <option value="{{$part->id}}" {{ $lookup->lkp_city_id == $part->id ? 'selected' : '' }} >{{$part->value}}</option>
+			                      <option {{ in_array($part->id, $parts_ids) ? 'selected' : '' }}  value="{{$part->id}}">{{$part->value}}</option>
 			                    @endforeach
 			                  </select>
 			                </div>

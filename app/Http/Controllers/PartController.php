@@ -64,7 +64,9 @@ class PartController extends Controller
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
+      $qry = "select l.*, pl.part_id from lookups l, parts_lkp_brands pl
+      where l.id = pl.lkp_id and l.active = 1 and pl.part_id is not null order by l.value;";
+      $details = json_encode(DB::select($qry));
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
       return view('parts.create',compact('types','details','status','machines','brands'));
@@ -173,7 +175,9 @@ class PartController extends Controller
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
+      $qry = "select l.*, pl.part_id from lookups l, parts_lkp_brands pl
+      where l.id = pl.lkp_id and l.active = 1 and pl.part_id is not null order by l.value;";
+      $details = json_encode(DB::select($qry));
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
       $machines = Machine::with('game')->where('active',1)->orderBy('serial')->get();
       $details_part = DB::table('parts_details')->where('part_id',$id)->get();

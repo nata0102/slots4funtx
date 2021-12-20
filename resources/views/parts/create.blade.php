@@ -153,7 +153,7 @@
     var details = {!!$details!!};
     $('#detail_id').empty();
     for(var i=0; i < details.length; i++){
-      if(type == details[i].lkp_city_id){
+      if(type == details[i].part_id){
         $('#detail_id').append('<option value="'+details[i].id+'">'+details[i].value+'</option>');
       }
     }
