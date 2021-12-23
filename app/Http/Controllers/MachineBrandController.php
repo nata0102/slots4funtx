@@ -145,7 +145,7 @@ class MachineBrandController extends Controller
       }
       $types =  DB::table('lookups')->where('type','brand_type')->where('active',1)->get();
       $brand = MachineBrand::with('type')->findOrFail($id);
-      return view('machineBrand.edit',compact('brand','types','images'));
+      return view('machineBrand.edit',compact('brand','types'));
     }
 
     /**
