@@ -60,8 +60,8 @@ class PartController extends Controller
         session(['urlBack' => url()->previous()]);
       }
 
-      $qry = "select * from parts_lkp_brands l, machine_brands b
-      where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
+      $qry = "select l.lkp_id,l.brand_id,b.* from parts_lkp_brands l, machine_brands b
+      where l.brand_id = b.id and b.active = 1  order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $qry = "select l.*, pl.part_id from lookups l, parts_lkp_brands pl
@@ -171,7 +171,7 @@ class PartController extends Controller
         session()->forget('urlBack');
         session(['urlBack' => url()->previous()]);
       }
-      $qry = "select * from parts_lkp_brands l, machine_brands b
+      $qry = "select l.lkp_id,l.brand_id,b.* from parts_lkp_brands l, machine_brands b
       where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
