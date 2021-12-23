@@ -225,7 +225,7 @@ class LookupController extends Controller
                         LkpPartBrand::where('lkp_id', $id)->whereNull('part_id')->delete();
                         if(array_key_exists('brands_ids', $arr) && $arr['type']=='part_type'){
                           foreach ($request->brands_ids as $brand_id) {
-                            LkpPartBrand::create(['lkp_part_id'=>$id,'brand_id'=>$brand_id]);
+                            LkpPartBrand::create(['lkp_id'=>$id,'brand_id'=>$brand_id]);
                           }
                         }
                         LkpPartBrand::where('lkp_id', $id)->whereNull('brand_id')->delete();
