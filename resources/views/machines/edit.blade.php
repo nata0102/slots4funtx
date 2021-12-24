@@ -32,8 +32,8 @@
 
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
-		                  <label for="">Game Title <span style="color:red">*</span></label>
-		                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" required="" data-live-search="true">
+		                  <label for="">Game Title</label>
+		                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" data-live-search="true">
 		                    <option value=""></option>
 		                      @foreach($games as $game)
 		                        <option value="{{$game->id}}"  {{ $machine->game_catalog_id == $game->id ? 'selected' : '' }}>{{$game->name}}</option>
@@ -73,7 +73,7 @@
 		            <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Brand</label>
-		                  <div>
+		                  <div hidden>
 		                    <input  id="old_machine_brand_id" name="old_machine_brand_id" 
 		                    value="{{$machine->machine_brand_id}}">
 		                  </div>

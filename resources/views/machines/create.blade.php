@@ -31,8 +31,8 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Game <span style="color:red">*</span></label>
-                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('lkp_game_id') is-invalid @enderror input100" name="game_catalog_id" title="-- Select Game --" required=""  data-live-search="true">
+                  <label for="">Game Title</label>
+                  <select id="select_game" onchange="fillContainedGames(this.value, this.selectedIndex)" class="form-control selectpicker @error('game_catalog_id') is-invalid @enderror input100" name="game_catalog_id" title="-- Select Game --" data-live-search="true">
                       <option value=""></option>
                       @foreach($games as $game)
                         <option value="{{$game->id}}" {{ old('game_catalog_id') == $game->id ? 'selected' : '' }}>{{$game->name}}</option>

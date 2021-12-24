@@ -21,26 +21,33 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Game Title</label>
-                  <input type="text" class="form-control" disabled value="{{$machine->game->name}}">
+                  @if($machine->game_catalog_id != null)
+                    <input type="text" class="form-control" disabled value="{{$machine->game->name}}">
+                  @else
+                    <input type="text" class="form-control" disabled value="">
+                  @endif
                 </div>
               </div>
-
-              @if($machine->game->description)
-                <div class="col-12 col-sm-6 col-md-4">
-                  <div class="form-group">
-                    <label for="">Description Game</label>
-                    <textarea disabled="">{{$machine->game->description}}</textarea>
+              @if($machine->game_catalog_id != null)
+                @if($machine->game->description)
+                  <div class="col-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                      <label for="">Description Game</label>
+                      <textarea disabled="">{{$machine->game->description}}</textarea>
+                    </div>
                   </div>
-                </div>
+                @endif
               @endif
 
-              @if($machine->games)
-                <div class="col-12 col-sm-6 col-md-4" >
-                  <label for="">Detail Games</label>
-                  <div class="form-group">
-                    <textarea style="margin-top: 10px" disabled="" id="contained_games_2"></textarea>
+              @if($machine->game_catalog_id != null)
+                @if($machine->games)
+                  <div class="col-12 col-sm-6 col-md-4" >
+                    <label for="">Detail Games</label>
+                    <div class="form-group">
+                      <textarea style="margin-top: 10px" disabled="" id="contained_games_2"></textarea>
+                    </div>
                   </div>
-                </div>
+                @endif
               @endif
 
               <div class="col-12 col-sm-6 col-md-4">

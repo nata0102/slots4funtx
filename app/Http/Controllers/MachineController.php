@@ -113,7 +113,6 @@ class MachineController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'game_catalog_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'unique:machines,serial|nullable',
         ]);   
@@ -121,7 +120,8 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request){                             
                 $arr = $request->except('parts_ids','_token','image','games_select',
                     'old_machine_brand_id');
-                $arr['serial'] = strtoupper($arr['serial']);
+                if($arr['serial']!=null && $arr['serial']!="")
+                    $arr['serial'] = strtoupper($arr['serial']);
                 $arr['games'] = strtoupper($arr['games']);
                 $arr['notes'] = strtoupper($arr['notes']);
                 if(array_key_exists('games_select', $request->all())){
@@ -249,7 +249,6 @@ class MachineController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'game_catalog_id' => 'required',
             'lkp_owner_id' => 'required',
             'serial' => 'nullable|unique:machines,serial,'.$id,
         ]); 
@@ -257,7 +256,8 @@ class MachineController extends Controller
             $transaction = DB::transaction(function() use($request, $id){                  
                 $arr = $request->except('parts_ids','_token','image','_method','games_select',
                     'old_machine_brand_id');
-                $arr['serial'] = strtoupper($arr['serial']);
+                if($arr['serial']!=null && $arr['serial']!="")
+                    $arr['serial'] = strtoupper($arr['serial']);
                 $arr['games'] = strtoupper($arr['games']);
                 $arr['notes'] = strtoupper($arr['notes']);
                 if(array_key_exists('games_select', $request->all())){
