@@ -185,7 +185,7 @@ class PartController extends Controller
       foreach ($details_part as $detail)
           array_push($details_aux_ids, (string)$detail->lkp_detail_id);
       $details_aux_ids = json_encode($details_aux_ids);
-      $part = Part::where('id',$id)->with('machine','brand')->first();
+      $part = Part::where('id',$id)->with('machine','machine.game','brand')->first();
       return view('parts.edit',compact('part','types','details','status','machines','brands',
         'details_aux_ids'));
     }

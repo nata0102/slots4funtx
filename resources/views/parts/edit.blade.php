@@ -109,7 +109,11 @@
                   <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Machine --" name="machine_id">
                   @foreach($machines as $machine)
                     @if($part->machine_id != NULL)
-                    <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->game->value}} - {{$machine->serial}}</option>
+                      @if($machine->game !=null)
+                        <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->game->name}} - {{$machine->serial}}</option>
+                      @else
+                        <option  {{ (collect($part->machine->id)->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->serial}}</option>
+                      @endif
                     @else
                     <option  {{ (collect(old('machine_id'))->contains($machine->id)) ? 'selected':'' }}  value="{{$machine->id}}">{{$machine->id}} - {{$machine->serial}}</option>
                     @endif
