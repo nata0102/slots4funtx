@@ -17,6 +17,9 @@
                         <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
                     </div>
                     <div class="input-group mb-5">
+
+                        <input class="form-control" type="number" name="id" value="{{ isset($_GET['id']) ? $_GET['id'] : '' }}" placeholder="ID">
+
                         <select class="form-control selectpicker" name="game" data-live-search="true" title="-- Select Game --">
                             <option value=""></option>
                               @foreach($games as $tp)

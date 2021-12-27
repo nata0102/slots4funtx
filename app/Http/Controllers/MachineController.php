@@ -77,7 +77,14 @@ class MachineController extends Controller
                 if($a->game == null)
                     $b_game = false;
             }
-            if($b_owner == true && $b_status == true && $b_brand == true && $b_game == true)
+            $b_id = true;
+            if($params['id']){
+                if($a->id == $params['id'])
+                    $b_id = true;
+                else
+                    $b_id = false;
+            }
+            if($b_owner == true && $b_status == true && $b_brand == true && $b_game == true && $b_id == true)
                 array_push($res,$a);
         }
         return $res;
