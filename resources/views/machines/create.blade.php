@@ -76,6 +76,7 @@
                     <input  id="old_machine_brand_id" name="old_machine_brand_id" value="{{old('old_machine_brand_id')}}">
                   </div>
                   <select onchange="changeBrand(this.value)" id="machine_brands" class="form-control selectpicker @error('machine_brand_id') is-invalid @enderror input100" name="machine_brand_id" title="-- Select Brand --" data-live-search="true">
+                    <option value="">OTHER</option>
                   </select>
                 </div>
               </div>
@@ -197,10 +198,7 @@
   //Llena los games
   function fillContainedGames(game, index) {
       //LLena combo de description Games
-      index = index-2;
-      var games_cad = {!!$games!!}[index].games;
-      var band_select = {!!$games!!}[index].band_select;
-      var type_game = {!!$games!!}[index].type.key_value;
+      index = index-2;      
       $('#contained_games').empty();
       document.getElementById("text_games").value = "";
       document.getElementById("contained_games_2").value = "";
@@ -208,6 +206,9 @@
       document.getElementById("div_contained_games_2").hidden = true;
       document.getElementById("div_description_game").hidden = true;
       if(game != ""){
+        var games_cad = {!!$games!!}[index].games;
+        var band_select = {!!$games!!}[index].band_select;
+        var type_game = {!!$games!!}[index].type.key_value;
         if(type_game == "group"){
             if(band_select == 1){
                 addOptionsSelectGames(games_cad);
@@ -230,9 +231,9 @@
       if(index >= 0){
         for(var i=0; i<{!!$games!!}[index].brands.length; i++){
              $('#machine_brands').append('<option value="'+{!!$games!!}[index].brands[i].machine_brand_id+'">'+{!!$games!!}[index].brands[i].brand.brand+" "+{!!$games!!}[index].brands[i].brand.model+'</option>');
-        }
-        $('#machine_brands').append('<option value="">OTHER</option>');
+        }        
       }
+      $('#machine_brands').append('<option value="">OTHER</option>');
       $("#machine_brands").selectpicker("refresh");
   }
 
