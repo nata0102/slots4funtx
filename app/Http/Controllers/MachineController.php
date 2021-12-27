@@ -26,7 +26,7 @@ class MachineController extends Controller
                $res = $this->searchWithFilters($request->all());
             break;
             default:
-               $res = Machine::with('status','address.client','brand','owner','game')->where('active',1)->orderBy('id','desc')->take(20)->get();
+               $res = Machine::with('status','address.client','brand','owner','game')->where('active',1)->orderBy('id')->get();
             break;
         }
         $games = DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
