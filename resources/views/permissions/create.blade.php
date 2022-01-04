@@ -161,7 +161,12 @@
              }
           }
           if(band){
-            $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+{!!$machines!!}[i].id+" - "+{!!$machines!!}[i].owner.value+" - "+{!!$machines!!}[i].game.name+" - "+{!!$machines!!}[i].serial+'</option>');
+            var name_aux = "";
+            name_aux += {!!$machines!!}[i].id+" - "+ {!!$machines!!}[i].owner.value;
+            if({!!$machines!!}[i].game != null)
+              name_aux +=  ' - ' + {!!$machines!!}[i].game.name;
+            name_aux += " - "+{!!$machines!!}[i].serial;
+            $('#permission_machine').append('<option value="'+{!!$machines!!}[i].id+'">'+name_aux+'</option>');
           }
     }
     $("#permission_machine").selectpicker("refresh");
