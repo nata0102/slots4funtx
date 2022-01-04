@@ -37,8 +37,9 @@ class PermissionController extends Controller
         $qry = "select * from(
                 select *,
                 (select value from lookups where id = p.lkp_type_permit_id) as type,
-                (select concat(m.id,' - ',(select value from lookups where id=m.lkp_owner_id),' - ',
-                (select name from game_catalog where id=m.game_catalog_id), ' - ', ifnull(m.serial,''))
+                (select concat(m.id,' - ',(select value from lookups where id=m.lkp_owner_id),
+                ifnull((select concat(' - ',name) from game_catalog where id=m.game_catalog_id),''),
+                ' - ',ifnull(m.serial,'')) 
                 from machines m where m.id = p.machine_id and m.active=1) as game,
                 (select active from machines where id = p.machine_id) as active
                 from permissions p) as tab1 where (tab1.active = 1 or tab1.active is null)";

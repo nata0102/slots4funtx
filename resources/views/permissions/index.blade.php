@@ -56,7 +56,7 @@
                     	@foreach($res as $r)
                         <tr>
                             <td>{{$r->type}}</td>
-                            <td>{{$r->game}}</td>
+                            <td>{{$r->game}} </td>
                             <td>{{$r->permit_number}}</td>
                             <td>{{$r->year_permit}}</td>
                             <td>
