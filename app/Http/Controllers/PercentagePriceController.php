@@ -33,7 +33,7 @@ class PercentagePriceController extends Controller
         $qry = "select tab1.*,concat(tab1.machine_id,' - ',owner,' - ',game,' - ',ifnull(tab1.serial,'')) as machine_name from
           (select p.*,mc.serial, (select value from lookups where id=p.lkp_type_id) as type,
           (select value from lookups where id=mc.lkp_owner_id) as owner,
-          (select name from game_catalog where id=mc.game_catalog_id) as game,
+          ifnull((select name from game_catalog where id=mc.game_catalog_id),'') as game,
           (select value from lookups where id=p.lkp_periodicity_id) as type_periodicity
           from percentage_price_machine p, machines mc
           where mc.id=p.machine_id and mc.active =1) as tab1 ";
