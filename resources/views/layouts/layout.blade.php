@@ -67,7 +67,11 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('admincss/adminstyles.css') }} ">
 
 	<style media="screen">
-
+	a.disabled {
+	  pointer-events: none;
+	  cursor: default;
+	}
+	
 		.hidden {
 		  display: none;
 		}
@@ -137,6 +141,9 @@
 <script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
 	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
 </head>
+<?php
+$menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l where m.lkp_role_id='.Auth::user()->role->id.' and m.lkp_menu_id = l.id;');
+?>
 <body class="animsition home">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
     <div class="page-wrapper">
@@ -200,9 +207,12 @@
 		        <nav class="navbar-mobile">
 		            <div class="container-fluid" id="sub-header">
 		                <ul class="navbar-mobile__list list-unstyled">
+											@if(Auth::user()->role->id == 48 || Auth::user()->role->id == 72)
 												<li class='Dashboard'>
 				                    <a href="{{ action('MainController@index') }}">Dashboard</a>
 				                </li>
+											@endif
+											@if(Auth::user()->role->id == 48)
 												<li class='Machines'>
 														<a href="{{action('MachineController@index')}}">Machines</a>
 												</li>
@@ -227,6 +237,7 @@
 												<li class='Configuration'>
 													<a href="{{action('LookupController@index')}}">Configuration</a>
 												</li>
+											@endif
 
 		                </ul>
 		            </div>
@@ -244,6 +255,15 @@
 			    <div class="menu-sidebar__content js-scrollbar1">
 			        <nav class="navbar-sidebar" id="sub-header2">
 			            <ul class="list-unstyled navbar__list">
+
+										@foreach($menus as $menu)
+										<li >
+											<?php $action = $menu->key_value.'Controller@index' ?>
+												<a href="{{action($action)}}" id='1' >{{$menu->value}}</a>
+										</li>
+										@endforeach
+
+										@if(Auth::user()->role->id == 49)
 										<li class='Dashboard'>
 												<a href="{{ action('MainController@index') }}">Dashboard</a>
 										</li>
@@ -271,6 +291,7 @@
 										<li class='Configuration'>
 											<a href="{{action('LookupController@index')}}">Configuration</a>
 										</li>
+										@endif
 
 
 			            </ul>
@@ -710,7 +731,7 @@
 	function selectCityLookup(value){
 		$(document.getElementById('part_type_brand')).attr('hidden',"");
 		$(document.getElementById('component_type')).attr('hidden',"");
-		
+
 		if(value == 'counties'){
 			document.getElementById('city-form').removeAttribute('hidden');
 			$(document.getElementById('city-select')).attr('name',"lkp_city_id");

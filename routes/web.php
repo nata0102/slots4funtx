@@ -29,7 +29,7 @@ Route::get('/home', 'HomeController@index')->name('home');
   Route::get('lang/{lang}', 'LanguageController@swap')->name('lang.swap');
 
 
-Route::group(['middleware' => ['auth','admin','web']], function() {
+Route::group(['middleware' => ['auth','web']], function() {
   Route::resource("machines",'MachineController');
   Route::resource("parts",'PartController');
   Route::get("parts_rank",'PartController@createByRank');
@@ -43,12 +43,10 @@ Route::group(['middleware' => ['auth','admin','web']], function() {
   Route::resource("clients","ClientController");
   Route::resource("address","AddressController");
   Route::resource("game_catalog","GameCatalogController");
-
-
   Route::get("/parts/gallery/{id}",'PartController@gallery');
   Route::delete('/parts/delete-image/{id}', 'PartController@deleteImage');
   Route::post('/parts/create-image/{id}', 'PartController@createImage');
 
-
-
+  Route::get('/roles-configuration/{rol?}', 'MainController@rolesConfiguration');
+  Route::post('/roles-configuration-save', 'MainController@rolesConfigurationSave');
 });

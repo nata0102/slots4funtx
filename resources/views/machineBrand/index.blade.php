@@ -24,8 +24,8 @@
                   </select>
 
                   <select class="form-control selectpicker" title="-- Select Brand --" data-live-search="true" id="machine" name="brand_type" hidden>
-                  </select>                 
-                  
+                  </select>
+
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
 
                   <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i>
@@ -47,7 +47,7 @@
               </thead>
               <tbody>
               	@foreach($brands as $brand)
-                  <tr>                    
+                  <tr>
                     <td>{{$brand->type->value}}</td>
                     <td>{{$brand->brand}}</td>
                     <td>{{$brand->model}}</td>
@@ -57,7 +57,7 @@
 
                         <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                           <a href="{{action('MachineBrandController@edit',$brand->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
-                        </div>
+                        </div>                        
 
                         <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                           <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('MachineBrandController@destroy',$brand->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
@@ -82,14 +82,14 @@
     function fillMachineBrands(type_id){
       $('#machine').empty();
       if(type_id){
-        $('#machine').append('<option value=""></option>'); 
+        $('#machine').append('<option value=""></option>');
         var brands = {!!$brands_types!!};
         if(brands){
           for(var i =0; i<brands.length; i++){
             if(brands[i].lkp_type_id == type_id)
-              $('#machine').append('<option value="'+brands[i].brand+'">'+brands[i].brand+'</option>'); 
+              $('#machine').append('<option value="'+brands[i].brand+'">'+brands[i].brand+'</option>');
           }
-        }  
+        }
       }
       $("#machine").selectpicker("refresh");
     }
@@ -110,7 +110,7 @@
           if(type != "")
             fillMachineBrands(type);
         @endif
-        
+
         @if(isset($_GET['brand_type']))
             @if($_GET['brand_type'])
               var brand_id = "{!!$_GET['brand_type']!!}";
@@ -120,7 +120,7 @@
             @endif
         @endif
       @endif
-    };        
+    };
   </script>
 
   @stop

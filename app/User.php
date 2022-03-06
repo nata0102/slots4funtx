@@ -54,4 +54,6 @@ class User extends Authenticatable implements JWTSubject
     public function role(){
         return $this->hasOne('App\Models\Lookup','id','lkp_rol_id');
     }
+
+    
 }

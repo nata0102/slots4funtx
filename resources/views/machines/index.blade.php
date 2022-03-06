@@ -2,13 +2,18 @@
 
 @section('content')
 
+<?php
+  $menu= DB::select("select m.actions from menu_roles m, lookups l where m.lkp_role_id=".Auth::user()->role->id." and m.lkp_menu_id = l.id and l.key_value='Machine';");
+?>
+
     <div class="main-content">
         <div class="section__content section__content--p30">
             <div class="container-fluid">
                 <div class="card" id="card-section">
 
                 <div class="input-group mb-2">
-                    <a href="{{action('MachineController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
+
+                    <a href="{{action('MachineController@create')}}" class="btn btn-info {{str_contains($menu[0]->actions,'C') ? '' : 'disabled' }}" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 </div>
 
                 <form method="GET" action="{{action('MachineController@index')}}">
@@ -32,7 +37,7 @@
                               @foreach($owners as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['owner']) ? $_GET['owner'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
-                        </select>                        
+                        </select>
 
                         <select class="form-control" name="status">
                             <option value="">-- Select Status --</option>
@@ -71,7 +76,7 @@
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
-                        <tr>                            
+                        <tr>
                             <td>{{$r->id}}</td>
                             @if($r->owner == null)
                                 <td></td>
@@ -87,7 +92,7 @@
                                 <td></td>
                             @else
                                 <td>{{$r->game->name}}</td>
-                            @endif                            
+                            @endif
                             <td>{{$r->serial}}</td>
                             @if($r->address_id == null)
                                 <td></td>
@@ -102,19 +107,20 @@
                                 <td>{{$r->status->value}}</td>
                             @endif
                             <td>
+
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">
-                                    <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
+                                    <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                                   </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                                    <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                   </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                                    <button class="delete-alert btn btn-link" {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }} data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                                   </div>
 
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }} class="col-8 inactive" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this machine?" data-message2="Activated" data-message3="Activated machine." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
+                                    <button class="delete-alert btn btn-link" {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }} data-reload="0" data-table="#table" data-message1="Are you sure to activate this machine?" data-message2="Activated" data-message3="Activated machine." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
                                   </div>
                                 </div>
                             </td>
