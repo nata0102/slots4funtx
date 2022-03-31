@@ -6,7 +6,6 @@
 /public_html/images/part
 /public_html/images/profiles
 /storage/*.key
-/vendor
 .env
 .env.backup
 .phpunit.result.cache
