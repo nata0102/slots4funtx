@@ -71,7 +71,7 @@
 	  pointer-events: none;
 	  cursor: default;
 	}
-	
+
 		.hidden {
 		  display: none;
 		}
