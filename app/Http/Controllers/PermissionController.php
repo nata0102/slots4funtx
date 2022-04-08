@@ -30,7 +30,10 @@ class PermissionController extends Controller
           from machines m where m.active = 1 and m.lkp_owner_id = 38 and m.active=1 and m.id in (select machine_id from permissions);";
       $machines = DB::select($qry);
       $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
-      return view('permissions.index',compact('res','types','machines'));
+      $total = Permission::all()->count();
+      $not_assigned = Permission::whereNull('machine_id')->get()->count();
+      $assigned = Permission::whereNotNull('machine_id')->get()->count();
+      return view('permissions.index',compact('res','types','machines','total','assigned','not_assigned'));
     }
 
     public function searchWithFilters($params){
@@ -46,8 +49,12 @@ class PermissionController extends Controller
         if(count($params) > 0){
             if($params['type'] != "")
                 $qry .= " and tab1.lkp_type_permit_id = ".$params['type'];
-            if($params['machine'] != "")
-                $qry .= " and tab1.machine_id = ".$params['machine'];
+            if($params['machine'] != ""){
+                if($params['machine'] != "-1")
+                  $qry .= " and tab1.machine_id = ".$params['machine'];
+                else
+                  $qry .= " and tab1.machine_id is null";
+            }
             if($params['number'] != "")
                 $qry .= " and tab1.permit_number like '%".$params['number']."%'";
         }

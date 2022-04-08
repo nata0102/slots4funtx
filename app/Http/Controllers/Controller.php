@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MachineHistory;
 use App\Models\PartHistory;
 use App\Models\Part;
+use App\Models\Lookup;
+use App\Models\MachineBrand;
 use App\Models\Permission;
 use App\Models\Machine;
 use Auth;
+use Excel;
 
 
 class Controller extends BaseController
@@ -140,5 +143,152 @@ class Controller extends BaseController
         $history->user_id = Auth::id();
         $history->save();
       }
+    }
+
+    public function getIDExcel($values, $option){
+        $id =  null;
+        switch ($option) {
+            case 0://Part Type
+                $qry = "select * from lookups where type='part_type' and value = '".$values[0]."';";
+            break;
+            case 2://Status
+                $qry = "select * from lookups where type='status_parts' and value='".$values[0]."'";
+            break;
+            case 3://Machine Brand
+                $qry = "select * from machine_brands where lkp_type_id=54 and brand='".$values[0]."' and model='".$values[1]."';";
+            break;
+            case 4://Machine
+                $qry = "select * from machines where id=".$values[0];
+            break;
+        }
+
+        $row = DB::select($qry);
+        if($row != null)
+            $id = $row[0]->id;
+        else{
+            if($option != 4)
+                $id = $this->insertIDExcel($values,$option);
+        }
+        return $id;
+    }
+
+    public function insertIDExcel($values, $option){
+        $id =  null;
+        switch ($option) {
+            case 0:
+                $arr = ['type'=>'part_type', 'value' => $values[0], 'band_add'=>0,
+                        'active'=>1,'key_value'=> preg_replace('/[0-9\@\.\;\" "]+/', '', strtolower($values[0]))];
+                $res = Lookup::create($arr);
+            break;
+            case 2:
+                $arr = ['type'=>'status_parts', 'value' => $values[0], 'band_add'=>0,
+                        'active'=>1,'key_value'=> preg_replace('/[0-9\@\.\;\" "]+/', '', strtolower($values[0]))];
+                $res = Lookup::create($arr);
+            break;
+            case 3:                
+                $arr = ['brand' => $values[0], 'model'=>$values[1],'active'=>1,'lkp_type_id'=>54];
+                $res = MachineBrand::create($arr);
+            break;
+        }
+        if($res != null)
+            $id = $res->id;
+        return $id;
+    }
+
+    public function readExcel(){
+        $dir = storage_path('app');
+        $file = $dir."/Libro.xlsx";
+        $data = Excel::toArray([], $file);
+        /*
+            0 => Part Type
+            1 => Serial
+            2 => Price
+            3 => Description
+            4 => Status
+            5 => Brand
+            6 => Machine
+            7 => Details
+        */
+        $config = [
+            ['pos'=>0,'msg'=>",PART NO ENCONTRADO,",'option'=>0, 'band'=>1],
+            ['pos'=>4,'msg'=>",STATUS NO ENCONTRADO,",'option'=>2, 'band'=>1],
+            ['pos'=>5,'msg'=>"|BRAND & MODEL NO ENCONTRADO|",'option'=>3, 'band'=>1],
+            ['pos'=>6,'msg'=>",MACHINE NO ENCONTRADO,",'option'=>4, 'band'=>1]
+        ];
+        $i=0;
+        foreach ($data[0] as $dt) {
+            if($i != 0 && $i != 2846){
+                $part_id = null; $status_id = null; $brand_id=null; $machine_id = null;
+                foreach ($config as $cf) {
+                    $value = $dt[$cf['pos']];
+                    if($cf['band'] && $value != "" && $value != null){                        
+                        switch ($cf['option']) {
+                            case 0://part
+                                $part_id = $this->getIDExcel([$value],$cf['option']); 
+                                if($part_id == null)
+                                    echo "ROW = ".($i+1).$cf['msg'].$value."\n";
+                            break;
+                            case 2: //status
+                                $status_id = $this->getIDExcel([$value],$cf['option']); 
+                                if($status_id == null)
+                                    echo "ROW = ".($i+1).$cf['msg'].$value."\n";
+                            break;
+                            case 3://brand
+                                $value = str_replace(" - ","-",$value);
+                                $aux = explode('-', $value);   
+                                $brand = $aux[0];                             
+                                if (str_contains($aux[0], 'B:'))                       
+                                    $brand = substr($aux[0], 2);
+                                if(substr($brand, -1) == " ")
+                                    $brand = substr($brand,0,-1);
+                                $model = "";
+                                for($j=1; $j <count($aux); $j++){                                  
+                                    if(substr($aux[$j], 0,1) == " ")
+                                        $aux[$j] = substr($aux[$j], 1);
+                                    if($model != "")
+                                        $model .= " ";
+                                    $model .= $aux[$j];
+                                }                                    
+                                $brand_id = $this->getIDExcel([$brand,$model],$cf['option']);
+                                if($brand_id == null)
+                                    echo "ROW = ".($i+1)."|BRAND = ".$brand." MODEL = ".$model." NO ENCONTRADO|".$value."\n";
+                                
+                            break;
+                            case 4://machine
+                                if($value != ""){
+                                    $machine_id = $this->getIDExcel([$value],$cf['option']);            
+                                    if($machine_id == null)
+                                        echo "ROW = ".($i+1).$cf['msg'].$value."\n"; 
+                                }else
+                                    echo "ROW = ".($i+1).$cf['msg'].$value."\n";
+                            break;
+                        }
+                        
+                    }/*else//if band
+                        echo "ROW = ".($i+1)." VACIO ".$cf['msg'].$value."\n"; */
+                }//for cf
+                if($part_id != null){
+                    $serial = null; $description = null; $price = null;
+                    /*if($dt[1] != null && $dt[1] != "")
+                        $serial = $dt[1];*/
+                    if($dt[2] != null && $dt[2] != "")
+                        $price = $dt[2];
+                    if($dt[3] != null && $dt[3] != "")
+                        $description = $dt[3];
+            
+                    $arr =['lkp_type_id'=>$part_id,'serial'=>$serial,'description' =>$description,
+                    'lkp_status_id' =>$status_id,'active'=>1,'machine_id'=>$machine_id,
+                    'brand_id' => $brand_id,'price'=>$price];
+                    $part = Part::create($arr);
+                    echo "ROW = ".($i+1)." ID = ".$part->id."\n";
+                    if($part != null)
+                        $this->insertPartHistory($part->id);
+                }else
+                    echo "PART VACIO ROW = ".($i+1)."\n";
+            }/*else
+                print_r($dt);*/
+            $i++;
+        }
+        return "Termine";
     }
 }

@@ -25,9 +25,10 @@ Route::get('/home', 'HomeController@index')->name('home');
   Route::get('/',['as'=>'login','uses'=>'MainController@index']);
   Route::post('/login', 'MainController@login');
   Route::post('/logout', 'MainController@logout');
+  //Route::get('read_excel','Controller@readExcel');
+
 
   Route::get('lang/{lang}', 'LanguageController@swap')->name('lang.swap');
-
 
 Route::group(['middleware' => ['auth','web']], function() {
   Route::resource("machines",'MachineController');

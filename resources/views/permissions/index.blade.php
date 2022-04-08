@@ -29,6 +29,7 @@
 
                         <select class="form-control selectpicker" id="machine_index" name="machine" data-live-search="true">
                             <option value="" >-- Machine --</option>
+                            <option value="-1">NOT ASSIGNED (SIN ASIGNAR)</option>
                             @foreach($machines as $machine)
                                 <option value="{{$machine->id}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
                             @endforeach
@@ -40,6 +41,11 @@
                         </button>
                     </div>
                 </form>
+
+                <div style="padding-bottom: 10px">
+                    <p><span style="font-weight: bold">Total:</span> {{$total}} <span style="font-weight: bold;margin-left: 10px;">Assigned:</span> {{$assigned}} <span style="font-weight: bold;margin-left: 10px">Not Assigned:</span> {{$not_assigned}}
+                    </p>
+                </div>
 
                 <div class="table-responsive table-striped table-bordered" >
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
@@ -78,4 +84,22 @@
         </div>
     </div>
 </div>
+<script>
+    //$(document).ready(function() {
+    window.onload = function() {
+        @if(isset($_GET['machine']))
+            @if($_GET['machine'])
+                var machine_id = {!!$_GET['machine']!!};
+                if(machine_id == -1){
+                    var arr = [-1];
+                    $.each(arr, function(i,e){
+                        $("#machine_index option[value='" + e + "']").prop("selected", true);
+                    });
+                    $("#machine_index").selectpicker("refresh");
+                }
+            @endif
+        @endif
+    };
+</script>
 @stop
+

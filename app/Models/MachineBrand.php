@@ -8,7 +8,7 @@ class MachineBrand extends Model
 {
   protected $table = 'machine_brands';
 
-	protected $fillable = ['id', 'brand', 'model', 'weight', 'active'];
+  protected $guarded = ['id', 'created_at', 'updated_at'];
 
   public function images(){
     return $this->hasMany('App\PartImage','part_brand_id');

@@ -91,7 +91,11 @@
                       @endif
                       @if($part->machine_id != null)
                         @if($part->machine->machine_brand_id != null)
-                          <td>{{$part->machine_id}} - {{$part->machine->owner->value}} - {{$part->machine->game->name}} - {{$part->machine->serial}}</td>
+                          @if($part->machine->game_catalog_id != null)
+                            <td>{{$part->machine_id}} - {{$part->machine->owner->value}} - {{$part->machine->game->name}} - {{$part->machine->serial}}</td>
+                          @else
+                            <td>{{$part->machine_id}} - {{$part->machine->owner->value}} -  {{$part->machine->serial}}</td>
+                          @endif
                         @else
                           <td></td>
                         @endif
