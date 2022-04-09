@@ -89,33 +89,37 @@ class PercentagePriceController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'machine_id' => 'required',
+            'machine_ids' => 'required',
             'lkp_type_id' => 'required',
             'lkp_periodicity_id' => 'required',
             'amount' => 'required',
         ]);
         try{
             $transaction = DB::transaction(function() use($request){
-                $arr = $request->except('_token');
-                $percentage_price = PercentagePrice::create($arr);
-                if ($percentage_price) {
-                    $notification = array(
-                      'message' => 'Successful!!',
-                      'alert-type' => 'success'
-                    );
-                }else {
-                    $notification = array(
-                      'message' => 'Oops! there was an error, please try again later.',
-                      'alert-type' => 'error'
-                    );
+                $machine_ids = $request->only('machine_ids');
+                $arr = $request->except('_token','machine_ids');
+                foreach ($machine_ids['machine_ids'] as $machine_id) {
+                    $arr['machine_id'] = $machine_id;
+                    $percentage_price = PercentagePrice::create($arr);
+                    if ($percentage_price) {
+                        $notification = array(
+                          'message' => 'Successful!!',
+                          'alert-type' => 'success'
+                        );
+                    }else {
+                        $notification = array(
+                          'message' => 'Oops! there was an error, please try again later.',
+                          'alert-type' => 'error'
+                        );
+                    }
+                    $this->insertMachineHistory($machine_id);
                 }
-                $this->insertMachineHistory($request->machine_id);
                 return $notification;
             });
 
             return redirect()->action('PercentagePriceController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';
+            $cad = 'Oops! there was an error, please try again later.'.$e->getMessage();
             $transaction = array(
                 'message' => $cad,
                 'alert-type' => 'error'

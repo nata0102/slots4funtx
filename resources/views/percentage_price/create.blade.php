@@ -44,8 +44,8 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Machine <span style="color:red">*</span></label>
-                  <select id="permission_machine" class="form-control selectpicker @error('machine_id') is-invalid @enderror input100" name="machine_id" required="" data-live-search="true">
-                      <option value="" selected>-- Select Machine --</option>
+                  <select id="permission_machine" multiple="multiple" class="form-control selectpicker show-menu-arrow @error('machine_id') is-invalid @enderror input100"  data-style="form-control" name="machine_ids[]" required="" data-live-search="true">
+                      <option value="">-- Select Machine --</option>
                       @foreach($machines as $machine)
                         <option value="{{$machine->id}}"  {{ old('machine_id') == $machine->id ? 'selected' : '' }}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
                       @endforeach
