@@ -31,7 +31,7 @@ class PartController extends Controller
         break;
       }
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
-      $qry = "select * from parts_lkp_brands l, machine_brands b
+      $qry = "select l.lkp_id,l.brand_id,b.brand,b.model from parts_lkp_brands l, machine_brands b
               where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();

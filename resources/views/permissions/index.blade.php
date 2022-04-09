@@ -35,6 +35,8 @@
                             @endforeach
                         </select>
 
+                        <input class="form-control" name="year" autofocus placeholder="Permit Year" value="{{ isset($_GET['year']) ? $_GET['year'] : '' }}">
+
                         <input class="form-control" name="number" autofocus placeholder="Permit Number" value="{{ isset($_GET['number']) ? $_GET['number'] : '' }}">
 
                         <button type="submit" class="btn btn-default" name="option"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
