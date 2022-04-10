@@ -37,4 +37,42 @@ class Machine extends Model
     public function parts(){
         return $this->hasMany('App\Models\Part', 'machine_id', 'id');
     }
+
+    public function scopeStatussearch($query, $status) {
+        switch ($status) {
+            case 'all':
+                break;
+            case '':
+                $query->whereNull('lkp_status_id');
+            break;                    
+            default:
+                $query->where('lkp_status_id',$status);
+            break;
+        }
+    }
+
+    public function scopeMachine($query, $game) {
+        if($game)
+            $query->where('game_catalog_id',$game);
+    }
+
+    public function scopeBrand($query, $search) {
+        if($search)
+            $query->where('machine_brand_id',$search);
+    }
+
+    public function scopeOwner($query, $search) {
+        if($search)
+            $query->where('lkp_owner_id',$search);
+    }
+
+    public function scopeId($query, $search) {
+        if($search)
+            $query->where('id',$search);
+    }
+
+    public function scopeSerial($query, $search) {
+        if($search)
+            $query->where('serial','like',"%$search%");
+    }
 }

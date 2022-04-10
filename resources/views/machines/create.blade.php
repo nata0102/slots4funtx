@@ -7,7 +7,11 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-          <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
+          <div>
+            <a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;float: left"><i class="fas fa-long-arrow-alt-left"></i></a>
+
+            <p style="margin-left: 120px;margin-top: 10px">ID: {{$id}}</p>
+          </div>
 
           <form class="" action="{{action('MachineController@store')}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             @csrf

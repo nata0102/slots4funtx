@@ -25,29 +25,31 @@
 
                         <input class="form-control" type="number" name="id" value="{{ isset($_GET['id']) ? $_GET['id'] : '' }}" placeholder="ID">
 
-                        <select class="form-control selectpicker" name="game" data-live-search="true" title="-- Select Game --">
-                            <option value=""></option>
+                        <input class="form-control" type="text" name="serial" value="{{ isset($_GET['serial']) ? $_GET['serial'] : '' }}" placeholder="SERIAL">
+
+                        <select class="form-control selectpicker" name="game" data-live-search="true">
+                            <option value="">ALL GAMES</option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
                               @endforeach
                         </select>
 
                         <select class="form-control" name="owner">
-                            <option value="">-- Select Type --</option>
+                            <option value="">ALL TYPES</option>
                               @foreach($owners as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['owner']) ? $_GET['owner'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
                         <select class="form-control" name="status">
-                            <option value="">-- Select Status --</option>
+                            <option value="all">ALL STATUS</option>
                               @foreach($status as $tp)
-                                <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
+                                <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}} ({{$tp->total}})</option>
                               @endforeach
                         </select>
 
-                        <select class="form-control selectpicker" name="brand" data-live-search="true" title="-- Select Brand --">
-                            <option value=""></option>
+                        <select class="form-control selectpicker" name="brand" data-live-search="true" title="">
+                            <option value="">ALL BRANDS</option>
                               @foreach($brands as $tp)
                                 <option value="{{$tp->id}}"  {{isset($_GET['brand']) ? $_GET['brand'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->brand}} {{$tp->model}} {{$tp->weight}}</option>
                               @endforeach
@@ -57,6 +59,10 @@
                         </button>
                     </div>
                 </form>
+
+                <div style="padding-bottom: 10px">
+                    <p>Total: {{$totales->total}} <span style="margin-left: 50px">Ultimo ID: {{$totales->id}}</span></p>
+                </div>
 
                 <div class="table-responsive table-striped table-bordered" >
                 <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">

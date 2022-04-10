@@ -31,63 +31,23 @@ class MachineController extends Controller
         }
         $games = DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
-        $status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
+        //$status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
+        $qry = "select *, ifnull((select value from lookups where id = t1.id),'NO STATUS') as value
+                from (select lkp_status_id as id,count(*) as total
+                from machines group by lkp_status_id) as t1;";
+        $status = DB::select($qry);
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
-        return view('machines.index',compact('res','owners','status','brands','games'));
+        $qry = "select count(*) as total, (select id from machines order by id desc limit 1) as id
+                from machines;";
+        $totales =  DB::select($qry)[0];
+        return view('machines.index',compact('res','owners','status','brands','games','totales'));
     }
 
     public function searchWithFilters($params){
-        $res = [];
-        $aux = Machine::with([
-            'status' => function ($query) use($params){
-                if($params['status'])
-                    $query->where('id',$params['status']);
-            },
-            'game' => function ($query) use($params){
-                if($params['game'])
-                    $query->where('id',$params['game']);
-            },
-            'address.client',
-            'brand' => function($query) use ($params){
-                if($params['brand'])
-                    $query->where('id',$params['brand']);
-            },
-            'owner' => function($query) use($params){
-                if($params['owner'])
-                    $query->where('id', $params['owner']);
-            }])->where('active',$params['active'])->get();
-        foreach ($aux as $a) {
-            $b_owner = true;
-            if($params['owner']){
-                if($a->owner == null)
-                    $b_owner = false;
-            }
-            $b_status = true;
-            if($params['status']){
-                if($a->status == null)
-                    $b_status = false;
-            }
-            $b_brand = true;
-            if($params['brand']){
-                if($a->brand == null)
-                    $b_brand = false;
-            }
-            $b_game = true;
-            if($params['game']){
-                if($a->game == null)
-                    $b_game = false;
-            }
-            $b_id = true;
-            if($params['id']){
-                if($a->id == $params['id'])
-                    $b_id = true;
-                else
-                    $b_id = false;
-            }
-            if($b_owner == true && $b_status == true && $b_brand == true && $b_game == true && $b_id == true)
-                array_push($res,$a);
-        }
-        return $res;
+        return Machine::with(['status','game','address.client','brand','owner' ])
+               ->statussearch($params['status'])->machine($params['game'])->brand($params['brand'])
+               ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->id($params['id'])
+               ->get();
     }
 
     /**
@@ -108,7 +68,13 @@ class MachineController extends Controller
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
-        return view('machines.create',compact('owners','addresses','status','brands','parts','games'));
+        $qry = "select (id+1) as id
+                from machines order by id desc limit 1;";
+        $row = DB::select($qry);
+        $id = 1;
+        if(count($row) > 0)
+            $id =  $row[0]->id;
+        return view('machines.create',compact('owners','addresses','status','brands','parts','games','id'));
     }
 
     /**
