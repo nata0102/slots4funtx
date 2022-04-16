@@ -50,17 +50,17 @@
                 </div>
 
                 <div class="table-responsive table-striped table-bordered" >
-                <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
+                <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                        	<th>Type Permit</th>
-                        	<th>Machine</th>
-                            <th>Permit Number</th>
-                            <th>Year Permit</th>
+                        	<th>Type Permit <i class="fa fa-sort"></i></th>
+                        	<th>Machine <i class="fa fa-sort"></i></th>
+                            <th>Permit Number <i class="fa fa-sort"></i></th>
+                            <th>Year Permit  <i class="fa fa-sort"></th>
                             <th style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="body">
                     	@foreach($res as $r)
                         <tr>
                             <td>{{$r->type}}</td>
@@ -86,6 +86,7 @@
         </div>
     </div>
 </div>
+
 <script>
     //$(document).ready(function() {
     window.onload = function() {
@@ -102,6 +103,7 @@
             @endif
         @endif
     };
+
 </script>
 @stop
 

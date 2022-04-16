@@ -139,7 +139,14 @@
 <script src="{{ asset('adminjs/jquery3.3.1.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="{{ asset('adminjs/bootstrap4.1.js') }}"></script>
-	<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
+<script src="{{ asset('adminjs/bootstrap-select.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('adminjs/tablesorter.js') }}"></script>
+<script type="text/javascript">
+     $(function(){
+      //Cuando la página se cargue convertimos la tabla con id "myTable" en una tabla ordenable
+      $("#table").tablesorter();
+    });
+</script>
 </head>
 <?php
 $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l where m.lkp_role_id='.Auth::user()->role->id.' and m.lkp_menu_id = l.id;');
