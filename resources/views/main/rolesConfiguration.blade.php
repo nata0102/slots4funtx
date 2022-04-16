@@ -2,6 +2,7 @@
 
 @section('content')
 
+
 <div class="main-content">
   <div class="section__content section__content--p30">
     <div class="container-fluid">
@@ -19,7 +20,7 @@
         @if($rol)
 
         <div class="card">
-          <form class="" action="{{ action('MainController@rolesConfigurationSave') }}" method="post">
+          <form class="" action="{{ action('RoleConfigurationController@rolesConfigurationSave') }}" method="post">
             @csrf
 
             <?php $r = 0; ?>
@@ -64,7 +65,7 @@
 </div>
 
 <script>
-  r = "{{action('MainController@rolesConfiguration')}}";
+  r = "{{action('RoleConfigurationController@index')}}";
   function val() {
     d = document.getElementById("role").value;
     window.location.replace(r+'/'+d);
