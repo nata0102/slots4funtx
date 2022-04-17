@@ -18,7 +18,7 @@
                     </div>
                     <div class="input-group mb-5">
                         <select class="form-control" name="type">
-                            <option value="" >-- Select Type --</option>
+                            <option value="" >ALL TYPES</option>
                             @foreach($types as $tp)
                                 <option value="{{$tp->key_value}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->key_value ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                             @endforeach

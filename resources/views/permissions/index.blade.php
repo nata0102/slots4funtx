@@ -21,14 +21,14 @@
                 <form method="GET" action="{{action('PermissionController@index')}}">
                     <div style="margin-top: 10px" class="input-group mb-5">
                         <select id="permit_type_index" class="form-control" name="type">
-                            <option value="">-- Select Type --</option>
+                            <option value="">ALL TYPES</option>
                               @foreach($types as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                               @endforeach
                         </select>
 
                         <select class="form-control selectpicker" id="machine_index" name="machine" data-live-search="true">
-                            <option value="" >-- Machine --</option>
+                            <option value="" >ALL MACHINES</option>
                             <option value="-1">NOT ASSIGNED (SIN ASIGNAR)</option>
                             @foreach($machines as $machine)
                                 <option value="{{$machine->id}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>

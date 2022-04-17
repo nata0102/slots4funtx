@@ -10,7 +10,7 @@
 
         <div class="form-group">
           <select onchange="val()" class="form-control" name="role" id="role">
-            <option value="" selected disabled>Selecciona un rol</option>
+            <option value="" selected disabled>SELECT A ROLE</option>
             @foreach($roles as $r)
                 <option value="{{$r->key_value}}" {{$r->key_value == $rol ? 'selected' : ''}}>{{$r->value}}</option>
             @endforeach

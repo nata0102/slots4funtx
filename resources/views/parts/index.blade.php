@@ -23,18 +23,18 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div style="margin-top: 40px" class="input-group mb-5">
-                  <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- Select Type --">
-                      <option value=""></option>
+                  <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- SELECT TYPE --">
+                      <option value="">ALL TYPES</option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach
                   </select>
-                  <select class="form-control selectpicker" name="brand" id="parts_brands" data-old="{{old('brand')}}" data-live-search="true" title="-- Select Brand --">
-                      <option value="">-- Select Brand --</option>
+                  <select class="form-control selectpicker" name="brand" id="parts_brands" data-old="{{old('brand')}}" data-live-search="true" title="-- SELECT BRAND --">
+                      <option value="">ALL BRANDS</option>
                   </select>
 
                   <select class="form-control" name="status" >
-                      <option value="">-- Select Status --</option>
+                      <option value="">ALL STATUS</option>
                         @foreach($status as $tp)
                           <option value="{{$tp->id}}"  {{ isset($_GET['status']) ? $_GET['status'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->value}}</option>
                         @endforeach

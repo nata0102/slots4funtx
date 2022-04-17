@@ -17,13 +17,13 @@
               </div>
               <div class="input-group mb-5">
                  <select onchange="fillMachineBrands(this.value)" class="form-control" name="type" id="type">
-                      <option value="" >-- Select Type --</option>
+                      <option value="" >ALL TYPES</option>
                       @foreach($types as $tp)
                           <option value="{{$tp->id}}" {{ isset($_GET['type']) ? $_GET['type'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->value}}</option>
                       @endforeach
                   </select>
 
-                  <select class="form-control selectpicker" title="-- Select Brand --" data-live-search="true" id="machine" name="brand_type" hidden>
+                  <select class="form-control selectpicker" title="-- SELECT BRAND --" data-live-search="true" id="machine" name="brand_type" hidden>
                   </select>
 
                   <input class="form-control" type="text" name="model" value="{{ isset($_GET['model']) ? $_GET['model'] : '' }}" placeholder="Model">
@@ -82,7 +82,7 @@
     function fillMachineBrands(type_id){
       $('#machine').empty();
       if(type_id){
-        $('#machine').append('<option value=""></option>');
+        $('#machine').append('<option value="">ALL BRANDS</option>');
         var brands = {!!$brands_types!!};
         if(brands){
           for(var i =0; i<brands.length; i++){
