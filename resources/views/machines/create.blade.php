@@ -141,6 +141,18 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
+                  <label for="">Inventory</label>
+                  <input type="text" class="form-control @error('inventory') is-invalid @enderror input100 find-inventory" name="inventory" value="{{old('inventory')}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" >
+                  @error('serial')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="form-group">
                   <label for="">Image</label>
                   <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
                     <img src="{{asset('/images/interface.png')}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">

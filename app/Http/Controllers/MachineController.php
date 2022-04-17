@@ -88,6 +88,7 @@ class MachineController extends Controller
         $this->validate($request, [
             'lkp_owner_id' => 'required',
             'serial' => 'unique:machines,serial|nullable',
+            'inventory' => 'unique:machines,inventory|nullable',
         ]);   
         try{
             $transaction = DB::transaction(function() use($request){                             
@@ -95,6 +96,9 @@ class MachineController extends Controller
                     'old_machine_brand_id');
                 if($arr['serial']!=null && $arr['serial']!="")
                     $arr['serial'] = strtoupper($arr['serial']);
+                if($arr['inventory']!=null && $arr['inventory']!="")
+                    $arr['inventory'] = strtoupper($arr['inventory']);
+                
                 $arr['games'] = strtoupper($arr['games']);
                 $arr['notes'] = strtoupper($arr['notes']);
                 if(array_key_exists('games_select', $request->all())){
