@@ -143,8 +143,7 @@
 <script type="text/javascript" src="{{ asset('adminjs/tablesorter.js') }}"></script>
 <script type="text/javascript">
      $(function(){
-      //Cuando la página se cargue convertimos la tabla con id "myTable" en una tabla ordenable
-      $("#table").tablesorter();
+        $("#table").tablesorter();
     });
 </script>
 </head>

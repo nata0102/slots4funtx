@@ -53,11 +53,11 @@
                 <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                        	<th>Type Permit <i class="fa fa-sort"></i></th>
-                        	<th>Machine <i class="fa fa-sort"></i></th>
+                        	<th class="not-sortable">Type Permit</th>
+                        	<th class="not-sortable">Machine</th>
                             <th>Permit Number <i class="fa fa-sort"></i></th>
-                            <th>Year Permit  <i class="fa fa-sort"></th>
-                            <th style="width:125px; text-align: center;"></th>
+                            <th class="not-sortable">Year Permit</th>
+                            <th class="not-sortable" style="width:125px; text-align: center;"></th>
                         </tr>
                     </thead>
                     <tbody id="body">

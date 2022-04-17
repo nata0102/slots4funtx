@@ -481,7 +481,7 @@
             };
 
             function checkHeaderMetadata(cell) {
-                if (($.metadata) && ($(cell).metadata().sorter === false)) {
+                if (($.metadata) && ($(cell).metadata().sorter === false) || $(cell).hasClass("not-sortable")) {
                     return true;
                 };
                 return false;

@@ -64,19 +64,19 @@
                     <p>Total: {{$totales->total}} <span style="margin-left: 50px">Ultimo ID: {{$totales->id}}</span></p>
                 </div>
 
-                <div class="table-responsive table-striped table-bordered" >
-                <table id="table" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
+                <div class="table-responsive table-striped table-bordered">
+                <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                            <th style="width:100px; text-align: center;">ID</th>
-                            <th style="width:100px; text-align: center;">Owner Type</th>
-                            <th style="width:100px; text-align: center;">Brand-Model</th>
-                            <th style="width:100px; text-align: center;">Game Title</th>
-                        	<th style="width:100px; text-align: center;">Serial</th>
-                            <th style="width:100px; text-align: center;">Client</th>
-                            <th style="width:150px; text-align: center;">Business</th>
-                            <th style="width:150px; text-align: center;">Status</th>
-                            <th style="width:125px; text-align: center;"></th>
+                            <th style="width:100px; text-align: center;">ID <i class="fa fa-sort"></i></th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Owner Type</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Brand-Model</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Game Title</th>
+                        	<th class="not-sortable" style="width:100px; text-align: center;">Serial</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Client</th>
+                            <th class="not-sortable" style="width:150px; text-align: center;">Business</th>
+                            <th class="not-sortable" style="width:150px; text-align: center;">Status</th>
+                            <th class="not-sortable" style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
                         </tr>
                     </thead>
