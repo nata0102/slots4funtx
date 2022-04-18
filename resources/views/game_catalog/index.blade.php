@@ -2,12 +2,16 @@
 
 @section('content')
 
+<?php
+  $menu= DB::select("select m.actions from menu_roles m, lookups l where m.lkp_role_id=".Auth::user()->role->id." and m.lkp_menu_id = l.id and l.key_value='GameCatalog';");
+?>
+
 <div class="main-content">
     <div class="section__content section__content--p30">
       <div class="container-fluid">
         <div class="card" id="card-section">
           <div class="input-group mb-2">
-            <a href="{{action('GameCatalogController@create')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
+            <a href="{{action('GameCatalogController@create')}}" class="btn btn-info {{str_contains($menu[0]->actions,'C') ? '' : 'disabled' }}" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
           </div>
 
           		<form method="GET" action="{{action('GameCatalogController@index')}}">
@@ -44,17 +48,17 @@
                             <td>
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">
-                                    <a href="{{action('GameCatalogController@show',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
+                                    <a href="{{action('GameCatalogController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                                   </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <a href="{{action('GameCatalogController@edit',$r->id)}}" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                                    <a href="{{action('GameCatalogController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                   </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('GameCatalogController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
+                                    <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('GameCatalogController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                                   </div>
 
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }} class="col-8 inactive" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link" data-reload="0" data-table="#table" data-message1="Are you sure to activate this game?" data-message2="Activated" data-message3="Activated game." data-method="DELETE" data-action="{{action('GameCatalogController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
+                                    <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="0" data-table="#table" data-message1="Are you sure to activate this game?" data-message2="Activated" data-message3="Activated game." data-method="DELETE" data-action="{{action('GameCatalogController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
                                   </div>
                                 </div>
                             </td>
