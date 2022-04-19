@@ -29,7 +29,7 @@
 
                         <input type="hidden" class="form-control @error('game') is-invalid @enderror input100" name="game" id="game" value="{{old('game')}}">
 
-                        <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="games_ids[]" id="games_ids" onChange="getSelectedOptions(this)" data-placeholder="Select...">
+                        <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="games_ids[]" id="games_ids" onChange="getSelectedOptions(this)">
                             <option value="">ALL GAMES</option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
@@ -171,8 +171,6 @@
         });
         $("#games_ids").selectpicker("refresh");
     }
-
-    
 
     window.onload = function() {
         @if (isset($_GET['game'])) 
