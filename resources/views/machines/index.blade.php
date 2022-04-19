@@ -27,7 +27,9 @@
 
                         <input class="form-control" type="text" name="serial" value="{{ isset($_GET['serial']) ? $_GET['serial'] : '' }}" placeholder="SERIAL">
 
-                        <select class="form-control selectpicker" name="game" data-live-search="true">
+                        <input type="hidden" class="form-control @error('game') is-invalid @enderror input100" name="game" id="game" value="{{old('game')}}">
+
+                        <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="games_ids[]" id="games_ids" onChange="getSelectedOptions(this)" data-placeholder="Select...">
                             <option value="">ALL GAMES</option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
@@ -144,4 +146,38 @@
             </div>
         </div>
     </div>
+<script>
+    function getSelectedOptions(sel) {
+      var opts = [],opt;
+      var len = sel.options.length;
+      var ids = document.getElementById("game");
+      opt = sel.options[0];
+      if (opt.selected){
+        ids.value = "";
+      }else{
+          for (var i = 0; i < len; i++) {
+            opt = sel.options[i];
+            if (opt.selected) 
+                opts.push(opt.value);
+          }          
+          ids.value = opts.toString();
+      }
+    }
+
+    function fillGames(ids){
+        var arr = ids.split(",");
+        $.each(arr, function(i,e){
+            $("#games_ids option[value='" + e + "']").prop("selected", true);
+        });
+        $("#games_ids").selectpicker("refresh");
+    }
+
+    
+
+    window.onload = function() {
+        @if (isset($_GET['game'])) 
+            fillGames("{{$_GET['game']}}");
+        @endif
+    };
+</script>
 @stop

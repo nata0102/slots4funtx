@@ -53,7 +53,7 @@ class Machine extends Model
 
     public function scopeMachine($query, $game) {
         if($game)
-            $query->where('game_catalog_id',$game);
+            $query->whereIn('game_catalog_id',explode(",", $game));
     }
 
     public function scopeBrand($query, $search) {
