@@ -47,16 +47,19 @@ class RoleConfigurationController extends Controller
       $mr = DB::table('menu_roles')->where('lkp_menu_id',$request->menu[$i])->where('lkp_role_id',$request->role[$i])->first();
       if($mr){
         DB::table('menu_roles')->where('lkp_menu_id',$request->menu[$i])->where('lkp_role_id',$request->role[$i])->update(['actions' => $str]);
-
       }
       else {
         DB::insert('insert into menu_roles (lkp_menu_id, actions, lkp_role_id) values (?, ?, ?)', [$request->menu[$i],$str,$request->role[$i]]);
       }
       DB::table('menu_roles')->where('actions','')->delete();
+      $notification = array(
+        'message' => 'Successful!!',
+        'alert-type' => 'success'
+      );
 
     }
 
-    return back();
+    return back()->with($notification);
 
   }
 }
