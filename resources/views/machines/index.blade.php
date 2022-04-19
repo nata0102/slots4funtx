@@ -30,6 +30,7 @@
                         <input type="hidden" class="form-control @error('game') is-invalid @enderror input100" name="game" id="game" value="{{old('game')}}">
 
                         <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="games_ids[]" id="games_ids" onChange="getSelectedOptions(this)">
+                            <option disabled selected>SELECT GAMES</option>
                             <option value="">ALL GAMES</option>
                               @foreach($games as $tp)
                                 <option value="{{$tp->id}}"  {{ isset($_GET['game']) ? $_GET['game'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
@@ -151,11 +152,11 @@
       var opts = [],opt;
       var len = sel.options.length;
       var ids = document.getElementById("game");
-      opt = sel.options[0];
+      opt = sel.options[1];
       if (opt.selected){
         ids.value = "";
       }else{
-          for (var i = 0; i < len; i++) {
+          for (var i = 1; i < len; i++) {
             opt = sel.options[i];
             if (opt.selected) 
                 opts.push(opt.value);
