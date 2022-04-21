@@ -144,7 +144,7 @@
     $('#parts_brands').empty();
     $('#parts_brands').append('<option value=""></option>');
     for(var i=0; i < brands.length; i++){
-      if(type == brands[i].lkp_part_id){
+      if(type == brands[i].lkp_id){
         $('#parts_brands').append('<option value="'+brands[i].id+'">'+brands[i].brand+' '+brands[i].model+'</option>');
       }
     }
