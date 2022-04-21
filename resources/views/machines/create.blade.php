@@ -126,7 +126,7 @@
                   <label for="">Components</label>
                   <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]" id="parts_id_aux">
                   @foreach($parts as $part)
-                    <option  {{ (collect(old('parts_ids'))->contains($part->id)) ? 'selected':'' }}  value="{{$part->id}}">{{$part->serial}} - {{$part->value}}</option>
+                    <option  {{ (collect(old('parts_ids'))->contains($part->id)) ? 'selected':'' }}  value="{{$part->id}}">{{$part->id}} - {{$part->serial}} - {{$part->value}} - {{$part->brand}}</option>
                   @endforeach
                   </select>
                 </div>

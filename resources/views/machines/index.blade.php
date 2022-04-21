@@ -64,7 +64,7 @@
                 </form>
 
                 <div style="padding-bottom: 10px">
-                    <p>Total: {{$totales->total}} <span style="margin-left: 50px">Ultimo ID: {{$totales->id}}</span></p>
+                    <p>Total: {{$totales->total}}</p>
                 </div>
 
                 <div class="table-responsive table-striped table-bordered">

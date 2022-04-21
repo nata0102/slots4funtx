@@ -142,7 +142,7 @@
 		                  <label for="">Components</label>
 		                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]">
 		                  @foreach($parts as $part)
-		                    <option {{ in_array($part->id, $parts_ids) ? 'selected' : '' }}  value="{{$part->id}}">{{$part->serial}} - {{$part->value}}</option>
+		                    <option {{ in_array($part->id, $parts_ids) ? 'selected' : '' }}  value="{{$part->id}}">{{$part->id}} - {{$part->serial}} - {{$part->value}} - {{$part->brand}}</option>
 		                  @endforeach
 		                  </select>
 		                  @error('parts_ids')

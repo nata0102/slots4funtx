@@ -30,10 +30,22 @@ class PermissionController extends Controller
           from machines m where m.active = 1 and m.lkp_owner_id = 38 and m.active=1 and m.id in (select machine_id from permissions);";
       $machines = DB::select($qry);
       $types =   DB::table('lookups')->where('type','type_permit')->where('active',1)->get();
-      $total = Permission::all()->count();
-      $not_assigned = Permission::whereNull('machine_id')->get()->count();
-      $assigned = Permission::whereNotNull('machine_id')->get()->count();
+      $aux = $this->getCountDetails($res);
+      $total = $aux['total'];
+      $not_assigned = $aux['not_assigned'];
+      $assigned = $aux['assigned'];
       return view('permissions.index',compact('res','types','machines','total','assigned','not_assigned'));
+    }
+
+    public function getCountDetails($rows){
+        $res = ['total'=>count($rows), 'assigned'=>0, 'not_assigned' => 0];
+        foreach ($rows as $r) {
+            if($r->machine_id != null)
+              $res['assigned'] += 1;
+            else
+              $res['not_assigned'] += 1;
+        }
+        return $res;
     }
 
     public function searchWithFilters($params){

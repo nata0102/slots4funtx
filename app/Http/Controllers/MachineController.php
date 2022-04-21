@@ -67,9 +67,11 @@ class MachineController extends Controller
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
-        $parts = DB::table('parts')->whereNull('machine_id')->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
-        $qry = "select (id+1) as id
-                from machines order by id desc limit 1;";
+        $qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+                (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand
+                from parts p where machine_id is null and active=1 order by serial;";
+        $parts = DB::select($qry);
+        $qry = "select (id+1) as id from machines order by id desc limit 1;";
         $row = DB::select($qry);
         $id = 1;
         if(count($row) > 0)
@@ -188,7 +190,10 @@ class MachineController extends Controller
                     ->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
-        $parts = DB::table('parts')->whereNull('machine_id')->orWhere('machine_id',$id)->where('parts.active',1)->join('lookups', 'parts.lkp_type_id', '=', 'lookups.id')->select('parts.*','lookups.value')->orderBy('serial')->get();
+        $qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+        (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand
+        from parts p where (machine_id is null or machine_id=1) and active=1 order by serial;";
+        $parts = DB::select($qry);
         $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->orderBy('serial')->get();
         $parts_ids = [];
         foreach ($parts_on_machine as $p_machine )
