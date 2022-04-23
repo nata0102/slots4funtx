@@ -40,13 +40,15 @@ class MachineController extends Controller
         $qry = "select count(*) as total, (select id from machines order by id desc limit 1) as id
                 from machines;";
         $totales =  DB::select($qry)[0];
-        return view('machines.index',compact('res','owners','status','brands','games','totales'));
+        $qry = "select * from addresses where id in (select address_id from machines) order by name_address;";
+        $business = DB::select($qry);
+        return view('machines.index',compact('res','owners','status','brands','games','totales','business'));
     }
 
     public function searchWithFilters($params){
         return Machine::with(['status','game','address.client','brand','owner' ])
                ->statussearch($params['status'])->machine($params['game'])->brand($params['brand'])
-               ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->id($params['id'])
+               ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->address($params['business'])->id($params['id'])
                ->get();
     }
 

@@ -58,6 +58,14 @@
                               @endforeach
                         </select>
 
+                        <select class="form-control" name="business">
+                            <option value="all">ALL BUSINESS</option>
+                            <option value="-1">NOT ASSIGNED</option>
+                              @foreach($business as $tp)
+                                <option value="{{$tp->id}}"  {{ isset($_GET['business']) ? $_GET['business'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->name_address}}</option>
+                              @endforeach
+                        </select>
+
                         <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
                     </div>
