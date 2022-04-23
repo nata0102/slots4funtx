@@ -27,6 +27,16 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div style="margin-top: 40px" class="input-group mb-5">
+                  <input type="hidden" class="form-control @error('machine') is-invalid @enderror input100" name="machine" id="machine" value="{{old('machine')}}">
+
+                  <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machines_ids[]" id="machines_ids" onChange="getSelectedOptions(this)">
+                      <option disabled selected>SELECT GAMES</option>
+                      <option value="-1">NOT ASSIGNED</option>
+                        @foreach($machines as $tp)
+                          <option value="{{$tp->id}}"  {{ isset($_GET['machine']) ? $_GET['machine'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->id}} - {{$tp->owner}} - {{$tp->game}} - {{$tp->serial}}</option>
+                        @endforeach
+                  </select>
+
                   <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- SELECT TYPE --">
                       <option value="">ALL TYPES</option>
                       @foreach($types as $tp)
@@ -163,6 +173,29 @@
       $("#parts_brands").selectpicker("refresh");
   }
 
+  function getSelectedOptions(sel) {
+      var opts = [],opt;
+      var len = sel.options.length;
+      var ids = document.getElementById("machine");
+      
+      for (var i = 1; i < len; i++) {
+        opt = sel.options[i];
+        if (opt.selected) 
+            opts.push(opt.value);
+      }          
+      ids.value = opts.toString();
+    }
+
+    function fillGames(ids){
+        var arr = ids.split(",");
+        $.each(arr, function(i,e){
+            $("#machines_ids option[value='" + e + "']").prop("selected", true);
+        });
+        $("#machines_ids").selectpicker("refresh");
+        document.getElementById("machine").value = ids;
+    }
+
+
   window.onload = function() {
      if($('#parts_type').val() != ""){
         fillBrand($('#parts_type').val(), {!!$brands!!});
@@ -170,6 +203,10 @@
           selectionBrand("{{$_GET['brand']}}");
         @endif
      }
+
+    @if (isset($_GET['machine'])) 
+        fillGames("{{$_GET['machine']}}");
+    @endif
   };
 </script>
 @stop

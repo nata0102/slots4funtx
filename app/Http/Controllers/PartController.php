@@ -22,6 +22,9 @@ class PartController extends Controller
      */
     public function index(Request $request)
     {
+      if(!$request->status && !$request->type && !$request->brand && !$request->machine)
+        $request->option = null; 
+
       switch($request->option){
         case 'all':
           $parts = $this->searchWithFilters($request->all());
@@ -35,8 +38,12 @@ class PartController extends Controller
               where l.brand_id = b.id and b.active = 1 order by b.brand, b.model;";
       $brands = json_encode(DB::select($qry));
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
+      $qry = "select m.id, (select value from lookups where id=m.lkp_owner_id) as owner,
+      (select name from game_catalog where id = game_catalog_id) as game, m.serial
+      from machines m order by id;";
+      $machines = DB::select($qry);
 
-      return view('parts.index',compact('parts','types','brands','status'));
+      return view('parts.index',compact('parts','types','brands','status','machines'));
     }
 
     public function searchWithFilters($params){
@@ -44,7 +51,8 @@ class PartController extends Controller
       $res = Part::where('active',$params['active'])
       ->status1($params['status'])
       ->type1($params['type'])
-      ->brand($params['brand'])->get();
+      ->brand($params['brand'])
+      ->machine($params['machine'])->get();
       return $res;
     }
 

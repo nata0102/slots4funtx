@@ -121,6 +121,11 @@
                                   <div class="col-4" style="padding: 0;">
                                     <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                                   </div>
+                                  @if($r->image != null)
+                                       <div class="col-4" style="padding: 0;">
+                                        <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-image"></i></a>
+                                      </div>
+                                  @endif
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                                     <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                   </div>
@@ -138,7 +143,25 @@
                             @else
                                 <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" disabled></div></td>
                             @endif-->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Image</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              @if($r->image!=null)
+                                <div class="modal-body" style="padding: 0;">
+                                  <img src="{{asset('/images/machines')}}/{{$r->image}}" alt="" style="width: 100%;">
+                                </div>
+                              @endif
+                            </div>
+                          </div>
+                        </div>
                         </tr>
+                        
                         @endforeach
                     </tbody>
                 </table>
@@ -147,6 +170,8 @@
             </div>
         </div>
     </div>
+
+
 <script>
     function getSelectedOptions(sel) {
       var opts = [],opt;
@@ -171,6 +196,7 @@
             $("#games_ids option[value='" + e + "']").prop("selected", true);
         });
         $("#games_ids").selectpicker("refresh");
+        document.getElementById("game").value = ids;
     }
 
     window.onload = function() {

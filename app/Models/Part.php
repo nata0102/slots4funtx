@@ -65,4 +65,14 @@ class Part extends Model
   	}
   }
 
+  public function scopeMachine($query, $machine) {
+      $arr = explode(',', $machine);
+      if($machine){
+          if (!in_array(-1, $arr)) 
+            $query->whereIn('machine_id',$arr);
+          else
+            $query->whereIn('machine_id',$arr)->orWhereNull('machine_id');
+      }
+  }
+
 }
