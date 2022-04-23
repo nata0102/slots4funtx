@@ -17,7 +17,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
           @foreach($menus as $menu)
           <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-            <a href="{{action('MachineController@index')}}">
+            <?php $action = $menu->key_value.'Controller@index' ?>
+            <a href="{{action($action)}}">
               <div class="text-center div-card">
                 <div class="">
                   <i class="fas fa-th-list" style="font-size: 40px;"></i>
