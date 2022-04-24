@@ -321,38 +321,61 @@ class PartController extends Controller
       $types =  DB::table('lookups')->where('type','part_type')->where('active',1)->orderBy('value')->get();
       $details =  DB::table('lookups')->where('type','details')->where('active',1)->orderBy('value')->get();
       $status =  DB::table('lookups')->where('type','status_parts')->where('active',1)->orderBy('value')->get();
-      return view('parts.createByRank',compact('types','details','status','brands'));
+      $insert_types = DB::table('lookups')->where('type','part_insert_type')->where('active',1)->orderBy('value')->get();
+      return view('parts.createByRank',compact('types','details','status','brands','insert_types'));
     }
 
     public function storeByRank(Request $request)
     {
         $this->validate($request, [
             'lkp_type_id' => 'required',
-            'lkp_status_id' => 'required',
-            'start_range' => 'required',
-            'final_range' => 'required',
+            'lkp_status_id' => 'required'
         ]);
-        if($request->final_range < $request->start_range){
-            $transaction = array(
-                'message' => 'The final range must be greater than the initial range.',
-                'alert-type' => 'error'
-            );
-            return back()->with($transaction)->withInput($request->all());
+
+        $ini = 1;
+        $fin = 0;
+        $serial = null;
+
+        if ($request->insert_type_id == "rank"){
+          $ini = $request->start_range;
+          $fin = $request->final_range;
+          $serial = $request->serial;
+          if($request->final_range < $request->start_range){
+              $transaction = array(
+                  'message' => 'The final range must be greater than the initial range.',
+                  'alert-type' => 'error'
+              );
+              return back()->with($transaction)->withInput($request->all());
+          }
         }
+
+        if ($request->insert_type_id == "amount"){
+          $fin = $request->amount;
+          if($request->amount <= 0){
+              $transaction = array(
+                  'message' => 'The amount cannot be less than or equal to 0.',
+                  'alert-type' => 'error'
+              );
+              return back()->with($transaction)->withInput($request->all());
+          }
+        }
+
         try{
-            $transaction = DB::transaction(function() use($request){
-                $arr = $request->only('start_range','final_range','serial');
-                $arr['serial'] = strtoupper($arr['serial']);
-                $arr_aux =  $request->except('_token','details_ids','old_details_ids');
-                for($i = $arr['start_range']; $i<= $arr['final_range']; $i++) {
-                    $arr_aux['serial'] = $arr['serial'] . $i;
-                    $part = Part::create($arr_aux);
-                    $this->insertPartHistory($part->id);
-                    if(array_key_exists('details_ids', $request->all())){
-                        PartDetail::where('part_id',$part->id)->delete();
-                        foreach ($request->details_ids as $detail_id) 
-                            PartDetail::create(['part_id'=>$part->id,'lkp_detail_id'=>$detail_id]);
-                    }
+            $transaction = DB::transaction(function() use($request,$serial,$ini,$fin){
+                if($serial != null)
+                  $serial = strtoupper($serial);
+
+                $arr_aux =  $request->except('_token','details_ids','old_details_ids','insert_type_id','amount');
+                for($i = $ini; $i<= $fin; $i++) {
+                  if($serial != null)
+                    $arr_aux['serial'] = $serial . $i;
+                  $part = Part::create($arr_aux);
+                  $this->insertPartHistory($part->id);
+                  if(array_key_exists('details_ids', $request->all())){
+                      PartDetail::where('part_id',$part->id)->delete();
+                      foreach ($request->details_ids as $detail_id) 
+                          PartDetail::create(['part_id'=>$part->id,'lkp_detail_id'=>$detail_id]);
+                  }
                 }
                 $notification = array(
                   'message' => 'Successful!!',

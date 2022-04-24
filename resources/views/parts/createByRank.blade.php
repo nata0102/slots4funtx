@@ -79,6 +79,23 @@
 
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
+                  <label for="">Type of Insertion <span style="color:red">*</span></label>
+                  <select class="form-control @error('insert_type_id') is-invalid @enderror input100" name="insert_type_id" id="insert_type_id" onchange="unlockFields(this.value)" required>
+                    <option value=""></option>
+                    @foreach($insert_types as $i_type)
+                      <option value="{{$i_type->key_value}}" {{ old('insert_type_id') == $i_type->id ? 'selected' : '' }}>{{$i_type->value}}</option>
+                    @endforeach
+                  </select>
+                  @error('insert_type_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4" id="serial">
+                <div class="form-group">
                   <label for="">Serial</label>
                   <input type="text" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" class="form-control @error('serial') is-invalid @enderror input100 find-serial" name="serial" value="{{old('serial')}}">
                   @error('serial')
@@ -89,10 +106,10 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="start_range">
                 <div class="form-group">
                   <label for="">Starting Range <span style="color:red">*</span></label>
-                  <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('start_range') is-invalid @enderror input100" name="start_range" value="{{old('start_range')}}" required="">
+                  <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('start_range') is-invalid @enderror input100" name="start_range" value="{{old('start_range')}}">
                   @error('start_range')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -101,11 +118,23 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
+              <div class="col-12 col-sm-6 col-md-4" id="final_range">
                 <div class="form-group">
                   <label for="">Final Rank <span style="color:red">*</span></label>
-                  <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('final_range') is-invalid @enderror input100" name="final_range" value="{{old('final_range')}}" required="">
+                  <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control @error('final_range') is-invalid @enderror input100" name="final_range" value="{{old('final_range')}}">
                   @error('final_range')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4" id="amount">
+                <div class="form-group">
+                  <label for="">Amount <span style="color:red">*</span></label>
+                  <input type="text" class="form-control @error('amount') is-invalid @enderror input100" name="amount" value="{{old('amount')}}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                  @error('amount')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>
@@ -139,6 +168,22 @@
   </div>
 
 <script>
+
+  function unlockFields(field){
+    document.getElementById('serial').hidden = true;
+    document.getElementById('start_range').hidden = true;
+    document.getElementById('final_range').hidden = true;
+    document.getElementById('amount').hidden = true;
+    if(field == "rank"){
+      document.getElementById('serial').hidden = false;
+      document.getElementById('start_range').hidden = false;
+      document.getElementById('final_range').hidden = false;
+    }else{
+      if(field == "amount")
+        document.getElementById('amount').hidden = false;
+    }
+  }
+
   function fillBrand(type){
     var brands = {!!$brands!!};
     $('#parts_brands').empty();
@@ -209,6 +254,10 @@
       }
   }
   $(document).ready(function() {
+    document.getElementById('serial').hidden = true;
+    document.getElementById('start_range').hidden = true;
+    document.getElementById('final_range').hidden = true;
+    document.getElementById('amount').hidden = true;
     var p_type = document.getElementById('parts_type');
     selectionPart(p_type.value);   
     fillBrand(p_type.value); 
@@ -217,6 +266,14 @@
     var values_detail= document.getElementById('old_details_ids').value.split(',');
     for(var i =0; i< values_detail.length; i++)
       selectionDetail(values_detail[i]);  
+    //var insert_type = document.getElementById('insert_type_id').value;
+    console.log("{{old('insert_type_id')}}");
+    var insert_type = "{{old('insert_type_id')}}";
+    if(insert_type != ""){
+      let element = document.getElementById('insert_type_id');
+      element.value = insert_type;
+    }
+    unlockFields(insert_type);
   });
 </script>
   @stop

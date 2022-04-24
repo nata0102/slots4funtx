@@ -17,7 +17,7 @@
             </div>
             <div align="left" style="width: 50%;height: 40px;">
               <a href="{{action('PartController@createByRank')}}" class="btn btn-info {{str_contains($menu[0]->actions,'C') ? '' : 'disabled' }}" style="width: 40px; margin-bottom: 10px;float: left;"><i class="fas fa-plus"></i></a>
-                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank</p>
+                    <p style="margin-left: 10px;padding-top: 5px;font-weight: bold;">By Rank/Amount</p>
             </div>
           </div>
 
