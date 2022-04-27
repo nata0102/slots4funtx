@@ -172,7 +172,11 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 													<div class="account-wrap">
 														<div class="account-item clearfix js-item-menu">
 																<div class="image">
+																	@if( Auth::user()->name_image == null)
 																		<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																	@else
+																		<img src="{{asset('/images/users')}}/{{Auth::user()->name_image}}" alt="" />
+																	@endif
 																</div>
 																<div class="content">
 																		<a class="js-acc-btn" href="#"></a>
@@ -181,20 +185,21 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 																		<div class="info clearfix">
 																				<div class="image">
 																						<a href="#">
+																							@if( Auth::user()->name_image == null)
 																								<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																							@else
+																								<img src="{{asset('/images/users')}}/{{Auth::user()->name_image}}" alt="" />
+																							@endif
 																						</a>
 																				</div>
 																				<div class="content">
-																						<h5 class="name">
-																								<a href="#"></a>
-																						</h5>
+																					<h5 class="name">
+																							<a href="#">{{ Auth::user()->name }}</a>
+																					</h5>
+																					<h5 class="name">
+																							<a href="#">{{ Auth::user()->phone }}</a>
+																					</h5>
 																						<span class="email">{{ Auth::user()->email }}</span>
-																				</div>
-																		</div>
-																		<div class="account-dropdown__body">
-																				<div class="account-dropdown__item">
-																						<a href="#">
-																								<i class="zmdi zmdi-account"></i>Mi cuenta</a>
 																				</div>
 																		</div>
 																		<div class="account-dropdown__footer">
@@ -213,37 +218,15 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		        <nav class="navbar-mobile">
 		            <div class="container-fluid" id="sub-header">
 		                <ul class="navbar-mobile__list list-unstyled">
-											@if(Auth::user()->role->id == 48 || Auth::user()->role->id == 72)
-												<li class='Dashboard'>
-				                    <a href="{{ action('MainController@index') }}">Dashboard</a>
-				                </li>
-											@endif
-											@if(Auth::user()->role->id == 48)
-												<li class='Machines'>
-														<a href="{{action('MachineController@index')}}">Machines</a>
-												</li>
-												<li class='Stock'>
-														<a href="{{action('PartController@index')}}">Components</a>
-												</li>
-												<li class='Brands'>
-														<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
-												</li>
-												<li class='Games'>
-														<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
-												</li>
-												<li class='Permissions'>
-													<a href="{{action('PermissionController@index')}}">Permissions</a>
-												</li>
-												<li class='Percentage'>
-													<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
-												</li>
-												<li class='Clients'>
-													<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
-												</li>
-												<li class='Configuration'>
-													<a href="{{action('LookupController@index')}}">Configuration</a>
-												</li>
-											@endif
+
+
+											@foreach($menus as $menu)
+											<li >
+												<?php $action = $menu->key_value.'Controller@index' ?>
+													<a href="{{action($action)}}" id='1' >{{$menu->value}}</a>
+											</li>
+											@endforeach
+
 
 		                </ul>
 		            </div>
@@ -269,35 +252,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 										</li>
 										@endforeach
 
-										@if(Auth::user()->role->id == 49)
-										<li class='Dashboard'>
-												<a href="{{ action('MainController@index') }}">Dashboard</a>
-										</li>
-										<li class='Machines'>
-												<a href="{{action('MachineController@index')}}">Machines</a>
-										</li>
-										<li class='Stock'>
-												<a href="{{action('PartController@index')}}">Components</a>
-										</li>
-										<li class='Brands'>
-												<a href="{{action('MachineBrandController@index')}}">Brands & Models</a>
-										</li>
-										<li class='Games'>
-												<a href="{{action('GameCatalogController@index')}}">Games Catalog</a>
-										</li>
-										<li class='Permissions'>
-											<a href="{{action('PermissionController@index')}}">Permissions</a>
-										</li>
-										<li class='Percentage'>
-											<a href="{{action('PercentagePriceController@index')}}">Percentage/Flat Rate</a>
-										</li>
-										<li class='Clients'>
-											<a href="{{action('ClientController@index')}}">{{ __('Clients') }}</a>
-										</li>
-										<li class='Configuration'>
-											<a href="{{action('LookupController@index')}}">Configuration</a>
-										</li>
-										@endif
+
 
 
 			            </ul>
@@ -336,7 +291,11 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 
 				                                <div class="image">
-				                                  <img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																					@if( Auth::user()->name_image == null)
+																						<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																					@else
+																						<img src="{{asset('/images/users')}}/{{Auth::user()->name_image}}" alt="" />
+																					@endif
 				                                </div>
 				                                <!--div class="content">
 				                                    <a class="js-acc-btn" href="#"></a>
@@ -345,22 +304,29 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				                                    <div class="info clearfix">
 				                                        <div class="image">
 				                                            <a href="#">
-																											<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																											@if( Auth::user()->name_image == null)
+																												<img src="{{asset('/images/profiles/empty.jpg')}}" alt="" />
+																											@else
+																												<img src="{{asset('/images/users')}}/{{Auth::user()->name_image}}" alt="" />
+																											@endif
 				                                            </a>
 				                                        </div>
 				                                        <div class="content">
 				                                            <h5 class="name">
-				                                                <a href="#">NOMBRE</a>
+				                                                <a href="#">{{ Auth::user()->name }}</a>
+				                                            </h5>
+				                                            <h5 class="name">
+				                                                <a href="#">{{ Auth::user()->phone }}</a>
 				                                            </h5>
 				                                            <span class="email">{{ Auth::user()->email }}</span>
 				                                        </div>
 				                                    </div>
-				                                    <div class="account-dropdown__body">
+				                                    <!--div class="account-dropdown__body">
 				                                        <div class="account-dropdown__item">
 				                                            <a href="#">
 				                                                <i class="zmdi zmdi-account"></i>Mi cuenta</a>
 				                                        </div>
-				                                    </div>
+				                                    </div-->
 																						<div class="account-dropdown__footer">
 											                        <a class="dropdown-item" href="{{action('MainController@logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="zmdi zmdi-power"></i>Salir</a>
 											                        <form id="logout-form" action="{{action('MainController@logout')}}" method="POST" style="display: none;">

@@ -16,7 +16,7 @@
 
 
                 <div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror input100" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{ __('Email') }}">
+                    <input id="email" type="text" class="form-control @error('email') is-invalid @enderror input100" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{ __('Email or Phone') }}">
 
                     @error('email')
                         <span class="invalid-feedback" role="alert">

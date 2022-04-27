@@ -29,16 +29,38 @@ class MainController extends Controller
   }
 
   public function login(Request $request){
+    $password = $request->password;
+    if(str_contains($request->email, '@')){
+      $email = $request->email;
+      $user = User::where('email', $request->email)->first();
+      if($user){
+        if ($user->active == 0) {
+          return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+        }
+      }
+    }
+    else{
+      $user = User::where('phone', $request->email)->first();
+      if($user){
+        if ($user->active == 0) {
+          return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+        }
+        $email = $user->email;
+      }
+      else
+        return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+    }
+
     $credentials = [
-      'email' => $request->email,
-      'password' => $request->password,
+      'email' => $email,
+      'password' => $password,
     ];
 
     if (Auth::attempt($credentials)) {
       return redirect()->action('MainController@index');
     }
     else {
-      return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo.']);
+      return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
     }
   }
 
