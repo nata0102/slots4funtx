@@ -16,4 +16,22 @@ class PartImage extends Model
   public function machineBrand(){
     return $this->belongsTo('App\MachineBrand');
   }
+
+  public function scopePart($query, $search) {
+    if($search)
+        $query->where('part_id',$search);
+  }
+
+  public function scopeBrand($query, $search) {
+    if($search)
+        $query->where('brand_id',$search);
+  }
+
+  public function part(){
+        return $this->hasOne('App\Models\Lookup', 'id', 'part_id');
+    }
+
+    public function brand(){
+        return $this->hasOne('App\Models\MachineBrand', 'id', 'brand_id');
+    }
 }

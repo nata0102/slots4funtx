@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth','web']], function() {
   Route::get("/parts/gallery/{id}",'PartController@gallery');
   Route::delete('/parts/delete-image/{id}', 'PartController@deleteImage');
   Route::post('/parts/create-image/{id}', 'PartController@createImage');
+  Route::resource("image_part_brand",'ImagePartBrandController');
 
   Route::get('/roles-configuration/{rol?}', 'RoleConfigurationController@index');
   Route::post('/roles-configuration-save', 'RoleConfigurationController@rolesConfigurationSave');

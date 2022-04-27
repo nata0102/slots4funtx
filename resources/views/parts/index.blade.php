@@ -123,9 +123,9 @@
                               class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled'}}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                           </div>
 
-                          <div class="col-3" style="padding: 0;">
+                          <!-- <div class="col-3" style="padding: 0;">
                             <a href="{{action('PartController@gallery',$part->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-images"></i></a>
-                          </div>
+                          </div> -->
 
                           <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-3 active" style="padding: 0;">
                             <a href="{{action('PartController@edit',$part->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
