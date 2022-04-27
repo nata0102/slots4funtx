@@ -15,6 +15,30 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
+
+  public function index(Request $request){
+      $res = [];
+
+      switch($request->option){
+          case 'all':
+            $res = $this->searchWithFilters($request->all());
+          break;
+          default:
+            $res = User::with('role','client')->where('active',1)->orderBy('id','desc')->get();
+          break;
+      }
+
+      $roles =  DB::table('lookups')->where('type','roles')->orderBy('value')->get();
+
+      return view('users.index',compact('res','roles'));
+  }
+
+  public function searchWithFilters($params){
+        return User::with('role','client')->where('active',$params['active'])
+        ->email($params['email_number'])->role($params['role'])
+               ->get();
+  }
+
   public function authenticate(Request $request)
   {
     $credentials = $request->only('email', 'password');
@@ -141,6 +165,4 @@ class UserController extends Controller
 
     return response()->json(compact('user','token'),201);
   }
-
-
 }

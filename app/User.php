@@ -12,15 +12,6 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
-
-    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -55,5 +46,18 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne('App\Models\Lookup','id','lkp_rol_id');
     }
 
+    public function client(){
+        return $this->hasOne('App\Models\Client','id','client_id');
+    }
+
+    public function scopeRole($query, $search) {
+        if($search)
+            $query->where('role_id',$search);
+    }
+
+    public function scopeEmail($query, $search) {
+        if($search)
+            $query->where('email', 'like', '%' .$search . '%')->orWhere('phone', 'like', '%' .$search.'%');
+    }
     
 }
