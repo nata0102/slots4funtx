@@ -11,6 +11,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -52,7 +54,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function scopeRole($query, $search) {
         if($search)
-            $query->where('role_id',$search);
+            $query->where('lkp_rol_id',$search);
     }
 
     public function scopeEmail($query, $search) {

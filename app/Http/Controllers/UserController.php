@@ -6,12 +6,15 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use App\Models\Lookup;
 use Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -31,6 +34,203 @@ class UserController extends Controller
       $roles =  DB::table('lookups')->where('type','roles')->orderBy('value')->get();
 
       return view('users.index',compact('res','roles'));
+  }
+
+  public function create()
+  {
+    if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+    }
+    $roles =  DB::table('lookups')->where('type','roles')->orderBy('value')->get();
+    $clients = DB::select("select * from clients where id not in (select client_id from users where client_id is not null ) and active=1 order by name;");
+    return view('users.create',compact('roles','clients'));
+  }
+
+  public function store(Request $request)
+    {
+        $this->validate($request, [
+            'lkp_rol_id' => 'required',
+            'email' => 'unique:users|required',
+            'phone' => 'unique:users|required',
+            'name' => 'required'
+        ]);   
+        try{
+            $transaction = DB::transaction(function() use($request){                             
+                $arr = $request->except('_token','image');  
+                $role = Lookup::findOrFail($arr['lkp_rol_id']);
+                if($role->key_value=='client') {
+                    if($arr['client_id'] == null){
+                        $notification =   array(
+                          'message' => 'Oops! there was an error, Client cannot be null.',
+                          'alert-type' => 'error'
+                        );
+                        return back()->with($notification)->withInput($request->all());
+                    }
+                }else
+                  $arr['client_id'] = null;
+                $arr['name'] = strtoupper($arr['name']);   
+                $arr['password'] = Hash::make($arr['password']);                     
+                if($request->image)
+                    $arr['name_image'] = $this->saveGetNameImage($request->image,'/images/users/');
+                $res = User::create($arr);
+               
+                if ($res) {
+                    $notification = array(
+                      'message' => 'Successful!!',
+                      'alert-type' => 'success'
+                    );
+                    return redirect()->action('UserController@index')->with($notification);
+                }else {
+                    $notification = array(
+                      'message' => 'Oops! there was an error, please try again later.',
+                      'alert-type' => 'error'
+                    );
+                }
+                return back()->with($notification)->withInput($request->all());
+            });
+
+            return $transaction;
+
+            
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();
+            $pos = strpos($message, 'users.email');            
+            if ($pos != false) 
+                $cad = "The Email must be unique.";
+            $pos = strpos($message, 'users.phone');            
+            if ($pos != false) 
+                $cad = "The Phone must be unique.";            
+            $transaction = array(
+                'message' => $cad.$message,
+                'alert-type' => 'error' 
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());
+    }
+
+  public function show($id)
+    {
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+          }
+        $res = User::with('role','client')->findOrFail($id);
+        return view('users.show',compact('res'));
+    }
+
+
+    public function edit($id) {
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+        }
+        $res = User::with('role','client')->findOrFail($id);
+        $qry = "select * from (select * from clients where id not in (select client_id from users where client_id is not null ) and active=1";
+        if($res->client_id != null)
+          $qry .= " union select * from clients where id=".$res->client_id;
+        $qry.=") as t1 order by t1.name";
+        $clients = DB::select($qry);
+        $roles =  DB::table('lookups')->where('type','roles')->orderBy('value')->get();    
+        return view('users.edit',compact('res','roles','clients'));   
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'lkp_rol_id' => 'required',
+            'email' => 'required|unique:users,id,'.$id,
+            'phone' => 'required|unique:users,id,'.$id,
+            'name' => 'required'
+        ]); 
+
+        try{
+            $transaction = DB::transaction(function() use($request, $id){   
+                $arr = $request->except('_token','image'); 
+                $role = Lookup::findOrFail($arr['lkp_rol_id']);
+                if($role->key_value=='client') {
+                    if($arr['client_id'] == null){
+                        $notification =   array(
+                          'message' => 'Oops! there was an error, Client cannot be null.',
+                          'alert-type' => 'error'
+                        );
+                        return back()->with($notification)->withInput($request->all());
+                    }
+                }else
+                  $arr['client_id'] = null;
+
+                $arr['name'] = strtoupper($arr['name']);  
+                if($arr['password'] != "" && $arr['password'] != null) 
+                  $arr['password'] = Hash::make($arr['password']);
+                else
+                  unset($arr['password']);
+
+                if(array_key_exists('games_select', $request->all())){
+                     $arr['games'] = "";
+                    foreach ($request->games_select as $g_select) 
+                        $arr['games'] .= $g_select."&$";                    
+                } 
+
+                $res = User::findOrFail($id);
+
+                if($request->image){
+                    $arr['name_image'] = $this->saveGetNameImage($request->image,'/images/users/');
+                    if($res->name_image != null)
+                        unlink(public_path().'/images/users/'.$res->name_image);
+                }
+
+                $res->update($arr);
+                $res->save();
+               
+                if ($res) {
+                    $notification = array(
+                      'message' => 'Successful!!',
+                      'alert-type' => 'success'
+                    );
+                    return redirect()->action('UserController@index')->with($notification);
+                }else {
+                    $notification = array(
+                      'message' => 'Oops! there was an error, please try again later.',
+                      'alert-type' => 'error'
+                    );
+                }
+                return back()->with($notification)->withInput($request->all());                
+            }); 
+            return $transaction;
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $message = $e->getMessage();
+            $pos = strpos($message, 'users.email');            
+            if ($pos != false) 
+                $cad = "The Email must be unique.";
+            $pos = strpos($message, 'users.phone');            
+            if ($pos != false) 
+                $cad = "The Phone must be unique.";            
+            $transaction = array(
+                'message' => $cad.$message,
+                'alert-type' => 'error' 
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());       
+    }
+
+  public function destroy($id){
+      try{
+          $transaction = DB::transaction(function() use ($id){                
+              $res = User::findOrFail($id);
+              $res->active = $res->active == 0 ? 1 : 0;
+              if($res->save())
+                  return response()->json(200);
+              else
+                  return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
+          });
+          return $transaction;
+      }catch(\Exception $e){
+          return response()->json(['errors' => 'Oops! there was an error, please try again later.'], '422');
+      }
   }
 
   public function searchWithFilters($params){

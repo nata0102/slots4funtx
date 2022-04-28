@@ -36,58 +36,34 @@
                     </div>
                 </form>
 
-                <div style="padding-bottom: 10px">
-                    <p>Total: {{$totales->total}}</p>
-                </div>
-
                 <div class="table-responsive table-striped table-bordered">
                 <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                            <th style="width:100px; text-align: center;">ID <i class="fa fa-sort"></i></th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Owner Type</th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Brand-Model</th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Game Title</th>
-                        	<th class="not-sortable" style="width:100px; text-align: center;">Serial</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Name</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Email</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Number</th>
+                            <th class="not-sortable" style="width:100px; text-align: center;">Role</th>
                             <th class="not-sortable" style="width:100px; text-align: center;">Client</th>
-                            <th class="not-sortable" style="width:150px; text-align: center;">Business</th>
-                            <th class="not-sortable" style="width:150px; text-align: center;">Status</th>
+                            <th class="not-sortable" style="width:150px; text-align: center;">Date Work</th>
+                            <th class="not-sortable" style="width:150px; text-align: center;">Date Birthday</th>
                             <th class="not-sortable" style="width:125px; text-align: center;"></th>
-                          <!--<th>Active</th>-->
                         </tr>
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
                         <tr>
-                            <td>{{$r->id}}</td>
-                            @if($r->owner == null)
-                                <td></td>
+                            <td>{{$r->name}}</td>
+                            <td>{{$r->email}}</td>
+                            <td>{{$r->phone}}</td>
+                            <td>{{$r->role->value}}</td>
+                            @if($r->client_id != null)
+                              <td>{{$r->client->name}}</td>
                             @else
-                                <td>{{$r->owner->value}}</td>
+                              <td></td>
                             @endif
-                            @if($r->brand == null)
-                                <td></td>
-                            @else
-                                <td>{{$r->brand->brand}} {{$r->brand->model}}</td>
-                            @endif
-                            @if($r->game == null)
-                                <td></td>
-                            @else
-                                <td>{{$r->game->name}}</td>
-                            @endif
-                            <td>{{$r->serial}}</td>
-                            @if($r->address_id == null)
-                                <td></td>
-                                <td></td>
-                            @else
-                                <td>{{$r->address->client->name}}</td>
-                                <td>{{$r->address->name_address}}</td>
-                            @endif
-                            @if($r->status == null)
-                                <td></td>
-                            @else
-                                <td>{{$r->status->value}}</td>
-                            @endif
+                            <td>{{$r->date_work}}</td>
+                            <td>{{$r->date_birth}}</td>
                             <td>
 
                                 <div class="row" style="margin-right: 0; margin-left: 0;">
@@ -96,7 +72,7 @@
                                   </div>
                                   @if($r->name_image != null)
                                        <div class="col-4" style="padding: 0;">
-                                        <a href="#" class="btn btn-link view_image {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0" data-toggle="modal" data-src="{{asset('/images/machines')}}/{{$r->image}}" data-target="#exampleModalCenter"><i class="far fa-image"></i></a>
+                                        <a href="#" class="btn btn-link view_image {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0" data-toggle="modal" data-src="{{asset('/images/users')}}/{{$r->name_image}}" data-target="#exampleModalCenter"><i class="far fa-image"></i></a>
                                       </div>
                                   @endif
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
@@ -110,13 +86,7 @@
                                     <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="0" data-table="#table" data-message1="Are you sure to activate this machine?" data-message2="Activated" data-message3="Activated machine." data-method="DELETE" data-action="{{action('UserController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
                                   </div>
                                 </div>
-                            </td>
-                            <!--@if($r->active == 1)
-                                <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" checked disabled></div></td>
-                            @else
-                                <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" disabled></div></td>
-                            @endif-->
-                            
+                            </td>                            
                         </tr>
                         
                         @endforeach
@@ -146,40 +116,13 @@
 </div>
 
 <script>
-    function getSelectedOptions(sel) {
-      var opts = [],opt;
-      var len = sel.options.length;
-      var ids = document.getElementById("game");
-      opt = sel.options[1];
-      if (opt.selected){
-        ids.value = "";
-      }else{
-          for (var i = 1; i < len; i++) {
-            opt = sel.options[i];
-            if (opt.selected) 
-                opts.push(opt.value);
-          }          
-          ids.value = opts.toString();
-      }
-    }
-
+  
     $("body").on("click",".view_image",function(){
         $(document.getElementById("view_image")).attr("src",$(this).attr("data-src"));
     });
 
-    function fillGames(ids){
-        var arr = ids.split(",");
-        $.each(arr, function(i,e){
-            $("#games_ids option[value='" + e + "']").prop("selected", true);
-        });
-        $("#games_ids").selectpicker("refresh");
-        document.getElementById("game").value = ids;
-    }
-
     window.onload = function() {
-        @if (isset($_GET['game'])) 
-            fillGames("{{$_GET['game']}}");
-        @endif
+        
     };
 </script>
 @stop
