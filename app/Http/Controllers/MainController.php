@@ -43,12 +43,12 @@ class MainController extends Controller
       $user = User::where('phone', $request->email)->first();
       if($user){
         if ($user->active == 0) {
-          return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+          return back() -> withErrors(['email'=>'No user found with that email address or phone number.']);
         }
         $email = $user->email;
       }
       else
-        return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+        return back() -> withErrors(['email'=>'No user found with that email address or phone number.']);
     }
 
     $credentials = [
@@ -60,7 +60,7 @@ class MainController extends Controller
       return redirect()->action('MainController@index');
     }
     else {
-      return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
+      return back() -> withErrors(['email'=>'No user found with that email address or phone number.']);
     }
   }
 
