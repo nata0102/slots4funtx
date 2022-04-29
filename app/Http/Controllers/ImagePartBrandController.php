@@ -88,38 +88,30 @@ class ImagePartBrandController extends Controller
   }
 
    public function destroy($id){
-      $image = PartImage::where('id',$id)->first();
-      $notification = array(
-          'message' => 'Oops! there was an error, please try again later.',
+
+      try{
+          return DB::transaction(function() use ($id){
+            $res = PartImage::findOrFail($id);
+            if(file_exists(public_path() . '/images/part_brand/'.$res->name_image))
+              unlink(public_path() . '/images/part_brand/'.$res->name_image);
+            $destroy = $res->delete();
+            if($destroy)
+              return response()->json(200);
+            else{
+                $notification = array(
+                  'message' => 'Oops! there was an error, please try again later.'.$e->getMessage(),
+                  'alert-type' => 'error'
+                );
+                return redirect()->action('ImagePartBrandController@index')->with($notification);
+            }
+        });
+      }catch(\Exception $e){
+        $notification = array(
+          'message' => 'Oops! there was an error, please try again later.'.$e->getMessage(),
           'alert-type' => 'error'
-      );
-      if($image != NULL){
-        try{
-          return DB::transaction(function() use($image, $notification){
-            if(file_exists(public_path() . '/images/part_brand/'.$image->name_image))
-            {
-              unlink(public_path() . '/images/part_brand/'.$image->name_image);
-            }
-            $destroy = $image->delete();
-            if($destroy){
-              $notification = array(
-                'message' => 'Successful!!',
-                'alert-type' => 'success'
-              );
-            }
-            return redirect()->action('ImagePartBrandController@index')->with($notification);
-          });
-
-
-        }catch(\Exception $e){
-          $notification = array(
-            'message' => 'Oops! there was an error, please try again later.',
-            'alert-type' => 'error'
-          );
-          return redirect()->action('ImagePartBrandController@index')->with($notification);
-        }
+        );
+        return redirect()->action('ImagePartBrandController@index')->with($notification);
       }
-      return redirect()->back()->with($notification);
    }
 
 
