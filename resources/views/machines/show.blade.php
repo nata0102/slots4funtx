@@ -95,12 +95,12 @@
                   <label for="">Notes</label>
                   <textarea class="form-control" name="notes" disabled>{{$machine->notes}}</textarea>
                 </div>
-              </div>              
+              </div>                        
 
               @if($machine->image)
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
-                  <label for="">Image @if($machine->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
+                  <label for="">Image @if($machine->image) <a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-toggle="modal" data-src="{{asset('/images/machines')}}/{{$machine->image}}" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
                   <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
                     @if($machine->image)
                     <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
@@ -122,6 +122,7 @@
 	                        	<th>Brand</th>
 	                        	<th>Model</th>
 	                        	<th>Serial</th>
+                            <th></th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>
@@ -136,8 +137,16 @@
                                  <td></td>
                                  <td></td>
                               @endif
-
 	                            <td>{{$part->serial}}</td>
+                              @if($part->image != null)
+                              <td>
+                                <div class="col-4" style="padding: 0;">
+                                  <a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-toggle="modal" data-src="{{asset('/images/part_brand')}}/{{$part->image}}" data-target="#exampleModalCenter"><i class="far fa-image"></i></a>
+                                </div>
+                              </td>
+                              @else
+                                <td></td>
+                              @endif
 	                        </tr>
 	                        @endforeach
 	                    </tbody>
@@ -151,26 +160,29 @@
 	</div>
 </div>
 
+
+
+
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalCenterTitle">Actual Image</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      @if($machine->image!=null)
-        <div class="modal-body" style="padding: 0;">
-          <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" style="width: 100%;">
-        </div>
-      @endif
+      <img src="" id="view_image" alt="">
     </div>
   </div>
 </div>
 
 <script>
+  $("body").on("click",".view_image",function(){
+        $(document.getElementById("view_image")).attr("src",$(this).attr("data-src"));
+    });
+
   window.onload = function() {
     var games = {!!$machine!!}.games;
     if(games){

@@ -170,6 +170,11 @@ class MachineController extends Controller
             session(['urlBack' => url()->previous()]);
           }
         $machine = Machine::with('game','status','address.client','brand','owner','parts.type','parts.brand')->findOrFail($id);
+        foreach($machine->parts as $part){
+            $image = DB::table('images_brands')->where('part_id',$part->lkp_type_id)->where('brand_id',$part->brand_id)->first();
+            if($image != null)
+                $part->image = $image->name_image;
+        }
         return view('machines.show',compact('machine'));
     }
 

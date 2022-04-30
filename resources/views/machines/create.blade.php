@@ -240,9 +240,7 @@
           cad += "<td></td>";
         if(parts_aux[i].image != null){
           var aux2 = "{{asset('/images/part_brand')}}/";
-          //console.log(parts_aux[i].image);
           cad += '<td><div class="col-4" style="padding: 0;"><a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-toggle="modal" data-src="'+aux2+parts_aux[i].image+'" data-target="#exampleModalCenter"><i class="far fa-image"></i></a></div></td>';
-          //console.log(cad2);
         }else
           cad += '<td></td></tr>';  
         document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
