@@ -393,8 +393,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		// passes on every "a" tag
 		$("#sub-header a").each(function() {
 						// checks if its the same on the address bar
-						console.log(this.href);
-						console.log(url);
+						//console.log(this.href);
+						//console.log(url);
 				if(url == (this.href)) {
 						$(this).closest("li").addClass("active");
 				}
@@ -408,7 +408,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		// passes on every "a" tag
 		$("#sub-header2 a").each(function() {
 						// checks if its the same on the address bar
-				console.log(this.href);
+				//console.log(this.href);
 				if(url == (this.href)) {
 						$(this).closest("li").addClass("active");
 				}

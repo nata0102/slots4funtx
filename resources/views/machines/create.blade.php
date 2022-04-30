@@ -124,7 +124,7 @@
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Components</label>
-                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]" id="parts_id_aux">
+                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]" id="parts_id_aux" onchange="fillTableComponents()">
                   @foreach($parts as $part)
                     <option  {{ (collect(old('parts_ids'))->contains($part->id)) ? 'selected':'' }}  value="{{$part->id}}">{{$part->id}} - {{$part->serial}} - {{$part->value}} - {{$part->brand}} <a href="" class="btn btn-link" style="width:40px; margin: 0"><i class="far fa-eye"></i></a></option>
                   @endforeach
@@ -162,6 +162,27 @@
                 </div>
               </div>
             </div>
+
+            <div style="margin-top: 10px;" class="form-group">
+                <h3 style="text-align: center">Components</h3>
+                <div style="margin-top: 10px;" class=" table-responsive table-striped table-bordered" >
+                  <table id="table_components" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
+                      <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Brand-Model</th>
+                            <th>Serial</th>
+                            <th></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                       
+                      </tbody>
+                  </table>
+                  </div>
+              </div>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>
             </div>
@@ -171,7 +192,63 @@
     </div>
   </div>
 
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 300px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Component</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body" style="padding: 0;">
+          <img src="" id="view_image" alt="" style="width: 100%;">
+        </div>
+    </div>
+  </div>
+</div>
+
 <script>
+
+  $("body").on("click",".view_image",function(){
+        $(document.getElementById("view_image")).attr("src",$(this).attr("data-src"));
+  });
+
+  function fillTableComponents(){
+    var parts_ids = $('#parts_id_aux').val(); 
+    var parts_aux = @json($parts);
+    console.log(parts_ids);
+
+ $("#table_components tr").remove(); 
+    var cad = "<thead><tr><th>ID</th><th>Type</th><th>Brand-Model</th><th>Serial</th><th></th></tr></thead>";
+    document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
+
+
+    for(var i=0; i< parts_aux.length; i++){
+      if(parts_ids.includes(parts_aux[i].id.toString())){
+        console.log("Enc="+parts_aux[i].id.toString());
+        cad = "<tr>";
+        cad += "<td>"+parts_aux[i].id+"</td>";
+        cad += "<td>"+parts_aux[i].value+"</td>";
+        if(parts_aux[i].brand != null)
+          cad += "<td>"+parts_aux[i].brand+"</td>";
+        else
+          cad += "<td></td>";
+        if(parts_aux[i].serial != null)
+          cad += "<td>"+parts_aux[i].serial+"</td>";
+        else
+          cad += "<td></td>";
+        if(parts_aux[i].image != null){
+          var aux2 = "{{asset('/images/part_brand')}}/";
+          //console.log(parts_aux[i].image);
+          cad += '<td><div class="col-4" style="padding: 0;"><a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-toggle="modal" data-src="'+aux2+parts_aux[i].image+'" data-target="#exampleModalCenter"><i class="far fa-image"></i></a></div></td>';
+          //console.log(cad2);
+        }else
+          cad += '<td></td></tr>';  
+        document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
+      }
+    }    
+  }
 
   function addOptionsSelectGames(games_cad){
     if(games_cad!= null && games_cad != ""){

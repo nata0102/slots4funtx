@@ -117,6 +117,7 @@
 	                <table id="example" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
 	                    <thead>
 	                        <tr>
+                            <th>ID</th>
 	                        	<th>Type</th>
 	                        	<th>Brand</th>
 	                        	<th>Model</th>
@@ -126,6 +127,7 @@
 	                    <tbody>
 	                    	@foreach($machine->parts as $part)
 	                        <tr>
+                              <td>{{$part->id}}</td>
 	                            <td>{{$part->type->value}}</td>
                               @if($part->brand != null)
 	                               <td>{{$part->brand->brand}}</td>

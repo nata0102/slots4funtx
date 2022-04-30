@@ -35,7 +35,7 @@ class Machine extends Model
     }
 
     public function parts(){
-        return $this->hasMany('App\Models\Part', 'machine_id', 'id');
+        return $this->hasMany('App\Models\Part', 'machine_id', 'id')->orderBy('lkp_type_id');
     }
 
     public function scopeStatussearch($query, $status) {
