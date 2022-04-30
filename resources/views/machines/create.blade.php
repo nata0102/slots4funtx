@@ -194,7 +194,7 @@
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 300px;">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalCenterTitle">Component</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -202,7 +202,7 @@
         </button>
       </div>
         <div class="modal-body" style="padding: 0;">
-          <img src="" id="view_image" alt="" style="width: 100%;">
+          <img src="" id="view_image" alt="">
         </div>
     </div>
   </div>
@@ -219,14 +219,13 @@
     var parts_aux = @json($parts);
     console.log(parts_ids);
 
- $("#table_components tr").remove(); 
+    $("#table_components tr").remove(); 
     var cad = "<thead><tr><th>ID</th><th>Type</th><th>Brand-Model</th><th>Serial</th><th></th></tr></thead>";
     document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
 
 
     for(var i=0; i< parts_aux.length; i++){
       if(parts_ids.includes(parts_aux[i].id.toString())){
-        console.log("Enc="+parts_aux[i].id.toString());
         cad = "<tr>";
         cad += "<td>"+parts_aux[i].id+"</td>";
         cad += "<td>"+parts_aux[i].value+"</td>";

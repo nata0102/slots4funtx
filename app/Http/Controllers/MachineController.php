@@ -199,8 +199,9 @@ class MachineController extends Controller
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
         $qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
-        (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand
-        from parts p where (machine_id is null or machine_id=1) and active=1 order by serial;";
+        (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
+        (select name_image from images_brands where part_id=p.lkp_type_id and brand_id=p.brand_id limit 1) as image
+        from parts p where (machine_id is null or machine_id=".$id.") and active=1 order by serial;";
         $parts = DB::select($qry);
         $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->orderBy('serial')->get();
         $parts_ids = [];

@@ -140,7 +140,7 @@
 		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Components</label>
-		                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]">
+		                  <select class="form-control selectpicker show-menu-arrow @error('parts') is-invalid @enderror input100" data-style="form-control" data-live-search="true" title="-- Select Part --" multiple="multiple" name="parts_ids[]" id="parts_ids" onchange="fillTableComponents()">
 		                  @foreach($parts as $part)
 		                    <option {{ in_array($part->id, $parts_ids) ? 'selected' : '' }}  value="{{$part->id}}">{{$part->id}} - {{$part->serial}} - {{$part->value}} - {{$part->brand}}</option>
 		                  @endforeach
@@ -162,7 +162,7 @@
 
 		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
-		                  <label for="">Image @if($machine->image) <a href="#" class="btn btn-link" style="width:40px; margin: 0" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
+		                  <label for="">Image @if($machine->image) <a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-src="{{asset('/images/machines')}}/{{$machine->image}}" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
 		                  <div style="width: 110px; height: 110px; background: #fff; border-radius: 5px; margin: 0; cursor: pointer; overflow: hidden; position: relative;" class="input_img tomaFoto" data-id="img-btn-3" data-id2="img3" data-id3="img-new-3">
 		                    @if($machine->image)
 		                    <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" id="img3" style="width: 80%; height: auto; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
@@ -173,6 +173,25 @@
 		                  <input class="photo" type="file" name="image" value="" id="img-btn-3" data-id2="img-new-3" accept="image/*" hidden>
 		                  <input class="mg" type="text" value="" id="img-new-3" accept="image/*" hidden>
 		                </div>
+		              </div>
+		             <div style="margin-top: 10px;" class="form-group">
+		                <h3 style="text-align: center">Components</h3>
+		                <div style="margin-top: 10px;" class=" table-responsive table-striped table-bordered" >
+		                  <table id="table_components" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
+		                      <thead>
+		                          <tr>
+		                            <th>ID</th>
+		                            <th>Type</th>
+		                            <th>Brand-Model</th>
+		                            <th>Serial</th>
+		                            <th></th>
+		                          </tr>
+		                      </thead>
+		                      <tbody>
+		                       
+		                      </tbody>
+		                  </table>
+		                  </div>
 		              </div>
             	</div>
             	 <div class="col-12 col-sm-6 col-md-4">
@@ -190,24 +209,57 @@
   <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalCenterTitle">Actual Image</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      @if($machine->image)
       <div class="modal-body" style="padding: 0;">
-        <img src="{{asset('/images/machines')}}/{{$machine->image}}" alt="" style="width: 100%;">
+          <img src="" id="view_image" alt="">
       </div>
-      @endif
-
     </div>
   </div>
 </div>
 
 <script>
+
+  $("body").on("click",".view_image",function(){
+        $(document.getElementById("view_image")).attr("src",$(this).attr("data-src"));
+  });
+
+function fillTableComponents(){
+    var parts_ids = $('#parts_ids').val(); 
+    var parts_aux = @json($parts);
+
+    $("#table_components tr").remove(); 
+    var cad = "<thead><tr><th>ID</th><th>Type</th><th>Brand-Model</th><th>Serial</th><th></th></tr></thead>";
+    document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
+
+
+    for(var i=0; i< parts_aux.length; i++){
+      if(parts_ids.includes(parts_aux[i].id.toString())){
+        cad = "<tr>";
+        cad += "<td>"+parts_aux[i].id+"</td>";
+        cad += "<td>"+parts_aux[i].value+"</td>";
+        if(parts_aux[i].brand != null)
+          cad += "<td>"+parts_aux[i].brand+"</td>";
+        else
+          cad += "<td></td>";
+        if(parts_aux[i].serial != null)
+          cad += "<td>"+parts_aux[i].serial+"</td>";
+        else
+          cad += "<td></td>";
+        if(parts_aux[i].image != null){
+          var aux2 = "{{asset('/images/part_brand')}}/";
+          cad += '<td><div class="col-4" style="padding: 0;"><a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-toggle="modal" data-src="'+aux2+parts_aux[i].image+'" data-target="#exampleModalCenter"><i class="far fa-image"></i></a></div></td>';
+        }else
+          cad += '<td></td></tr>';  
+        document.getElementById("table_components").insertRow(-1).innerHTML = cad;      
+      }
+    }    
+  }
 
 function addOptionsSelectGames(games_cad){
 	if(games_cad!= null && games_cad != ""){
@@ -329,6 +381,7 @@ function addOptionsSelectGames(games_cad){
         if(brand_id != "")
             checkFillBrand(brand_id);
       }    
+      fillTableComponents();
   });
 
   function valideKey(evt){
