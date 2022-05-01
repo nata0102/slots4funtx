@@ -45,6 +45,46 @@ class MachineController extends Controller
         return view('machines.index',compact('res','owners','status','brands','games','totales','business'));
     }
 
+    public function getPartsToAssign($id = null){
+        $qry = "select t1.* from (";
+        /*parts de una maquina*/
+        if($id != null){
+            $qry .= "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+            (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
+            (select name_image from images_brands where part_id=p.lkp_type_id and brand_id = p.brand_id 
+            limit 1) as image from parts p where machine_id=".$id." and active=1 union ";
+        }
+
+        /*Parts con serial y sin maquina asignada*/
+        $qry .= "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+        (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
+        (select name_image from images_brands where part_id=p.lkp_type_id and brand_id = p.brand_id 
+        limit 1) as image from parts p where serial is not null and machine_id is null and active=1 ";
+
+        /*Parts sin serial, sin maquina y agrupadas por lkp_type_id y brand_id*/
+        $qry2 = "select lkp_type_id, brand_id,
+        (select id from parts where lkp_type_id = p.lkp_type_id and brand_id=p.brand_id
+        and serial is null and machine_id is null and active=1 limit 1) as id
+        from parts p where serial is null and machine_id is null and active=1 and brand_id is not null
+        group by lkp_type_id, brand_id
+        union
+        select lkp_type_id, brand_id,
+        (select id from parts where lkp_type_id = p.lkp_type_id and brand_id is null 
+        and serial is null and machine_id is null and active=1  limit 1) as id
+        from parts p where serial is null and machine_id is null and active=1 and brand_id is null
+        group by lkp_type_id, brand_id";
+        $rows = DB::select($qry2);
+        $ids = [];
+        foreach ($rows as $r) 
+            array_push($ids,$r->id);
+        if(count($ids) > 0)
+            $qry .= " union select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,(select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
+            (select name_image from images_brands where part_id=p.lkp_type_id and brand_id = p.brand_id 
+            limit 1) as image from parts p where id in (".implode(',', $ids).")";
+        $qry .= ") as t1 order  by t1.value, t1.brand;";
+        return DB::select($qry);        
+    }
+
     public function searchWithFilters($params){
         return Machine::with(['status','game','address.client','brand','owner' ])
                ->statussearch($params['status'])->machine($params['game'])->brand($params['brand'])
@@ -69,11 +109,12 @@ class MachineController extends Controller
         $addresses = DB::table('addresses')->join('clients', 'addresses.client_id', '=', 'clients.id')->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
-        $qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+        /*$qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
                 (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
                 (select name_image from images_brands where part_id=p.lkp_type_id and brand_id = p.brand_id limit 1) as image
                 from parts p where machine_id is null and active=1 order by serial;";
-        $parts = DB::select($qry);
+        $parts = DB::select($qry);*/
+        $parts = $this->getPartsToAssign();
         $qry = "select (id+1) as id from machines order by id desc limit 1;";
         $row = DB::select($qry);
         $id = 1;
@@ -198,11 +239,12 @@ class MachineController extends Controller
                     ->where('addresses.active',1)->where('clients.active',1)
                     ->select('addresses.*','clients.name')->orderBy('clients.name')->get();
         $brands =  DB::table('machine_brands')->where('lkp_type_id',53)->where('active',1)->orderBy('brand')->orderBy('model')->get();
-        $qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
+        /*$qry = "select p.id,p.serial,(select value from lookups where id=p.lkp_type_id) as value,
         (select concat(brand,' ',model) from machine_brands where id=p.brand_id) as brand,
         (select name_image from images_brands where part_id=p.lkp_type_id and brand_id=p.brand_id limit 1) as image
         from parts p where (machine_id is null or machine_id=".$id.") and active=1 order by serial;";
-        $parts = DB::select($qry);
+        $parts = DB::select($qry);*/
+        $parts = $this->getPartsToAssign($id);
         $parts_on_machine = DB::table('parts')->where('machine_id',$id)->where('active',1)->orderBy('serial')->get();
         $parts_ids = [];
         foreach ($parts_on_machine as $p_machine )
