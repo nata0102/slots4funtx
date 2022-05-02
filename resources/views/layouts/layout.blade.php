@@ -1041,6 +1041,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 	<script>
 	$("body").on("click",".qr",function(){
 			url = $(this).attr("data-action");
+			document.getElementById("exampleModalCenterTitl").innerHTML = $(this).attr("data-id");
+
 			new QRious({
 				element: document.querySelector("#codigo"),
 				value: url, // La URL o el texto

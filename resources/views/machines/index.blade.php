@@ -135,7 +135,7 @@
                                       </div>
                                   @endif
                                   <div class="col-4" style="padding: 0;">
-                                   <a href="#" class="btn btn-link qr" style="width:40px; margin: 0" data-toggle="modal" data-action="{{action('MachineController@show',$r->id)}}" data-target="#modalqr"><i class="fas fa-qrcode"></i></a>
+                                   <a href="#" class="btn btn-link qr" style="width:40px; margin: 0" data-toggle="modal" data-action="{{action('MainController@index')}}/{{$r->id}}" data-id="ID: {{$r->id}}" data-target="#modalqr"><i class="fas fa-qrcode"></i></a>
                                  </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                                     <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
@@ -187,7 +187,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 300px;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitl">QR</h5>
+        <h5 class="modal-title" id="exampleModalCenterTitl"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
