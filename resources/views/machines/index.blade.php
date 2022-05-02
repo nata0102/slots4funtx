@@ -193,7 +193,7 @@
         </button>
       </div>
         <div class="modal-body" style="padding: 0;">
-          <img src="" id="codigo" alt="" style="width: 100%;">
+          <img src="" id="codigo" alt="" style="width: 100%; padding: 20px;">
         </div>
     </div>
   </div>
