@@ -146,6 +146,7 @@
         $("#table").tablesorter();
     });
 </script>
+<script src="https://unpkg.com/qrious@4.0.2/dist/qrious.js"></script>
 </head>
 <?php
 $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l where m.lkp_role_id='.Auth::user()->role->id.' and m.lkp_menu_id = l.id;');
@@ -1034,6 +1035,21 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			this.value = string;
 		});
 
+
+	</script>
+
+	<script>
+	$("body").on("click",".qr",function(){
+			url = $(this).attr("data-action");
+			new QRious({
+				element: document.querySelector("#codigo"),
+				value: url, // La URL o el texto
+				size: 200,
+				backgroundAlpha: 0, // 0 para fondo transparente
+				foreground: "#000000", // Color del QR
+				level: "Q", // Puede ser L,M,Q y H (L es el de menor nivel, H el mayor)
+			});
+	});
 
 	</script>
 

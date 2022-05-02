@@ -79,15 +79,15 @@
                 <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
                     <thead>
                         <tr>
-                            <th style="width:100px; text-align: center;">ID <i class="fa fa-sort"></i></th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Owner Type</th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Brand-Model</th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Game Title</th>
+                          <th style="width:100px; text-align: center;">ID <i class="fa fa-sort"></i></th>
+                          <th class="not-sortable" style="width:100px; text-align: center;">Owner Type</th>
+                          <th class="not-sortable" style="width:100px; text-align: center;">Brand-Model</th>
+                          <th class="not-sortable" style="width:100px; text-align: center;">Game Title</th>
                         	<th class="not-sortable" style="width:100px; text-align: center;">Serial</th>
-                            <th class="not-sortable" style="width:100px; text-align: center;">Client</th>
-                            <th class="not-sortable" style="width:150px; text-align: center;">Business</th>
-                            <th class="not-sortable" style="width:150px; text-align: center;">Status</th>
-                            <th class="not-sortable" style="width:125px; text-align: center;"></th>
+                          <th class="not-sortable" style="width:100px; text-align: center;">Client</th>
+                          <th class="not-sortable" style="width:150px; text-align: center;">Business</th>
+                          <th class="not-sortable" style="width:150px; text-align: center;">Status</th>
+                          <th class="not-sortable" style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
                         </tr>
                     </thead>
@@ -134,6 +134,9 @@
                                         <a href="#" class="btn btn-link view_image {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0" data-toggle="modal" data-src="{{asset('/images/machines')}}/{{$r->image}}" data-target="#exampleModalCenter"><i class="far fa-image"></i></a>
                                       </div>
                                   @endif
+                                  <div class="col-4" style="padding: 0;">
+                                   <a href="#" class="btn btn-link qr" style="width:40px; margin: 0" data-toggle="modal" data-action="{{action('MachineController@show',$r->id)}}" data-target="#modalqr"><i class="fas fa-qrcode"></i></a>
+                                 </div>
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                                     <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
                                   </div>
@@ -151,9 +154,9 @@
                             @else
                                 <td><div class="form-check"><input style="display:block;margin:0 auto;" class="form-check-input" type="checkbox" value="" disabled></div></td>
                             @endif-->
-                            
+
                         </tr>
-                        
+
                         @endforeach
                     </tbody>
                 </table>
@@ -180,6 +183,22 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalqr" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitl" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 300px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitl">QR</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body" style="padding: 0;">
+          <img src="" id="codigo" alt="" style="width: 100%;">
+        </div>
+    </div>
+  </div>
+</div>
+
 <script>
     function getSelectedOptions(sel) {
       var opts = [],opt;
@@ -191,9 +210,9 @@
       }else{
           for (var i = 1; i < len; i++) {
             opt = sel.options[i];
-            if (opt.selected) 
+            if (opt.selected)
                 opts.push(opt.value);
-          }          
+          }
           ids.value = opts.toString();
       }
     }
@@ -212,7 +231,7 @@
     }
 
     window.onload = function() {
-        @if (isset($_GET['game'])) 
+        @if (isset($_GET['game']))
             fillGames("{{$_GET['game']}}");
         @endif
     };
