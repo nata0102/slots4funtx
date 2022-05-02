@@ -63,28 +63,45 @@ class ImagePartBrandController extends Controller
             'type' => 'required',
             'image' => 'required'
         ]); 
-        try{
-          return DB::transaction(function() use($request){
-            $image = new PartImage;
-            $image->part_id = $request->type;
-            $image->brand_id = $request->brand;
-            if($request->image){
-                $image->name_image = $this->saveGetNameImage($request->image,'/images/part_brand/');
-            }
-            $image->save();
+
+        $notification = array(
+            'message' => 'Two images cannot exist with the same component and brand-model.',
+            'alert-type' => 'error'
+        );
+      
+        if(PartImage::where('part_id',$request->type)->where('brand_id',$request->brand)->count()==0){ 
+          try{         
+            $transaction =  DB::transaction(function() use($request){
+              $image = new PartImage;
+              $image->part_id = $request->type;
+              $image->brand_id = $request->brand;
+              if($request->image)
+                  $image->name_image = $this->saveGetNameImage($request->image,'/images/part_brand/');
+
+              $image->save();
+              if($image){
+                $notification = array(
+                    'message' => 'Successful!!',
+                    'alert-type' => 'success'
+                );
+              }else{
+                $notification = array(
+                      'message' => 'Oops! there was an error, please try again later.',
+                      'alert-type' => 'error'
+                  );
+              }
+              return $notification;
+            });
+            return redirect()->action('ImagePartBrandController@index')->with($transaction);
+
+          }catch(\Exception $e){
             $notification = array(
-                'message' => 'Successful!!',
-                'alert-type' => 'success'
+                'message' => 'Oops! there was an error, please try again later.'.$e->getMessage(),
+                'alert-type' => 'error'
             );
-            return redirect()->action('ImagePartBrandController@index')->with($notification);
-          });
-        }catch(\Exception $e){
-          $notification = array(
-              'message' => 'Oops! there was an error, please try again later.',
-              'alert-type' => 'error'
-          );
-          return back()->with($notification)->withInput($request->all());
-        }
+          }
+      }
+      return back()->with($notification)->withInput($request->all());
   }
 
    public function destroy($id){

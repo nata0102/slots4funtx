@@ -13,11 +13,16 @@
                 <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Part Type <span style="color:red">*</span></label>
-                  <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker" name="type" data-live-search="true" title="-- SELECT TYPE --">
+                  <select onchange="fillBrand(this.value, {{$brands}})" id="parts_type" class="form-control selectpicker @error('type') is-invalid @enderror input100" name="type" data-live-search="true" title="-- SELECT TYPE --" required="">
                     @foreach($types as $tp)
                         <option value="{{$tp->id}}" {{isset($_GET['type']) ? $_GET['type'] == $tp->id ?   'selected' : '' : ''}}>{{$tp->value}}</option>
                     @endforeach
                   </select>
+                  @error('type')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
                 </div>
               </div>
 
@@ -42,7 +47,12 @@
                     </div>
 
                     <div>
-                      <input type="file" class="" id="inputImagePost" name="image" accept="image/*" >
+                      <input type="file" class="form-control @error('image') is-invalid @enderror input100" id="inputImagePost" name="image" accept="image/*" required="">
+                      @error('image')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                      @enderror
                     </div>
                 </div>
               </div>
