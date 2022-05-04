@@ -78,9 +78,10 @@ class Machine extends Model
 
     public function scopeAddress($query, $search) {
         if($search){
-            if($search != -1)
-                $query->where('address_id',$search);
-            else
+            if($search != -1){
+                if($search != "all")
+                    $query->where('address_id',$search);
+            }else
                 $query->whereNull('address_id');
         }
     }

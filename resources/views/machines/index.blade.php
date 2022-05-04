@@ -58,7 +58,7 @@
                               @endforeach
                         </select>
 
-                        <select class="form-control" name="business">
+                        <select class="form-control" name="business" id ="business">
                             <option value="all">ALL BUSINESS</option>
                             <option value="-1">NOT ASSIGNED</option>
                               @foreach($business as $tp)
@@ -234,6 +234,13 @@
         @if (isset($_GET['game']))
             fillGames("{{$_GET['game']}}");
         @endif
+        @if (isset($_GET['business']))
+            var aux_business = "{{$_GET['business']}}";
+            if(aux_business == -1){
+              var business = document.getElementById("business");
+              business.options[1].selected = true;
+            }
+        @endif       
     };
 </script>
 @stop
