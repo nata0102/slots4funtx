@@ -64,6 +64,7 @@
             <table id="table" class="table" style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
+                      <th style="width:100px; text-align: center;">ID</th>
                       <th style="width:100px; text-align: center;">Type</th>
                       <th style="width:100px; text-align: center;">Brand-Model</th>
                       <th style="width:150px; text-align: center;">Details</th>
@@ -77,6 +78,7 @@
                 <tbody>
                 	@foreach($parts as $part)
                     <tr>
+                      <td>{{$part->id}}</td>
                       @if($part->type != NULL)
                         <td>{{$part->type->value}}</td>
                       @else
@@ -119,7 +121,7 @@
                       <td>
                         <div class="row" style="margin-right: 0; margin-left: 0;">
                           <div class="col-3" style="padding: 0;">
-                            <a href="{{action('PartController@show',$part->id)}}" 
+                            <a href="{{action('PartController@show',$part->id)}}"
                               class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled'}}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
                           </div>
 
@@ -177,12 +179,12 @@
       var opts = [],opt;
       var len = sel.options.length;
       var ids = document.getElementById("machine");
-      
+
       for (var i = 1; i < len; i++) {
         opt = sel.options[i];
-        if (opt.selected) 
+        if (opt.selected)
             opts.push(opt.value);
-      }          
+      }
       ids.value = opts.toString();
     }
 
@@ -204,7 +206,7 @@
         @endif
      }
 
-    @if (isset($_GET['machine'])) 
+    @if (isset($_GET['machine']))
         fillGames("{{$_GET['machine']}}");
     @endif
   };
