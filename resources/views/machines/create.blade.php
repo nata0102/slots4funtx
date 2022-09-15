@@ -151,6 +151,13 @@
                 </div>
               </div>
 
+              <div class="col-12 col-sm-6 col-md-4" id="div_group1">
+                <div class="form-group">
+                  <input type="hidden" name="band_jackpot" value="0" />
+                  <label><input type="checkbox" id="check_band" class="@error('band_jackpot') is-invalid @enderror input100" name="band_jackpot" value="1" {{old('band_select') == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Jackpot</span></label>
+                </div>
+              </div>
+
               <div class="col-12 col-sm-6 col-md-4">
                 <div class="form-group">
                   <label for="">Image</label>

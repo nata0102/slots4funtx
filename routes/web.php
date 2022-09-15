@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth','web']], function() {
   Route::post('/parts/create-image/{id}', 'PartController@createImage');
   Route::resource("image_part_brand",'ImagePartBrandController');
   Route::resource("users","UserController");
+  Route::resource("charges","ChargesController");
 
   Route::get('/roles-configuration/{rol?}', 'RoleConfigurationController@index');
   Route::post('/roles-configuration-save', 'RoleConfigurationController@rolesConfigurationSave');

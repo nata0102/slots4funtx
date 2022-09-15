@@ -25,6 +25,9 @@ class MachineController extends Controller
             case 'all':
                $res = $this->searchWithFilters($request->all());
             break;
+            case 'flat_percentage_last_numbers':
+                $res = $this->getMachinesFlatPercentage();
+            break;
             default:
                $res = Machine::with('status','address.client','brand','owner','game')->where('active',1)->orderBy('id')->get();
             break;
@@ -43,6 +46,16 @@ class MachineController extends Controller
         $qry = "select * from addresses where id in (select address_id from machines) order by name_address;";
         $business = DB::select($qry);
         return view('machines.index',compact('res','owners','status','brands','games','totales','business'));
+    }
+
+    public function getMachinesFlatPercentage(){
+        $qry = "select m.*,(select value from lookups where id=m.lkp_owner_id) as owner,
+        (select name from game_catalog where id=m.game_catalog_id) as game, m.band_jackpot,
+        (select master_in from charges where machine_id = m.id order by id desc) as master_in,
+        (select master_out from charges where machine_id = m.id order by id desc) as master_out, 
+        (select jackpot_out from charges where machine_id = m.id order by id desc) as jackpot_out
+        from machines m where m.active = 1 and m.id = (select machine_id from percentage_price_machine where lkp_type_id = 45);";
+        return DB::select($qry);
     }
 
     public function getPartsToAssign($id = null){
