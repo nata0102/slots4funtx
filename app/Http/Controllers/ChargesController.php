@@ -45,7 +45,7 @@ class ChargesController extends Controller
         }
         $machine_ctrl = new MachineController();
         $machines = $machine_ctrl->getMachinesFlatPercentage();
-        $types = Lookup::where('type',$request->type)->orderBy('value')->get();
+        $types = Lookup::where('type','charge_type')->orderBy('value')->get();
         return view('charges.create',compact('machines','types'));
 
     }
