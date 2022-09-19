@@ -53,7 +53,8 @@ class MachineController extends Controller
         (select name from game_catalog where id=m.game_catalog_id) as game, m.band_jackpot,
         (select master_in from charges where machine_id = m.id order by id desc) as master_in,
         (select master_out from charges where machine_id = m.id order by id desc) as master_out, 
-        (select jackpot_out from charges where machine_id = m.id order by id desc) as jackpot_out
+        (select jackpot_out from charges where machine_id = m.id order by id desc) as jackpot_out,
+        (select avg(utility_s4f) from charges where machine_id =m.id and utility_s4f is not null order by id desc limit 5) as average
         from machines m where m.active = 1 and m.id = (select machine_id from percentage_price_machine where lkp_type_id = 45);";
         return DB::select($qry);
     }
