@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Charge;
+use App\Models\Lookup;
 use Auth;
 
 
@@ -43,9 +44,8 @@ class ChargesController extends Controller
             session(['urlBack' => url()->previous()]);
         }
         $machine_ctrl = new MachineController();
-        $machines = $machine_ctrl->index(new Request(["option"=>"flat_percentage_last_numbers"]));
-        $lkp_ctrl = new LookupController();
-        $types = $lkp_ctrl->index(new Request(["option"=>"type","type"=>'charge_type']));
+        $machines = $machine_ctrl->getMachinesFlatPercentage();
+        $types = Lookup::where('type',$request->type)->orderBy('value')->get();
         return view('charges.create',compact('machines','types'));
 
     }
