@@ -21,7 +21,7 @@ class ChargesController extends Controller
         $res = null;
         switch ($request->option) {
             case 'average':
-                $res = $this->getAverage($request->all());
+                return $this->getAverage($request->all());
             break;    
         }
         return $res;
