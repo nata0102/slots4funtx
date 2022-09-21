@@ -168,6 +168,8 @@
                   <th>Period In</th>
                   <th>Period Out</th>
                   <th>Date</th>
+                  <th>Utlity</th>
+
 
 
                 </tr>
@@ -183,6 +185,7 @@
                     <td>{{$dt['periodIn']}}</td>
                     <td>{{$dt['periodOut']}}</td>
                     <td>{{$dt['date']}}</td>
+                    <td>{{$dt['granTotal']}}</td>
                   </tr>
                 @endforeach
               </tbody>
