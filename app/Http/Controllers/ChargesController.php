@@ -11,6 +11,13 @@ use Auth;
 
 class ChargesController extends Controller
 {
+
+    public function __construct(){
+
+      if(!\Session::has('data')) \Session::put('data', array());
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +29,7 @@ class ChargesController extends Controller
         switch ($request->option) {
             case 'average':
                 return $this->getAverage($request->all());
-            break;    
+            break;
         }
         return $res;
     }
@@ -39,6 +46,8 @@ class ChargesController extends Controller
      */
     public function create()
     {
+
+        $data = \Session::get('data');
         if( url()->previous() != url()->current() ){
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
@@ -46,7 +55,7 @@ class ChargesController extends Controller
         $machine_ctrl = new MachineController();
         $machines = $machine_ctrl->getMachinesFlatPercentage();
         $types = Lookup::where('type','charge_type')->orderBy('value')->get();
-        return view('charges.create',compact('machines','types'));
+        return view('charges.create',compact('machines','types','data'));
 
     }
 
@@ -58,10 +67,41 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $transaction = DB::transaction(function() use($request){ 
+
+      $data = \Session::get('data');
+
+      $dt = array();
+
+
+      $dt['masterIn'] = $request->masterIn;
+      $dt['masterOut'] = $request->masterOut;
+      $dt['machine_id'] = $request->machine_id;
+      $dt['type'] = $request->type;
+      $dt['average'] = $request->average;
+
+      $dt['jackpotout'] = $request->jackpotout;
+      $dt['periodOut'] = $request->periodOut;
+      $dt['periodIn'] = $request->periodIn;
+      $dt['date'] = $request->date;
+
+      $dt['granTotal'] = $request->granTotal;
+      $dt['us'] = $request->us;
+      $dt['pago'] = $request->pago;
+
+
+
+      $data[] = $dt;
+
+      \Session::put('data', $data);
+
+       return redirect()->action('ChargesController@create');
+
+
+
+        /*try{
+            $transaction = DB::transaction(function() use($request){
                 $rows = $request->all();
-                foreach ($rows as $row){ 
+                foreach ($rows as $row){
                     $row['user_id'] = Auth::id();
                     if($row['utility_s4f'] != null && $row['payment_client'] != null){
                         $row['band_paid_out'] = 0;
@@ -74,18 +114,18 @@ class ChargesController extends Controller
                       'message' => 'Successful!!',
                       'alert-type' => 'success'
                 );
-                return $notification; 
+                return $notification;
             });
-            return redirect()->action('MachineController@index')->with($transaction);        
+            return redirect()->action('MachineController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';          
+            $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(
                 'message' => $cad,
-                'alert-type' => 'error' 
+                'alert-type' => 'error'
             );
         }
 
-        return back()->with($transaction)->withInput($request->all());
+        return back()->with($transaction)->withInput($request->all());*/
     }
 
     /**
