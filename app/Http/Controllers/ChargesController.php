@@ -61,33 +61,33 @@ class ChargesController extends Controller
 
     public function storeData(Request $request){
         $data = \Session::get('data');
-
-        /*$dt = array();
-
-
-        $dt['masterIn'] = $request->masterIn;
-        $dt['masterOut'] = $request->masterOut;
-        $dt['machine_id'] = $request->machine_id;
-        $dt['type'] = $request->type;
-        $dt['average'] = $request->average;
-
-        $dt['jackpotout'] = $request->jackpotout;
-        $dt['periodOut'] = $request->periodOut;
-        $dt['periodIn'] = $request->periodIn;
-        $dt['date'] = $request->date;
-
-        $dt['granTotal'] = $request->granTotal;
-        $dt['us'] = $request->us;
-        $dt['pago'] = $request->pago;*/
-
-
         $data[] = $request->all();
-
-        //$data[] = $dt;
-
         \Session::put('data', $data);
+        return redirect()->action('ChargesController@create');
+    }
 
-       return redirect()->action('ChargesController@create');
+    public function storeInitialNumbers(Request $request){
+        try{
+            $transaction = DB::transaction(function() use($request){
+                $data = $request->all();
+                Charge::create($data);
+                
+                $notification = array(
+                      'message' => 'Successful!!',
+                      'alert-type' => 'success'
+                );
+                return $notification;
+            });
+            return redirect()->action('ChargesController@create')->with($transaction);
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.';
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error'
+            );
+        }
+
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**
