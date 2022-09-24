@@ -59,43 +59,51 @@
                 <input class="form-control" type="text" id="type2" name="type" value="">
                 <input class="form-control" type="text" name="machine_id" value="" id="machineidinitial">
               </div>
+              <div class="card">
 
-              <h4>Master numbers</h4>
-              <div class="row">
-                <div class="col-4">
-                  <label for="">In*</label>
-                  <input class="form-control" type="text" value="" name="master_in">
-                </div>
-                <div class="col-4">
-                  <label for="">Out*</label>
-                  <input class="form-control" type="text" value="" name="master_out">
-                </div>
-                <div class="col-4">
-                  <!-- if jackpot -->
-                  <div class="" hidden id="jackpotinitial">
-                    <label for="">Jackpot out</label>
-                    <input class="form-control" type="text" value="" name="jackpot_out">
+                <h4>Master numbers</h4>
+                <div class="row">
+                  <div class="col-4">
+                    <label for="">In*</label>
+                    <input class="form-control" type="text" value="" name="master_in">
+                  </div>
+                  <div class="col-4">
+                    <label for="">Out*</label>
+                    <input class="form-control" type="text" value="" name="master_out">
+                  </div>
+                  <div class="col-4">
+                    <!-- if jackpot -->
+                    <div class="" hidden id="jackpotinitial">
+                      <label for="">Jackpot out</label>
+                      <input class="form-control" type="text" value="" name="jackpot_out">
+                    </div>
                   </div>
                 </div>
+
+                <h4>Period numbers</h4>
+                <div class="row">
+                  <div class="col-4">
+                    <label for="">In</label>
+                    <input class="form-control" type="text" value="" name="period_in">
+                  </div>
+                  <div class="col-4">
+                    <label for="">Out</label>
+                    <input class="form-control" type="text" value="" name="period_out">
+                  </div>
+                  <div class="col-4">
+                    <label for="">date</label>
+                    <input class="form-control" type="date" name="period_date" value="">
+                  </div>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                  <button type="submit" name="button" class="btn btn-success">SEND</button>
+                </div>
+
               </div>
 
-              <h4>Period numbers</h4>
-              <div class="row">
-                <div class="col-4">
-                  <label for="">In</label>
-                  <input class="form-control" type="text" value="" name="period_in">
-                </div>
-                <div class="col-4">
-                  <label for="">Out</label>
-                  <input class="form-control" type="text" value="" name="period_out">
-                </div>
-                <div class="col-4">
-                  <label for="">date</label>
-                  <input class="form-control" type="date" name="period_date" value="">
-                </div>
-              </div>
-
-              <button type="submit" name="button" class="btn btn-success">SEND</button>
 
 
             </form>
@@ -125,17 +133,17 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">In*</label>
-                    <input class="form-control" type="text" value="" name="masterIn" id="masterin" required onchange="calculate()">
+                    <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
                   </div>
                   <div class="col-4">
                     <label for="">Out*</label>
-                    <input class="form-control" type="text" value="" name="masterOut" id="masterout" required onchange="calculate()">
+                    <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
                   </div>
                   <div class="col-4">
                     <!-- if jackpot -->
                     <div class="" hidden id="jackpot">
                       <label for="">Jackpot out</label>
-                      <input class="form-control" type="text" value="" name="jackpotout" id="jackpotout" onchange="calculatejp()">
+                      <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculatejp()">
                     </div>
                   </div>
                 </div>
@@ -146,11 +154,11 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">In</label>
-                    <input class="form-control" type="text" value="" name="periodIn">
+                    <input class="form-control" type="number" value="" name="periodIn">
                   </div>
                   <div class="col-4">
                     <label for="">Out</label>
-                    <input class="form-control" type="text" value="" name="periodOut">
+                    <input class="form-control" type="number" value="" name="periodOut">
                   </div>
                   <div class="col-4">
                     <label for="">date</label>
@@ -166,17 +174,22 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">Utilidad Calc</label>
-                    <input class="form-control" type="text" value="" name="granTotal" id="uc" readonly>
+                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly>
                   </div>
                   <div class="col-4">
                     <label for="">utilidad s4f</label>
-                    <input class="form-control" type="text" value="" name="us" id="us">
+                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us">
                   </div>
 
                 </div>
 
+                <hr>
+
+                <div class="form-group">
+                  <button type="submit" name="button" class="btn btn-success">SEND</button>
+                </div>
+
               </div>
-              <button type="submit" name="" class="btn btn-success">Add</button>
 
             </form>
           </div>
@@ -219,13 +232,32 @@
                     <td hidden>{{$dt['periodIn']}}</td>
                     <td hidden>{{$dt['periodOut']}}</td>
                     <td hidden>{{$dt['date']}}</td>
-                    <td>{{$dt['granTotal']}}</td>
+                    <td>{{$dt['uc']}}</td>
                     <td>{{$dt['us']}}</td>
                   </tr>
                 @endforeach
               </tbody>
             </table>
           </div>
+          <hr>
+          <form class="" action="{{action('ChargesController@store')}}" method="post">
+            @csrf
+            <div class="form-group">
+              <label for="">Payment</label>
+              <?php
+
+                $max = 0;
+                foreach ($data as $key => $dt) {
+                  $max += $dt['us'];
+                }
+
+              ?>
+              <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' style="width: 120px;">
+            </div>
+            <div class="form-group">
+              <button type="submit" name="button" class="btn btn-success">SEND</button>
+            </div>
+          </form>
           @endif
         </div>
       </div>

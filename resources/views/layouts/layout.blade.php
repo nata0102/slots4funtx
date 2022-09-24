@@ -1180,6 +1180,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 				document.getElementById("uc").value = (i-o)*p ;
 				document.getElementById("us").value = (i-o)*p ;
+
+				t = (i-o)*p
+				document.getElementById("us").setAttribute('max',t);
 			}
 		}
 
