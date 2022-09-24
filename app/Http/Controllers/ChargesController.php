@@ -61,7 +61,7 @@ class ChargesController extends Controller
 
     public function storeData(Request $request){
         $data = \Session::get('data');
-        $data[] = $request->all();
+        $data[$request->machine_id] = $request->all();
         \Session::put('data', $data);
         return redirect()->action('ChargesController@create');
     }
@@ -71,7 +71,7 @@ class ChargesController extends Controller
             $transaction = DB::transaction(function() use($request){
                 $data = $request->all();
                 Charge::create($data);
-                
+
                 $notification = array(
                       'message' => 'Successful!!',
                       'alert-type' => 'success'
@@ -98,12 +98,7 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
-
-      
-
-
-
-        /*try{
+      try{
             $transaction = DB::transaction(function() use($request){
                 $rows = $request->all();
                 foreach ($rows as $row){
@@ -130,7 +125,7 @@ class ChargesController extends Controller
             );
         }
 
-        return back()->with($transaction)->withInput($request->all());*/
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**

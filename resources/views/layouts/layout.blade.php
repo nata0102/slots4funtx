@@ -1057,78 +1057,118 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 
 	<script>
-		function dataCharge(e) {
+		function dataReset(){
+			document.getElementById("formInputs").setAttribute('hidden','');
+			document.getElementById("initial-form").setAttribute('hidden','');
 
-			document.getElementById("initial").setAttribute('hidden','');
-			document.getElementById("jackpot1").setAttribute('hidden','');
+			document.getElementById("initial-form").setAttribute('hidden','');
 			document.getElementById("jackpot").setAttribute('hidden','');
-			document.getElementById("typeselect").setAttribute('hidden','');
 			document.getElementById("formInputs").setAttribute('hidden','');
 			document.getElementById("jackpotout1").removeAttribute('required');
-			document.getElementById("jackpotout").removeAttribute('required');
+			document.getElementById("jackpotinitial").setAttribute('hidden','');
+		}
 
+		function dataCharge(e) {
 
-			id = e.options[e.selectedIndex].getAttribute("data-id");
-			masterin = e.options[e.selectedIndex].getAttribute("data-masterin");
-			masterout = e.options[e.selectedIndex].getAttribute("data-masterout");
-			jackpotout = e.options[e.selectedIndex].getAttribute("data-jackpotout");
-			average = e.options[e.selectedIndex].getAttribute("data-average");
-			band = e.options[e.selectedIndex].getAttribute("data-band");
-
-			if(average == "")
-				average = "0";
-
-			if(masterin == "")
-				masterin = "0";
-
-			if(masterout == "")
-				masterout = "0";
-
-			if(jackpotout == "")
-				jackpotout = "0";
-
-			if(band == "")
-				band = "0";
+			dataReset();
 
 
 
-			document.getElementById("masterin1").value = masterin;
-			document.getElementById("masterout1").value = masterout;
-			document.getElementById("jackpotout1").value = jackpotout;
-			document.getElementById("average").value = average;
-			document.getElementById("machineid").value = id;
+			if(e.options[e.selectedIndex].getAttribute("data-masterin") == ""){
+				jackpotout = e.options[e.selectedIndex].getAttribute("data-jackpotout");
+				if(jackpotout == 1){
+					document.getElementById("jackpotinitial").removeAttribute('hidden');
 
-			if(band != "0"){
-				document.getElementById("jackpot1").removeAttribute('hidden');
-				document.getElementById("jackpot").removeAttribute('hidden');
-				document.getElementById("jackpotout1").setAttribute('required','');
-				document.getElementById("jackpotout").setAttribute('required','');
+				}
+				document.getElementById("initial-form").removeAttribute('hidden');
+				document.getElementById("machineidinitial").value = e.options[e.selectedIndex].getAttribute("data-id");
 			}
 			else {
-				document.getElementById("jackpot1").setAttribute('hidden','');
-				document.getElementById("jackpot").setAttribute('hidden','');
-				document.getElementById("jackpotout1").removeAttribute('required');
-				document.getElementById("jackpotout").removeAttribute('required');
-			}
+				document.getElementById("formInputs").removeAttribute('hidden');
+				id = e.options[e.selectedIndex].getAttribute("data-id");
+				masterin = e.options[e.selectedIndex].getAttribute("data-masterin");
+				masterout = e.options[e.selectedIndex].getAttribute("data-masterout");
+				jackpotout = e.options[e.selectedIndex].getAttribute("data-jackpotout");
+				average = e.options[e.selectedIndex].getAttribute("data-average");
+				percentage = e.options[e.selectedIndex].getAttribute("data-percentage");
+				band = e.options[e.selectedIndex].getAttribute("data-band");
 
-			if(masterin == '0' && masterout == '0'){
-				document.getElementById("initial").removeAttribute('hidden');
+				if(average == "")
+					average = "0";
 
-				document.getElementById("masterin1").removeAttribute('readonly');
-				document.getElementById("masterout1").removeAttribute('readonly');
-				if(band != "0"){
-					document.getElementById("jackpot2").removeAttribute('readonly');
+				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
+				document.getElementById("masterout1").value = e.options[e.selectedIndex].getAttribute("data-masterout");
+				document.getElementById("jackpotout1").value = e.options[e.selectedIndex].getAttribute("data-jackpotout");
+				document.getElementById("average").value = average;
+				document.getElementById("machineid").value = e.options[e.selectedIndex].getAttribute("data-id");
+				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
+				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");
+
+				if(e.options[e.selectedIndex].getAttribute("data-band") != ""){
+					document.getElementById("jackpot").removeAttribute('hidden');
+					document.getElementById("jackpotout1").setAttribute('required','');
+					document.getElementById("jackpotout").setAttribute('required','');
 				}
-			}
+				else {
+					document.getElementById("jackpot").setAttribute('hidden','');
+					document.getElementById("jackpotout1").removeAttribute('required');
+				}
 
-			document.getElementById("typeselect").removeAttribute('hidden');
+				if(masterin == '' && masterout == ''){
+					document.getElementById("initial").removeAttribute('hidden');
+
+					document.getElementById("masterin1").removeAttribute('readonly');
+					document.getElementById("masterout1").removeAttribute('readonly');
+					if(e.options[e.selectedIndex].getAttribute("data-band") != ""){
+						document.getElementById("jackpot2").removeAttribute('readonly');
+					}
+				}
+
+			}
 
 
 		}
 
 		function dataInput(e) {
-			document.getElementById("formInputs").removeAttribute('hidden');
-			document.getElementById("type").value = e.options[e.selectedIndex].getAttribute("value");
+
+			$('#machineselect option').prop('selected', function() {
+	        return this.defaultSelected;
+	    });
+
+			dataReset();
+
+			if(e.options[e.selectedIndex].getAttribute("value") == 'average_charge' || e.options[e.selectedIndex].getAttribute("value") ==  'normal_charge'){
+				document.getElementById("type").value = e.options[e.selectedIndex].getAttribute("value");
+
+				ch = document.getElementsByClassName('charge');
+				for (var i = 0; i < ch.length; i++) {
+					ch[i].removeAttribute('hidden');
+				}
+				ch = document.getElementsByClassName('initial');
+				for (var i = 0; i < ch.length; i++) {
+					ch[i].setAttribute('hidden','');
+				}
+
+			}
+			else{
+				document.getElementById("type2").value = e.options[e.selectedIndex].getAttribute("value");
+
+				ch = document.getElementsByClassName('initial');
+				for (var i = 0; i < ch.length; i++) {
+					ch[i].removeAttribute('hidden');
+				}
+
+				ch = document.getElementsByClassName('charge');
+				for (var i = 0; i < ch.length; i++) {
+					ch[i].setAttribute('hidden','');
+				}
+
+			}
+
+
+			document.getElementById("machineselect").removeAttribute('hidden');
+
+
 		}
 
 		function calculate(){
@@ -1136,8 +1176,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			{
 				i = document.getElementById('masterin').value - document.getElementById('masterin1').value;
 				o = document.getElementById('masterout').value - document.getElementById('masterout1').value;
-				console.log(i,o);
-				document.getElementById("uc").value = i-o;
+				p = document.getElementById('percentage').value;
+
+				document.getElementById("uc").value = (i-o)*p ;
+				document.getElementById("us").value = (i-o)*p ;
 			}
 		}
 
