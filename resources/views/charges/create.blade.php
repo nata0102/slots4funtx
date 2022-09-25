@@ -53,7 +53,7 @@
 
           <div class="" id="initial-form" hidden>
 
-            <form class="" action="{{action('ChargesController@storeInitialNumbers')}}" method="post">
+            <form class="" action="{{action('ChargesController@storeInitialNumbers')}}" method="post" id="initialform">
               @csrf
               <div class="" hidden>
                 <input class="form-control" type="text" id="type2" name="type" value="">
@@ -65,17 +65,17 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">In*</label>
-                    <input class="form-control" type="text" value="" name="master_in">
+                    <input class="form-control" type="number" value="" name="master_in" required>
                   </div>
                   <div class="col-4">
                     <label for="">Out*</label>
-                    <input class="form-control" type="text" value="" name="master_out">
+                    <input class="form-control" type="number" value="" name="master_out" required>
                   </div>
                   <div class="col-4">
                     <!-- if jackpot -->
                     <div class="" hidden id="jackpotinitial">
                       <label for="">Jackpot out</label>
-                      <input class="form-control" type="text" value="" name="jackpot_out">
+                      <input class="form-control" type="number" value="" name="jackpot_out" id="jpinitial">
                     </div>
                   </div>
                 </div>
@@ -84,14 +84,14 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">In</label>
-                    <input class="form-control" type="text" value="" name="period_in">
+                    <input class="form-control" type="number" value="" name="period_in">
                   </div>
                   <div class="col-4">
                     <label for="">Out</label>
-                    <input class="form-control" type="text" value="" name="period_out">
+                    <input class="form-control" type="number" value="" name="period_out">
                   </div>
                   <div class="col-4">
-                    <label for="">date</label>
+                    <label for="">Date</label>
                     <input class="form-control" type="date" name="period_date" value="">
                   </div>
                 </div>
@@ -112,7 +112,7 @@
 
           <div id="formInputs" hidden>
 
-            <form class="" action="{{action('ChargesController@storeData')}}" method="post">
+            <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
             @csrf
 
               <div class="form-group" hidden>
@@ -161,7 +161,7 @@
                     <input class="form-control" type="number" value="" name="periodOut">
                   </div>
                   <div class="col-4">
-                    <label for="">date</label>
+                    <label for="">Date</label>
                     <input class="form-control" type="date" name="date" value="">
                   </div>
                 </div>
@@ -173,12 +173,12 @@
                 <h4>Machine Utility</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">Utilidad Calc</label>
-                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly>
+                    <label for="">Calc. Utility</label>
+                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly step="only">
                   </div>
                   <div class="col-4">
-                    <label for="">utilidad s4f</label>
-                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us">
+                    <label for="">S4F Utility</label>
+                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="only">
                   </div>
 
                 </div>
@@ -215,13 +215,11 @@
                   <th hidden>Date</th>
                   <th>Utlity</th>
                   <th>S4F Utlity</th>
-
-
-
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                @foreach($data as $dt)
+                @foreach($data as $key => $dt)
                   <tr>
                     <td hidden>{{$dt['machine_id']}}</td>
                     <td>{{$dt['name']}}</td>
@@ -234,6 +232,7 @@
                     <td hidden>{{$dt['date']}}</td>
                     <td>{{$dt['uc']}}</td>
                     <td>{{$dt['us']}}</td>
+                    <td> <a href="{{action('ChargesController@deleteData',$key)}}">Quitar</a> </td>
                   </tr>
                 @endforeach
               </tbody>

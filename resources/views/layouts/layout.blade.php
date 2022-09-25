@@ -1060,12 +1060,15 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		function dataReset(){
 			document.getElementById("formInputs").setAttribute('hidden','');
 			document.getElementById("initial-form").setAttribute('hidden','');
-
 			document.getElementById("initial-form").setAttribute('hidden','');
 			document.getElementById("jackpot").setAttribute('hidden','');
 			document.getElementById("formInputs").setAttribute('hidden','');
 			document.getElementById("jackpotout1").removeAttribute('required');
 			document.getElementById("jackpotinitial").setAttribute('hidden','');
+			document.getElementById("jpinitial").removeAttribute('required');
+
+			document.getElementById("initialform").reset();
+			document.getElementById("chargeform").reset();
 		}
 
 		function dataCharge(e) {
@@ -1076,9 +1079,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 			if(e.options[e.selectedIndex].getAttribute("data-masterin") == ""){
 				jackpotout = e.options[e.selectedIndex].getAttribute("data-jackpotout");
-				if(jackpotout == 1){
+				if(e.options[e.selectedIndex].getAttribute("data-band") == "1"){
 					document.getElementById("jackpotinitial").removeAttribute('hidden');
-
+					document.getElementById("jpinitial").setAttribute('required','');
 				}
 				document.getElementById("initial-form").removeAttribute('hidden');
 				document.getElementById("machineidinitial").value = e.options[e.selectedIndex].getAttribute("data-id");
@@ -1104,24 +1107,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
 				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");
 
-				if(e.options[e.selectedIndex].getAttribute("data-band") != ""){
+				if(e.options[e.selectedIndex].getAttribute("data-band") == "1"){
 					document.getElementById("jackpot").removeAttribute('hidden');
-					document.getElementById("jackpotout1").setAttribute('required','');
 					document.getElementById("jackpotout").setAttribute('required','');
-				}
-				else {
-					document.getElementById("jackpot").setAttribute('hidden','');
-					document.getElementById("jackpotout1").removeAttribute('required');
-				}
-
-				if(masterin == '' && masterout == ''){
-					document.getElementById("initial").removeAttribute('hidden');
-
-					document.getElementById("masterin1").removeAttribute('readonly');
-					document.getElementById("masterout1").removeAttribute('readonly');
-					if(e.options[e.selectedIndex].getAttribute("data-band") != ""){
-						document.getElementById("jackpot2").removeAttribute('readonly');
-					}
 				}
 
 			}
@@ -1174,14 +1162,20 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		function calculate(){
 			if(document.getElementById('masterin').value != '' && document.getElementById('masterin1').value != "" && document.getElementById('masterout').value != "" && document.getElementById('masterout1').value != "")
 			{
+
+				document.getElementById("masterin").setAttribute('min',document.getElementById('masterin1').value);
+				document.getElementById("masterout").setAttribute('min',document.getElementById('masterout1').value);
+
+
+
 				i = document.getElementById('masterin').value - document.getElementById('masterin1').value;
 				o = document.getElementById('masterout').value - document.getElementById('masterout1').value;
 				p = document.getElementById('percentage').value;
+				t = (i-o)*p/100;
 
-				document.getElementById("uc").value = (i-o)*p ;
-				document.getElementById("us").value = (i-o)*p ;
+				document.getElementById("uc").value = t ;
+				document.getElementById("us").value = t ;
 
-				t = (i-o)*p
 				document.getElementById("us").setAttribute('max',t);
 			}
 		}

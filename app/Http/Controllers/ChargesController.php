@@ -59,6 +59,15 @@ class ChargesController extends Controller
 
     }
 
+    public function deleteData($key)
+    {
+      $dt = \Session::get('data');
+      unset($dt[$key]);
+      \Session::put('data', $dt);
+
+      return back();
+    }
+
     public function storeData(Request $request){
         $data = \Session::get('data');
         $data[$request->machine_id] = $request->all();

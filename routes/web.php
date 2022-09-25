@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth','web']], function() {
   Route::resource("charges","ChargesController");
   Route::post("charges/store_data","ChargesController@storeData");
   Route::post("charges/store_initial_numbers","ChargesController@storeInitialNumbers");
+  Route::get('/charges/delete/{key}', 'ChargesController@deleteData');
 
   Route::get('/roles-configuration/{rol?}', 'RoleConfigurationController@index');
   Route::post('/roles-configuration-save', 'RoleConfigurationController@rolesConfigurationSave');
