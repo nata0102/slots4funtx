@@ -70,6 +70,7 @@ class ChargesController extends Controller
         try{
             $transaction = DB::transaction(function() use($request){
                 $data = $request->all();
+                $data['user_id'] = Auth::id();
                 Charge::create($data);
 
                 $notification = array(
@@ -116,7 +117,7 @@ class ChargesController extends Controller
                 );
                 return $notification;
             });
-            return redirect()->action('MachineController@index')->with($transaction);
+            return redirect()->action('ChargesController@index')->with($transaction);
         }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(

@@ -160,6 +160,14 @@
 		                </div>
 		              </div>
 
+		              <div class="col-12 col-sm-6 col-md-4" id="div_group1">
+		                <div class="form-group">
+		                  <input type="hidden" id="band_jackpot" name="band_jackpot" value="0" />
+		                  <label><input type="checkbox" id="check_band" class="@error('band_jackpot') is-invalid @enderror input100" name="band_jackpot" value="1" 
+		                  	{{$machine->band_jackpot == 1 ? 'checked' : ''}} /><span style="margin-left:10px">Jackpot</span></label>
+		                </div>
+		              </div>
+
 		              <div class="col-12 col-sm-6 col-md-4">
 		                <div class="form-group">
 		                  <label for="">Image @if($machine->image) <a href="#" class="btn btn-link view_image" style="width:40px; margin: 0" data-src="{{asset('/images/machines')}}/{{$machine->image}}" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-eye"></i></a> @endif </label>
@@ -382,6 +390,11 @@ function addOptionsSelectGames(games_cad){
             checkFillBrand(brand_id);
       }    
       fillTableComponents();
+      if({!!$machine->band_jackpot!!} == 1)
+      	document.getElementById("band_jackpot").checked = true;
+      else
+      	document.getElementById("band_jackpot").checked = false;
+
   });
 
   function valideKey(evt){
