@@ -1084,7 +1084,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("average").value = '';
 			document.getElementById("machineid").value = '';
 			document.getElementById("percentage").value = '';
-			document.getElementById("name").value '';
+			document.getElementById("name").value ='';
+
+			document.getElementById('avr').removeAttribute('hidden');
 
 		}
 
@@ -1118,10 +1120,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				else{
 					document.getElementById("uc").value = average ;
 					document.getElementById("us").value = average ;
-
 					document.getElementById("us").setAttribute('max',average);
-
-					console.log('e');
 				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
@@ -1142,7 +1141,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 		}
 
-		function dataInput(e) {
+		function dataInpu(e) {
 
 			$('#machineselect option').prop('selected', function() {
 	        return this.defaultSelected;
@@ -1182,16 +1181,14 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("masterout").setAttribute('readonly','');
 				document.getElementById("jackpotout").setAttribute('readonly','');
 
+				document.getElementById('avr').setAttribute('hidden','');
+
 				document.getElementById("masterin").removeAttribute('required');
 				document.getElementById("masterout").removeAttribute('required');
 				document.getElementById("jackpotout").removeAttribute('required');
 			}
 
-
-
 			document.getElementById("machineselect").removeAttribute('hidden');
-
-
 		}
 
 		function calculate(){

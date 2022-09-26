@@ -12,7 +12,7 @@
           <div class="row" id="typeselect">
             <div class="">
               <div class="col-12">
-                <select class="form-control" name="type" style="width: 100%;" onchange="dataInput(this)">
+                <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)">
                   <option value="" selected disabled>Selecciona un tipo</option>
                   @foreach($types as $type)
                     <option value="{{$type->key_value}}">{{$type->value}}</option>
@@ -129,45 +129,50 @@
 
               <div class="card">
 
-                <h4>Master numbers</h4>
-                <div class="row">
-                  <div class="col-4">
-                    <label for="">In*</label>
-                    <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
-                  </div>
-                  <div class="col-4">
-                    <label for="">Out*</label>
-                    <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
-                  </div>
-                  <div class="col-4">
-                    <!-- if jackpot -->
-                    <div class="" hidden id="jackpot">
-                      <label for="">Jackpot out</label>
-                      <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculatejp()">
+                <div id="avr">
+
+
+
+                  <h4>Master numbers</h4>
+                  <div class="row">
+                    <div class="col-4">
+                      <label for="">In*</label>
+                      <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
+                    </div>
+                    <div class="col-4">
+                      <label for="">Out*</label>
+                      <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
+                    </div>
+                    <div class="col-4">
+                      <!-- if jackpot -->
+                      <div class="" hidden id="jackpot">
+                        <label for="">Jackpot out</label>
+                        <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculatejp()">
+                      </div>
                     </div>
                   </div>
+
+                  <hr>
+
+                  <h4>Period numbers</h4>
+                  <div class="row">
+                    <div class="col-4">
+                      <label for="">In</label>
+                      <input class="form-control" type="number" value="" name="periodIn">
+                    </div>
+                    <div class="col-4">
+                      <label for="">Out</label>
+                      <input class="form-control" type="number" value="" name="periodOut">
+                    </div>
+                    <div class="col-4">
+                      <label for="">Date</label>
+                      <input class="form-control" type="date" name="date" value="">
+                    </div>
+                  </div>
+
+                  <hr>
+
                 </div>
-
-                <hr>
-
-                <h4>Period numbers</h4>
-                <div class="row">
-                  <div class="col-4">
-                    <label for="">In</label>
-                    <input class="form-control" type="number" value="" name="periodIn">
-                  </div>
-                  <div class="col-4">
-                    <label for="">Out</label>
-                    <input class="form-control" type="number" value="" name="periodOut">
-                  </div>
-                  <div class="col-4">
-                    <label for="">Date</label>
-                    <input class="form-control" type="date" name="date" value="">
-                  </div>
-                </div>
-
-                <hr>
-
 
 
                 <h4>Machine Utility</h4>
@@ -181,7 +186,7 @@
                     <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="only">
                   </div>
                   <div class="col-4">
-                    <button type="submit" name="button" class="btn btn-info">+</button>                    
+                    <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
 
                 </div>
