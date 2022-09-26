@@ -116,7 +116,7 @@
             <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
             @csrf
 
-              <div class="form-group" >
+              <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
                 <input class="form-control" type="text" name="average" value="" id="average">
                 <input class="form-control" type="text" name="type" value="" id="type">
