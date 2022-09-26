@@ -1111,6 +1111,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			}
 			else {
 				document.getElementById("formInputs").removeAttribute('hidden');
+				document.getElementById('avr').removeAttribute('hidden');
 				id = e.options[e.selectedIndex].getAttribute("data-id");
 				masterin = e.options[e.selectedIndex].getAttribute("data-masterin");
 				masterout = e.options[e.selectedIndex].getAttribute("data-masterout");
@@ -1125,9 +1126,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					document.getElementById("uc").value = average ;
 					document.getElementById("us").value = average ;
 					document.getElementById("us").setAttribute('max',average);
-				}
-				else{
-					document.getElementById('avr').removeAttribute('hidden');
 				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
