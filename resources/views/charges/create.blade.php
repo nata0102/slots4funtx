@@ -148,7 +148,7 @@
                       <!-- if jackpot -->
                       <div class="" hidden id="jackpot">
                         <label for="">Jackpot out</label>
-                        <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculatejp()">
+                        <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()">
                       </div>
                     </div>
                   </div>
