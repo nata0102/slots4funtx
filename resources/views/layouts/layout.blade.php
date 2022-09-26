@@ -1076,7 +1076,16 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("jackpotout").removeAttribute('required');
 
 			document.getElementById("initialform").reset();
-			document.getElementById("chargeform").reset();
+
+
+			document.getElementById("masterin1").value = '';
+			document.getElementById("masterout1").value = '';
+			document.getElementById("jackpotout1").value = '';
+			document.getElementById("average").value = '';
+			document.getElementById("machineid").value = '';
+			document.getElementById("percentage").value = '';
+			document.getElementById("name").value '';
+
 		}
 
 		function dataCharge(e) {
@@ -1118,7 +1127,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
 				document.getElementById("masterout1").value = e.options[e.selectedIndex].getAttribute("data-masterout");
 				document.getElementById("jackpotout1").value = e.options[e.selectedIndex].getAttribute("data-jackpotout");
-				document.getElementById("average").value = average;
+				document.getElementById("average").value = e.options[e.selectedIndex].getAttribute("data-average");
 				document.getElementById("machineid").value = e.options[e.selectedIndex].getAttribute("data-id");
 				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
 				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");

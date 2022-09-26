@@ -180,14 +180,14 @@
                     <label for="">S4F Utility</label>
                     <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="only">
                   </div>
+                  <div class="col-4">
+                    <button type="submit" name="button" class="btn btn-info">+</button>                    
+                  </div>
 
                 </div>
 
                 <hr>
 
-                <div class="form-group">
-                  <button type="submit" name="button" class="btn btn-success">SEND</button>
-                </div>
 
               </div>
 
