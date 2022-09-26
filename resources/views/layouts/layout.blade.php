@@ -1212,7 +1212,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				jp = document.getElementById('jackpotout').value - document.getElementById('jackpotout1').value;
 				if(jp > 0)
 					j	= jp;
-				t = (i-o)*p/100 + jp;
+				t = ((i-o)+j) *p/100 ;
 
 				document.getElementById("uc").value = t ;
 				document.getElementById("us").value = t ;
