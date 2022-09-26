@@ -1120,7 +1120,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				percentage = e.options[e.selectedIndex].getAttribute("data-percentage");
 				band = e.options[e.selectedIndex].getAttribute("data-band");
 
-				if(average == ""){
+				if(document.getElementById("f1").value == "average_charge"){
 					average = "0";
 					document.getElementById('avr').setAttribute('hidden','');
 					document.getElementById("uc").value = average ;

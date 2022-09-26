@@ -13,7 +13,7 @@
           <div class="row" id="typeselect">
             <div class="">
               <div class="col-12">
-                <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)">
+                <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi">
                   <option value="" selected disabled>Selecciona un tipo</option>
                   @foreach($types as $type)
                     <option value="{{$type->key_value}}">{{$type->value}}</option>
