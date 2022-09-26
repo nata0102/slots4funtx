@@ -179,11 +179,11 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">Calc. Utility</label>
-                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly step="only">
+                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly step="any">
                   </div>
                   <div class="col-4">
                     <label for="">S4F Utility</label>
-                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="only">
+                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="any">
                   </div>
                   <div class="col-4">
                     <button type="submit" name="button" class="btn btn-info">+</button>
@@ -246,18 +246,34 @@
           <hr>
           <form class="" action="{{action('ChargesController@store')}}" method="post">
             @csrf
-            <div class="form-group">
-              <label for="">Payment</label>
-              <?php
 
-                $max = 0;
-                foreach ($data as $key => $dt) {
-                  $max += $dt['us'];
-                }
+            <?php
 
-              ?>
-              <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' style="width: 120px;">
+            $max = 0;
+              $max2 = 0;
+              foreach ($data as $key => $dt) {
+                $max += $dt['us'];
+                $max2 += $dt['uc'];
+              }
+
+            ?>
+
+            <div class="row">
+              <div class="col-4">
+                <label for="">Calc. Utility</label>
+                <input class="form-control" type="number" value="" name="max"  readonly >
+              </div>
+              <div class="col-4">
+                <label for="">S4F Utility</label>
+                <input class="form-control" type="number" value="" name="max2"  readonly>
+              </div>
+              <div class="col-4">
+                <label for="">Payment</label>
+
+                <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' style="width: 120px;">
+              </div>
             </div>
+
             <div class="form-group">
               <button type="submit" name="button" class="btn btn-success">SEND</button>
             </div>

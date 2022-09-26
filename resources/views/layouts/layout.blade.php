@@ -1078,6 +1078,16 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("initialform").reset();
 
 
+
+
+
+
+		}
+
+		function dataCharge(e) {
+
+			//dataReset();
+
 			document.getElementById("masterin1").value = '';
 			document.getElementById("masterout1").value = '';
 			document.getElementById("jackpotout1").value = '';
@@ -1085,14 +1095,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("machineid").value = '';
 			document.getElementById("percentage").value = '';
 			document.getElementById("name").value ='';
-
-			document.getElementById('avr').removeAttribute('hidden');
-
-		}
-
-		function dataCharge(e) {
-
-			dataReset();
 
 
 
@@ -1115,8 +1117,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				percentage = e.options[e.selectedIndex].getAttribute("data-percentage");
 				band = e.options[e.selectedIndex].getAttribute("data-band");
 
-				if(average == "")
+				if(average == ""){
+					document.getElementById('avr').removeAttribute('hidden');
 					average = "0";
+				}
 				else{
 					document.getElementById("uc").value = average ;
 					document.getElementById("us").value = average ;
