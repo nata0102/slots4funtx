@@ -1095,6 +1095,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("machineid").value = '';
 			document.getElementById("percentage").value = '';
 			document.getElementById("name").value ='';
+			document.getElementById("uc").value = '';
+			document.getElementById("us").value = '' ;
 
 
 
@@ -1118,15 +1120,14 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				band = e.options[e.selectedIndex].getAttribute("data-band");
 
 				if(average == ""){
-					document.getElementById('avr').removeAttribute('hidden');
 					average = "0";
-				}
-				else{
+					document.getElementById('avr').setAttribute('hidden','');
 					document.getElementById("uc").value = average ;
 					document.getElementById("us").value = average ;
 					document.getElementById("us").setAttribute('max',average);
-					document.getElementById('avr').setAttribute('hidden','');
-
+				}
+				else{
+					document.getElementById('avr').removeAttribute('hidden');
 				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");

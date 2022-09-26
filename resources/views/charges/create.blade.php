@@ -262,11 +262,11 @@
             <div class="row">
               <div class="col-4">
                 <label for="">Calc. Utility</label>
-                <input class="form-control" type="number" value="" name="max"  readonly >
+                <input class="form-control" type="number" value="{{$max}}" name="max"  readonly >
               </div>
               <div class="col-4">
                 <label for="">S4F Utility</label>
-                <input class="form-control" type="number" value="" name="max2"  readonly>
+                <input class="form-control" type="number" value="{{$max2}}" name="max2"  readonly>
               </div>
               <div class="col-4">
                 <label for="">Payment</label>
