@@ -1065,7 +1065,15 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("formInputs").setAttribute('hidden','');
 			document.getElementById("jackpotout1").removeAttribute('required');
 			document.getElementById("jackpotinitial").setAttribute('hidden','');
-			document.getElementById("jpinitial").removeAttribute('required');
+
+			document.getElementById("masterin").removeAttribute('readonly');
+			document.getElementById("masterout").removeAttribute('readonly');
+			document.getElementById("jackpotout").removeAttribute('readonly');
+			document.getElementById("masterin").setAttribute('required','');
+			document.getElementById("masterout").setAttribute('required','');
+			document.getElementById("jackpotout").setAttribute('required','');
+
+			document.getElementById("jackpotout").removeAttribute('required');
 
 			document.getElementById("initialform").reset();
 			document.getElementById("chargeform").reset();
@@ -1098,6 +1106,14 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 				if(average == "")
 					average = "0";
+				else{
+					document.getElementById("uc").value = average ;
+					document.getElementById("us").value = average ;
+
+					document.getElementById("us").setAttribute('max',average);
+
+					console.log('e');
+				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
 				document.getElementById("masterout1").value = e.options[e.selectedIndex].getAttribute("data-masterout");
@@ -1152,6 +1168,16 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				}
 
 			}
+			if(e.options[e.selectedIndex].getAttribute("value") == 'average_charge'){
+				document.getElementById("masterin").setAttribute('readonly','');
+				document.getElementById("masterout").setAttribute('readonly','');
+				document.getElementById("jackpotout").setAttribute('readonly','');
+
+				document.getElementById("masterin").removeAttribute('required');
+				document.getElementById("masterout").removeAttribute('required');
+				document.getElementById("jackpotout").removeAttribute('required');
+			}
+
 
 
 			document.getElementById("machineselect").removeAttribute('hidden');
