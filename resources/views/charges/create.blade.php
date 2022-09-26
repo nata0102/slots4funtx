@@ -111,7 +111,7 @@
 
           </div>
 
-          <div id="formInputs" hidden>
+          <div id="formInputs">
 
             <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
             @csrf
