@@ -1223,7 +1223,20 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		}
 
 
+
+
 	</script>
+
+
+	<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[type=text]').forEach( node => node.addEventListener('keypress', e => {
+        if(e.keyCode == 13) {
+          e.preventDefault();
+        }
+      }))
+    });
+  </script>
 
 
 

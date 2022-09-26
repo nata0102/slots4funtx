@@ -116,7 +116,7 @@
             <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
             @csrf
 
-              <div class="form-group" >
+              <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
                 <input class="form-control" type="text" name="average" value="" id="average">
                 <input class="form-control" type="text" name="type" value="" id="type">
@@ -238,7 +238,7 @@
                     <td hidden>{{$dt['date']}}</td>
                     <td>{{$dt['uc']}}</td>
                     <td>{{$dt['us']}}</td>
-                    <td> <a href="{{action('ChargesController@deleteData',$key)}}">Delete</a> </td>
+                    <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -262,11 +262,11 @@
             <div class="row">
               <div class="col-4">
                 <label for="">Calc. Utility</label>
-                <input class="form-control" type="number" value="{{$max}}" name="max"  readonly >
+                <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
               </div>
               <div class="col-4">
                 <label for="">S4F Utility</label>
-                <input class="form-control" type="number" value="{{$max2}}" name="max2"  readonly>
+                <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
               </div>
               <div class="col-4">
                 <label for="">Payment</label>
