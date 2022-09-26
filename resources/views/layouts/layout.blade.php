@@ -1125,12 +1125,14 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					document.getElementById("uc").value = average ;
 					document.getElementById("us").value = average ;
 					document.getElementById("us").setAttribute('max',average);
+					document.getElementById('avr').setAttribute('hidden','');
+
 				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
 				document.getElementById("masterout1").value = e.options[e.selectedIndex].getAttribute("data-masterout");
 				document.getElementById("jackpotout1").value = e.options[e.selectedIndex].getAttribute("data-jackpotout");
-				document.getElementById("average").value = e.options[e.selectedIndex].getAttribute("data-average");
+				document.getElementById("average").value = average
 				document.getElementById("machineid").value = e.options[e.selectedIndex].getAttribute("data-id");
 				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
 				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");

@@ -1,3 +1,5 @@
+<?php dd($machines); ?>
+
 @extends('layouts.layout')
 
 @section('content')
