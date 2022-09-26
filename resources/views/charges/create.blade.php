@@ -238,7 +238,7 @@
                     <td hidden>{{$dt['date']}}</td>
                     <td>{{$dt['uc']}}</td>
                     <td>{{$dt['us']}}</td>
-                    <td> <a href="{{action('ChargesController@deleteData',$key)}}">Quitar</a> </td>
+                    <td> <a href="{{action('ChargesController@deleteData',$key)}}">Delete</a> </td>
                   </tr>
                 @endforeach
               </tbody>
