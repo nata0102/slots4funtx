@@ -1211,7 +1211,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				o = document.getElementById('masterout').value - document.getElementById('masterout1').value;
 				p = document.getElementById('percentage').value;
 				j = 0;
-				jp = document.getElementById('jackpotout').value - document.getElementById('masterout1').value;
+				jp = document.getElementById('jackpotout').value - document.getElementById('jackpotout1').value;
 				if(jp > 0)
 					j	= jp;
 				t = (i-o)*p/100 + jp;
