@@ -1,4 +1,3 @@
-<?php dd($machines); ?>
 
 @extends('layouts.layout')
 
