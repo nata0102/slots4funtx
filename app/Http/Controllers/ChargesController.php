@@ -44,7 +44,7 @@ class ChargesController extends Controller
             $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name) 
             from machines m,game_catalog g 
             where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
-            from charges c where date(created_at) = '".$r->date_charge."';";
+            from charges c where date(created_at) = '".$r->date_charge."' and c.type != 'initial_numbers';";
             $r->charges = DB::select($qry);
         }
         return $res;
@@ -122,7 +122,7 @@ class ChargesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {return \Session::get('data');
       try{
             $transaction = DB::transaction(function() use($request){
                 $res = $request->all();
