@@ -14,7 +14,7 @@ class ChargesController extends Controller
 
     public function __construct(){
 
-      if(!\Session::has('data')) \Session::put('data', array());
+    if(!\Session::has('data')) \Session::put('data', array());
 
     }
 
@@ -30,6 +30,22 @@ class ChargesController extends Controller
             case 'average':
                 return $this->getAverage($request->all());
             break;
+            default:
+                $res = $this->getList();
+            break;
+        }
+        return $res;
+    }
+
+    public function getList(){
+        $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
+        $res = DB::select($qry);
+        foreach ($res as &$r) {
+            $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name) 
+            from machines m,game_catalog g 
+            where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
+            from charges c where date(created_at) = '".$r->date_charge."';";
+            $r->charges = DB::select($qry);
         }
         return $res;
     }
@@ -46,7 +62,6 @@ class ChargesController extends Controller
      */
     public function create()
     {
-
         $data = \Session::get('data');
         if( url()->previous() != url()->current() ){
             session()->forget('urlBack');
@@ -110,13 +125,21 @@ class ChargesController extends Controller
     {
       try{
             $transaction = DB::transaction(function() use($request){
-                $rows = $request->all();
-                foreach ($rows as $row){
+                $res = $request->all();
+                print_r($res); 
+                abort(503,"prueba");
+                return $res;
+                $payment_client = $res->payment_client;
+                foreach ($res->rows as &$row){
                     $row['user_id'] = Auth::id();
-                    if($row['utility_s4f'] != null && $row['payment_client'] != null){
-                        $row['band_paid_out'] = 0;
-                        if($row['utility_s4f'] == $row['payment_client'])
+                    $row['band_paid_out'] = 0;
+                    if($payment_client > 0){
+                        $row['payment_client'] = $payment_client;
+                        $payment_client = $payment_client - $row['utility_s4f'];
+                        if($payment_client >= 0){
                             $row['band_paid_out'] = 1;
+                            $row['payment_client'] = $row['utility_s4f'];
+                        }
                     }
                     Charge::create($row);
                 }
