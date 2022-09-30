@@ -41,8 +41,8 @@ class ChargesController extends Controller
         $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
         $res = DB::select($qry);
         foreach ($res as &$r) {
-            $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name) 
-            from machines m,game_catalog g 
+            $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name)
+            from machines m,game_catalog g
             where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
             from charges c where date(created_at) = '".$r->date_charge."' and c.type != 'initial_numbers';";
             $r->charges = DB::select($qry);
@@ -85,7 +85,7 @@ class ChargesController extends Controller
 
     public function storeData(Request $request){
         $data = \Session::get('data');
-        $data[$request->machine_id] = $request->all();
+        $data[] = $request->all();
         \Session::put('data', $data);
         return redirect()->action('ChargesController@create');
     }
@@ -126,7 +126,7 @@ class ChargesController extends Controller
       try{
             $transaction = DB::transaction(function() use($request){
                 $res = $request->all();
-                print_r($res); 
+                print_r($res);
                 abort(503,"prueba");
                 return $res;
                 $payment_client = $res->payment_client;
