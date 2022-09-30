@@ -122,26 +122,36 @@ class ChargesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {return \Session::get('data');
+    { 
       try{
             $transaction = DB::transaction(function() use($request){
-                $res = $request->all();
-                print_r($res);
-                abort(503,"prueba");
-                return $res;
-                $payment_client = $res->payment_client;
-                foreach ($res->rows as &$row){
-                    $row['user_id'] = Auth::id();
-                    $row['band_paid_out'] = 0;
+                $res = \Session::get('data');
+                $payment_client = (float)$request->total;
+                foreach ($res as &$row){
+                    $aux = [];
+                    $aux['user_id'] = Auth::id();
+                    $aux['band_paid_out'] = 0;
+                    $aux['master_in'] = $row['masterIn'];
+                    $aux['master_out'] = $row['masterOut'];
+                    $aux['jackpot_out'] = $row['jackpotout'];
+                    $aux['period_in'] = $row['periodIn'];
+                    $aux['period_out'] = $row['periodOut'];
+                    $aux['period_date'] = $row['date'];
+                    $aux['machine_id'] = $row['machine_id'];
+                    $aux['percentage'] = $row['percentage'];
+                    $aux['utility_calc'] = Auth::id();
+                    $aux['utility_s4f'] = 0;
+                    $aux['type'] = $row['type'];
+
                     if($payment_client > 0){
-                        $row['payment_client'] = $payment_client;
-                        $payment_client = $payment_client - $row['utility_s4f'];
+                        $aux['payment_client'] = $payment_client;
+                        $payment_client = $payment_client - $aux['utility_s4f'];
                         if($payment_client >= 0){
-                            $row['band_paid_out'] = 1;
-                            $row['payment_client'] = $row['utility_s4f'];
+                            $aux['band_paid_out'] = 1;
+                            $aux['payment_client'] = $aux['utility_s4f'];
                         }
                     }
-                    Charge::create($row);
+                    Charge::create($aux);
                 }
                 $notification = array(
                       'message' => 'Successful!!',
