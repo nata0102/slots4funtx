@@ -122,7 +122,7 @@ class ChargesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
       try{
             $transaction = DB::transaction(function() use($request){
                 $res = \Session::get('data');
@@ -157,6 +157,8 @@ class ChargesController extends Controller
                       'message' => 'Successful!!',
                       'alert-type' => 'success'
                 );
+                \Session::forget('data');
+
                 return $notification;
             });
             return redirect()->action('ChargesController@index')->with($transaction);
@@ -167,6 +169,7 @@ class ChargesController extends Controller
                 'alert-type' => 'error'
             );
         }
+
 
         return back()->with($transaction)->withInput($request->all());
     }

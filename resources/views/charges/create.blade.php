@@ -2,6 +2,15 @@
 
 @section('content')
 
+<?php
+
+
+  $machineArray = array();
+  foreach ($data as $key => $d) {
+    $machineArray[$d['machine_id']]=$d['machine_id'];
+  };
+?>
+
 
   <div class="main-content">
     <div class="section__content section__content--p30">
@@ -29,8 +38,9 @@
               <label for="">Selecciona una maquina</label>
               <select class="form-control" name="" id="charge_machine" onchange="dataCharge(this)">
                 <option value="0" selected disabled>Selecciona una maquina</option>
+
                 @foreach($machines as $machine)
-                  @if(!array_key_exists($machine->id, $data))
+                  @if(!array_key_exists($machine->id, $machineArray))
                   <option
                   value="{{$machine->id}} {{$machine->serial}} {{$machine->game}}"
                   class="{{$machine->master_in == "" ? 'initial' : 'charge' }}" value=""
@@ -179,11 +189,11 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">Calc. Utility</label>
-                    <input class="form-control" type="number" value="" name="uc" id="uc" readonly step="any">
+                    <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step="any">
                   </div>
                   <div class="col-4">
                     <label for="">S4F Utility</label>
-                    <input class="form-control" type="number" min="0" max="" value="" name="us" id="us" step="any">
+                    <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
                   </div>
                   <div class="col-4">
                     <button type="submit" name="button" class="btn btn-info">+</button>
@@ -235,8 +245,8 @@
                     <td hidden>{{$dt['periodIn']}}</td>
                     <td hidden>{{$dt['periodOut']}}</td>
                     <td hidden>{{$dt['date']}}</td>
-                    <td>{{$dt['uc']}}</td>
-                    <td>{{$dt['us']}}</td>
+                    <td>{{$dt['utility_calc']}}</td>
+                    <td>{{$dt['utility_s4f']}}</td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
                   </tr>
                 @endforeach
@@ -252,8 +262,8 @@
             $max = 0;
               $max2 = 0;
               foreach ($data as $key => $dt) {
-                $max += $dt['us'];
-                $max2 += $dt['uc'];
+                $max += $dt['utility_s4f'];
+                $max2 += $dt['utility_calc'];
               }
 
             ?>
@@ -268,15 +278,22 @@
                 <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
               </div>
               <div class="col-4">
-                <label for="">Payment</label>
+                <div class="row">
+                  <div class="col-6">
+                    <label for="">Payment</label>
 
-                <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' style="width: 120px;">
+                    <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total'>
+                  </div>
+                  <div class="col-6"><br>
+                      <button type="submit" name="button" class="btn btn-success" style="position: absolute; bottom: 0;">SEND</button>
+
+                  </div>
+                </div>
+
               </div>
             </div>
 
-            <div class="form-group">
-              <button type="submit" name="button" class="btn btn-success">SEND</button>
-            </div>
+
           </form>
           @endif
         </div>
