@@ -139,8 +139,8 @@ class ChargesController extends Controller
                     $aux['period_date'] = $row['date'];
                     $aux['machine_id'] = $row['machine_id'];
                     $aux['percentage'] = $row['percentage'];
-                    $aux['utility_calc'] = Auth::id();
-                    $aux['utility_s4f'] = 0;
+                    $aux['utility_calc'] = $row['utility_calc'];
+                    $aux['utility_s4f'] = $row['utility_s4f'];
                     $aux['type'] = $row['type'];
 
                     if($payment_client > 0){
