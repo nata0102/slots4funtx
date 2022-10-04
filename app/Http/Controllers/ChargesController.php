@@ -31,14 +31,28 @@ class ChargesController extends Controller
                 return $this->getAverage($request->all());
             break;
             default:
-                $res = $this->getList();
+                $res = $this->getList($request->all());
             break;
         }
-        return $res;
+        return view('charges.index',compact('res'));
     }
 
-    public function getList(){
-        $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
+    public function getList($params){
+        $qry = "select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
+            (select concat(m.serial,' - ',g.name)
+            from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
+            ifnull((select cl.name  from users u, clients cl where u.client_id=cl.id 
+            and u.id=c.user_id),'S4F') as client_name
+            from charges c where c.type != 'initial_numbers' ";
+        if (array_key_exists('date_ini', $params))
+            if($params['date_ini'] != null)
+                $qry.= " and date(created_at) >= '".$params['date_ini']."'";
+        if (array_key_exists('date_fin', $params))
+            if($params['date_fin'] != null)
+                $qry.= " and date(created_at) <= '".$params['date_fin']."'";
+        $qry .= "  order by created_at desc limit 20;";
+        return DB::select($qry);
+    /*    $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
         $res = DB::select($qry);
         foreach ($res as &$r) {
             $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name)
@@ -47,7 +61,7 @@ class ChargesController extends Controller
             from charges c where date(created_at) = '".$r->date_charge."' and c.type != 'initial_numbers';";
             $r->charges = DB::select($qry);
         }
-        return $res;
+        return $res;*/
     }
 
     public function getAverage($params){
@@ -142,6 +156,8 @@ class ChargesController extends Controller
                     $aux['utility_calc'] = $row['utility_calc'];
                     $aux['utility_s4f'] = $row['utility_s4f'];
                     $aux['type'] = $row['type'];
+                    $aux['utility_calc'] = $row['utility_calc'];
+                    $aux['utility_s4f'] = $row['utility_s4f'];
 
                     if($payment_client > 0){
                         $aux['payment_client'] = $payment_client;
