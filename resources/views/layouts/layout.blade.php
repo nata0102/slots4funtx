@@ -1088,6 +1088,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 			//dataReset();
 
+			document.getElementById("masterin").value = '';
+			document.getElementById("masterout").value = '';
 			document.getElementById("masterin1").value = '';
 			document.getElementById("masterout1").value = '';
 			document.getElementById("jackpotout1").value = '';

@@ -282,7 +282,7 @@
                   <div class="col-6">
                     <label for="">Payment</label>
 
-                    <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total'>
+                    <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
                   </div>
                   <div class="col-6"><br>
                       <button type="submit" name="button" class="btn btn-success" style="position: absolute; bottom: 0;">SEND</button>
