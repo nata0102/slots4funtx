@@ -22,7 +22,7 @@
             <div class="">
               <div class="col-12">
                 <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi">
-                  <option value="" selected disabled>Selecciona un tipo</option>
+                  <option value="" selected disabled>SELECT TYPE</option>
                   @foreach($types as $type)
                     <option value="{{$type->key_value}}">{{$type->value}}</option>
 
@@ -33,11 +33,11 @@
           </div>
 
 
-          <div class="row" id="machineselect" hidden>
+          <div style="margin-top: 10px" class="row" id="machineselect" hidden>
             <div class="col-4">
-              <label for="">Selecciona una maquina</label>
+              <label for="">SELECT MACHINE</label>
               <select class="form-control" name="" id="charge_machine" onchange="dataCharge(this)">
-                <option value="0" selected disabled>Selecciona una maquina</option>
+                <option value="0" selected disabled>SELECT MACHINE</option>
 
                 @foreach($machines as $machine)
                   @if(!array_key_exists($machine->id, $machineArray))
@@ -71,37 +71,37 @@
               </div>
               <div class="card">
 
-                <h4>Master numbers</h4>
+                <h4>MASTER NUMBERS</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">In*</label>
+                    <label for="">IN*</label>
                     <input class="form-control" type="number" value="" name="master_in" required>
                   </div>
                   <div class="col-4">
-                    <label for="">Out*</label>
+                    <label for="">OUT*</label>
                     <input class="form-control" type="number" value="" name="master_out" required>
                   </div>
                   <div class="col-4">
                     <!-- if jackpot -->
                     <div class="" hidden id="jackpotinitial">
-                      <label for="">Jackpot out</label>
+                      <label for="">JACKPOT OUT</label>
                       <input class="form-control" type="number" value="" name="jackpot_out" id="jpinitial">
                     </div>
                   </div>
                 </div>
 
-                <h4>Period numbers</h4>
+                <h4>PERIOD NUMBERS</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">In</label>
+                    <label for="">IN</label>
                     <input class="form-control" type="number" value="" name="period_in">
                   </div>
                   <div class="col-4">
-                    <label for="">Out</label>
+                    <label for="">OUT</label>
                     <input class="form-control" type="number" value="" name="period_out">
                   </div>
                   <div class="col-4">
-                    <label for="">Date</label>
+                    <label for="">DATE</label>
                     <input class="form-control" type="date" name="period_date" value="">
                   </div>
                 </div>
@@ -109,7 +109,7 @@
                 <hr>
 
                 <div class="form-group">
-                  <button type="submit" name="button" class="btn btn-success">SEND</button>
+                  <button type="submit" name="button" class="btn btn-success">SAVE</button>
                 </div>
 
               </div>
@@ -143,20 +143,20 @@
 
 
 
-                  <h4>Master numbers</h4>
+                  <h4>MASTER NUMBERS</h4>
                   <div class="row">
                     <div class="col-4">
-                      <label for="">In*</label>
+                      <label for="">IN*</label>
                       <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
                     </div>
                     <div class="col-4">
-                      <label for="">Out*</label>
+                      <label for="">OUT*</label>
                       <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
                     </div>
                     <div class="col-4">
                       <!-- if jackpot -->
                       <div class="" hidden id="jackpot">
-                        <label for="">Jackpot out</label>
+                        <label for="">JACKPOT OUT</label>
                         <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()">
                       </div>
                     </div>
@@ -164,18 +164,18 @@
 
                   <hr>
 
-                  <h4>Period numbers</h4>
+                  <h4>PERIOD NUMBERS</h4>
                   <div class="row">
                     <div class="col-4">
-                      <label for="">In</label>
+                      <label for="">IN</label>
                       <input class="form-control" type="number" value="" name="periodIn">
                     </div>
                     <div class="col-4">
-                      <label for="">Out</label>
+                      <label for="">OUT</label>
                       <input class="form-control" type="number" value="" name="periodOut">
                     </div>
                     <div class="col-4">
-                      <label for="">Date</label>
+                      <label for="">DATE</label>
                       <input class="form-control" type="date" name="date" value="">
                     </div>
                   </div>
@@ -185,14 +185,14 @@
                 </div>
 
 
-                <h4>Machine Utility</h4>
+                <h4>MACHINE UTILITY</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">Calc. Utility</label>
+                    <label for="">UTILITY CALCULATED</label>
                     <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step="any">
                   </div>
                   <div class="col-4">
-                    <label for="">S4F Utility</label>
+                    <label for="">UTILITY S4F</label>
                     <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
                   </div>
                   <div class="col-4">
@@ -219,15 +219,15 @@
         <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
               <thead>
                 <tr>
-                  <th hidden>Machine id</th>
-                  <th>Machine</th>
-                  <th hidden>type</th>
-                  <th hidden>average</th>
-                  <th hidden>Master In</th>
-                  <th hidden>Master Out</th>
-                  <th hidden>Period In</th>
-                  <th hidden>Period Out</th>
-                  <th hidden>Date</th>
+                  <th hidden>MACHINE ID</th>
+                  <th>MACHINE</th>
+                  <th hidden>TYPE</th>
+                  <th hidden>AVERAGE</th>
+                  <th hidden>MASTER IN</th>
+                  <th hidden>MASTER OUT</th>
+                  <th hidden>PERIOD IN</th>
+                  <th hidden>PERIOD OUT</th>
+                  <th hidden>DATE</th>
                   <th>Utlity</th>
                   <th>S4F Utlity</th>
                   <th></th>
@@ -270,22 +270,22 @@
 
             <div class="row">
               <div class="col-4">
-                <label for="">Calc. Utility</label>
+                <label for="">UTILITY CALCULATED</label>
                 <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
               </div> 
               <div class="col-4">
-                <label for="">S4F Utility</label>
+                <label for="">CALCULATED S4F</label>
                 <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
               </div>
               <div class="col-4">
                 <div class="row">
                   <div class="col-6">
-                    <label for="">Payment</label>
+                    <label for="">PAYMENT</label>
 
                     <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
                   </div>
                   <div class="col-6"><br>
-                      <button type="submit" name="button" class="btn btn-success" style="position: absolute; bottom: 0;">SEND</button>
+                      <button type="submit" name="button" class="btn btn-success" style="position: absolute; bottom: 0;">SAVE</button>
 
                   </div>
                 </div>

@@ -50,6 +50,9 @@ class ChargesController extends Controller
         if (array_key_exists('date_fin', $params))
             if($params['date_fin'] != null)
                 $qry.= " and date(created_at) <= '".$params['date_fin']."'";
+        if (array_key_exists('band_paid_out', $params))
+            if($params['band_paid_out'] != null)
+                $qry.= " and band_paid_out = ".$params['band_paid_out'];
         $qry .= "  order by created_at desc limit 20;";
         return DB::select($qry);
     /*    $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";

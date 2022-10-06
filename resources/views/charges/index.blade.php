@@ -17,11 +17,17 @@
                 </div>
 
                 <form method="GET" action="{{action('ChargesController@index')}}">
+                	
+	                        <label for="">Initial Date:</label>	                        
+                        	<label style="margin-left:230px;" for="">Final Date:</label>            
                     <div class="input-group mb-5">
-	                        <label for="">Initial Date:</label>
 	                        <input style="width: 50px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
-                        	<label for="">Final Date:</label>
                         	<input style="width: 100px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">
+                        	<select class="form-control" name="band_paid_out">
+	                            <option value="all" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == null ? 'selected' : '' : ''}}>ALL TYPES</option>
+	                            <option value="1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 1 ? 'selected' : '' : ''}}>PAID</option>
+	                            <option value="0" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 0 ? 'selected' : '' : ''}}>WITHOUT PAYING</option>
+	                        </select>
                         <button type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
                         </button>
                     </div>
@@ -44,16 +50,15 @@
                     </thead>
                     <tbody>
                     	@foreach($res as $r)
-                    	<tr bgcolor="red" style="background:red">
-
-                            <td>{{$r->machine_id}}</td>
-                            <td>{{$r->name_machine}}</td>
-                            <td>{{$r->client_name}}</td>
-                            <td>{{$r->date}}</td>
-                            <td>{{$r->utility_calc}}</td>
-                            <td>{{$r->utility_s4f}}</td>
-                            <td>{{$r->payment_client}}</td>
-                            <td>
+                    	<tr>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->machine_id}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->name_machine}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->client_name}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->date}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->utility_calc}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->utility_s4f}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->payment_client}}</td>
+                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">
                                 <!--<div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">
                                     <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
