@@ -228,8 +228,8 @@
                   <th hidden>PERIOD IN</th>
                   <th hidden>PERIOD OUT</th>
                   <th hidden>DATE</th>
-                  <th>Utlity</th>
-                  <th>S4F Utlity</th>
+                  <th>UTILITY CALCULATED</th>
+                  <th>UTILITY S4F</th>
                   <th></th>
                 </tr>
               </thead>
@@ -274,7 +274,7 @@
                 <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
               </div> 
               <div class="col-4">
-                <label for="">CALCULATED S4F</label>
+                <label for="">UTILITY S4F</label>
                 <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
               </div>
               <div class="col-4">
