@@ -272,7 +272,7 @@
               <div class="col-4">
                 <label for="">Calc. Utility</label>
                 <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
-              </div>
+              </div> 
               <div class="col-4">
                 <label for="">S4F Utility</label>
                 <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
