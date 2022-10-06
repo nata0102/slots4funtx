@@ -24,7 +24,7 @@
 	                        <input style="width: 50px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
                         	<input style="width: 100px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">
                         	<select class="form-control" name="band_paid_out">
-	                            <option value="3" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 3 ? 'selected' : '' : ''}}>ALL TYPES</option>
+	                            <option value="2" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 2 ? 'selected' : '' : ''}}>ALL</option>
 	                            <option value="1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 1 ? 'selected' : '' : ''}}>PAID</option>
 	                            <option value="0" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 0 ? 'selected' : '' : ''}}>WITHOUT PAYING</option>
 	                        </select>
