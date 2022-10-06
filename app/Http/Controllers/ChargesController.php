@@ -25,6 +25,7 @@ class ChargesController extends Controller
      */
     public function index(Request $request)
     {
+      \Session::forget('data');
         $res = null;
         switch ($request->option) {
             case 'average':
