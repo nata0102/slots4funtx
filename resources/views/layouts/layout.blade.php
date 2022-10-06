@@ -19,7 +19,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Slots4funtx</title>
-
+ 
 	<!-- Apple icons -->
 	<link rel="apple-touch-icon" sizes="57x57" href="{{ asset('/favicon/apple-icon-57x57.png') }}" />
 	<link rel="apple-touch-icon" sizes="60x60" href="{{ asset('/favicon/apple-icon-60x60.png') }}" />
