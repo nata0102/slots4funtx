@@ -25,7 +25,7 @@ class ChargesController extends Controller
      */
     public function index(Request $request)
     {
-      \Session::forget('data');
+        \Session::forget('data');
         $res = null;
         switch ($request->option) {
             case 'average':
@@ -87,7 +87,7 @@ class ChargesController extends Controller
         }
         $machine_ctrl = new MachineController();
         $machines = $machine_ctrl->getMachinesFlatPercentage();
-        $types = Lookup::where('type','charge_type')->orderBy('value')->get();
+        $types = Lookup::where('type','charge_type')->orderBy('value','desc')->get();
         return view('charges.create',compact('machines','types','data'));
 
     }

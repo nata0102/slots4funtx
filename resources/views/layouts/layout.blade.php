@@ -1145,6 +1145,11 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 			}
 
+			document.getElementById('info_numbers').innerHTML = "Previous Master Numbers => In= ";
+			document.getElementById('info_numbers').innerHTML += e.options[e.selectedIndex].getAttribute("data-masterin");
+			document.getElementById('info_numbers').innerHTML += " | Out = " + e.options[e.selectedIndex].getAttribute("data-masterout");
+			if(e.options[e.selectedIndex].getAttribute("data-band") == 1)
+				document.getElementById('info_numbers').innerHTML += " | Jackpot Out = " + e.options[e.selectedIndex].getAttribute("data-jackpotout");
 
 		}
 
@@ -1152,7 +1157,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 			$('#machineselect option').prop('selected', function() {
 	        return this.defaultSelected;
-	    });
+	    	});
 
 			dataReset();
 
@@ -1213,9 +1218,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				j = 0;
 				jp = document.getElementById('jackpotout').value - document.getElementById('jackpotout1').value;
 				if(jp > 0)
-					j	= jp;
+					j = jp;
 					console.log(i,o,p,j,jp);
-				t = ((i-o)+j) *p/100 ;
+				t = ((i-o)-j) *p/100 ;
 
 				document.getElementById("uc").value = t ;
 				document.getElementById("us").value = t ;

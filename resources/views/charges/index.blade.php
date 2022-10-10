@@ -3,23 +3,21 @@
 @section('content')
 
 <?php
-  $menu= DB::select("select m.actions from menu_roles m, lookups l where m.lkp_role_id=".Auth::user()->role->id." and m.lkp_menu_id = l.id and l.key_value='Machine';");
+  $menu= DB::select("select m.actions from menu_roles m, lookups l where m.lkp_role_id=".Auth::user()->role->id." and m.lkp_menu_id = l.id and l.key_value='Charges';");
 ?>
 
  <div class="main-content">
         <div class="section__content section__content--p30">
             <div class="container-fluid">
                 <div class="card" id="card-section">
-
                 <div class="input-group mb-2">
-
                     <a href="{{action('ChargesController@create')}}" class="btn btn-info {{str_contains($menu[0]->actions,'C') ? '' : 'disabled' }}" style="width: 40px; margin-bottom: 10px;"><i class="fas fa-plus"></i></a>
                 </div>
 
                 <form method="GET" action="{{action('ChargesController@index')}}">
 
-	                        <label for="">Initial Date:</label>
-                        	<label style="margin-left:230px;" for="">Final Date:</label>
+	                  <label for="">Initial Date:</label>
+                    <label style="margin-left:230px;" for="">Final Date:</label>
                     <div class="input-group mb-5">
 	                        <input style="width: 50px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
                         	<input style="width: 100px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">

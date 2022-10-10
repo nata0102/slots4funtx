@@ -3,12 +3,11 @@
 @section('content')
 
 <?php
-
-
   $machineArray = array();
-  foreach ($data as $key => $d) {
+  foreach ($data as $key => $d) 
     $machineArray[$d['machine_id']]=$d['machine_id'];
-  };
+  
+  $user_role = Auth::user()->role->key_value;
 ?>
 
 
@@ -24,8 +23,7 @@
                 <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi">
                   <option value="" selected disabled>SELECT TYPE</option>
                   @foreach($types as $type)
-                    <option value="{{$type->key_value}}">{{$type->value}}</option>
-
+                    <option value="{{$type->key_value}}">{{$type->value}}</option>                  
                   @endforeach
                 </select>
               </div>
@@ -35,14 +33,13 @@
 
           <div style="margin-top: 10px" class="row" id="machineselect" hidden>
             <div class="col-4">
-              <label for="">SELECT MACHINE</label>
               <select class="form-control" name="" id="charge_machine" onchange="dataCharge(this)">
                 <option value="0" selected disabled>SELECT MACHINE</option>
 
                 @foreach($machines as $machine)
                   @if(!array_key_exists($machine->id, $machineArray))
                   <option
-                  value="{{$machine->id}} {{$machine->serial}} {{$machine->game}}"
+                  value="{{$machine->id}} - {{$machine->serial}} - {{$machine->game}}"
                   class="{{$machine->master_in == "" ? 'initial' : 'charge' }}" value=""
                   data-id="{{$machine->id}}"
                   data-masterin="{{$machine->master_in}}"
@@ -52,7 +49,7 @@
                   data-band="{{$machine->band_jackpot}}"
                   data-percentage="{{$machine->percentage}}"
                   >
-                  {{$machine->id}} {{$machine->serial}} {{$machine->game}}</option>
+                  {{$machine->id}} - {{$machine->serial}} - {{$machine->game}}</option>
                   @endif
                 @endforeach
               </select>
@@ -70,54 +67,47 @@
                 <input class="form-control" type="text" name="machine_id" value="" id="machineidinitial">
               </div>
               <div class="card">
-
-                <h4>MASTER NUMBERS</h4>
+                <h4>Master Numbers:</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">IN*</label>
+                    <label for="">In <span style="color:red">*</span></label>
                     <input class="form-control" type="number" value="" name="master_in" required>
                   </div>
                   <div class="col-4">
-                    <label for="">OUT*</label>
+                    <label for="">Out <span style="color:red">*</span></label>
                     <input class="form-control" type="number" value="" name="master_out" required>
                   </div>
                   <div class="col-4">
                     <!-- if jackpot -->
                     <div class="" hidden id="jackpotinitial">
-                      <label for="">JACKPOT OUT</label>
+                      <label for="">Jackpot Out</label>
                       <input class="form-control" type="number" value="" name="jackpot_out" id="jpinitial">
                     </div>
                   </div>
                 </div>
 
-                <h4>PERIOD NUMBERS</h4>
+                <h4>Period Numbers:</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">IN</label>
+                    <label for="">In</label>
                     <input class="form-control" type="number" value="" name="period_in">
                   </div>
                   <div class="col-4">
-                    <label for="">OUT</label>
+                    <label for="">Out</label>
                     <input class="form-control" type="number" value="" name="period_out">
                   </div>
                   <div class="col-4">
-                    <label for="">DATE</label>
+                    <label for="">Date</label>
                     <input class="form-control" type="date" name="period_date" value="">
                   </div>
                 </div>
 
                 <hr>
-
                 <div class="form-group">
                   <button type="submit" name="button" class="btn btn-success">SAVE</button>
                 </div>
-
               </div>
-
-
-
             </form>
-
           </div>
 
           <div id="formInputs" hidden>
@@ -138,25 +128,29 @@
 
 
               <div class="card">
-
                 <div id="avr">
+                  @if($user_role == 'administrator')
+                    <div class="row">
+                      <div class="col-10">
+                        <label id="info_numbers"></label>
+                      </div>
+                    </div>
+                  @endif
 
-
-
-                  <h4>MASTER NUMBERS</h4>
+                  <h4>Master Numbers:</h4>
                   <div class="row">
                     <div class="col-4">
-                      <label for="">IN*</label>
+                      <label for="">In <span style="color:red">*</span></label>
                       <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
                     </div>
                     <div class="col-4">
-                      <label for="">OUT*</label>
+                      <label for="">Out <span style="color:red">*</span></label>
                       <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
                     </div>
                     <div class="col-4">
                       <!-- if jackpot -->
                       <div class="" hidden id="jackpot">
-                        <label for="">JACKPOT OUT</label>
+                        <label for="">Jackpot Out <span style="color:red">*</span></label>
                         <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()">
                       </div>
                     </div>
@@ -164,53 +158,44 @@
 
                   <hr>
 
-                  <h4>PERIOD NUMBERS</h4>
+                  <h4>Period Numbers:</h4>
                   <div class="row">
                     <div class="col-4">
-                      <label for="">IN</label>
+                      <label for="">In</label>
                       <input class="form-control" type="number" value="" name="periodIn">
                     </div>
                     <div class="col-4">
-                      <label for="">OUT</label>
+                      <label for="">Out</label>
                       <input class="form-control" type="number" value="" name="periodOut">
                     </div>
                     <div class="col-4">
-                      <label for="">DATE</label>
+                      <label for="">Date</label>
                       <input class="form-control" type="date" name="date" value="">
                     </div>
                   </div>
-
                   <hr>
-
                 </div>
 
-
-                <h4>MACHINE UTILITY</h4>
+                <h4>Machine Utility:</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">UTILITY CALCULATED</label>
+                    <label for="">Calculated</label>
                     <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step="any">
                   </div>
-                  <div class="col-4">
-                    <label for="">UTILITY S4F</label>
-                    <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
-                  </div>
-                  <div class="col-4">
+                  @if($user_role == 'administrator')
+                    <div class="col-4">
+                      <label for="">S4F</label>
+                      <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
+                    </div>
+                  @endif
+                  <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
-
                 </div>
-
                 <hr>
-
-
               </div>
-
             </form>
           </div>
-
-
-
         </div>
 
         @if($data)
@@ -218,33 +203,17 @@
         <div class="table-responsive table-striped table-bordered">
         <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
               <thead>
-                <tr>
-                  <th hidden>MACHINE ID</th>
-                  <th>MACHINE</th>
-                  <th hidden>TYPE</th>
-                  <th hidden>AVERAGE</th>
-                  <th hidden>MASTER IN</th>
-                  <th hidden>MASTER OUT</th>
-                  <th hidden>PERIOD IN</th>
-                  <th hidden>PERIOD OUT</th>
-                  <th hidden>DATE</th>
-                  <th>UTILITY CALCULATED</th>
-                  <th>UTILITY S4F</th>
+                <tr style="text-align: center;">
+                  <th>Machine</th>
+                  <th>Utility Calculated</th>
+                  <th>Utility S4F</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($data as $key => $dt)
                   <tr>
-                    <td hidden>{{$dt['machine_id']}}</td>
                     <td>{{$dt['name']}}</td>
-                    <td hidden>{{$dt['type']}}</td>
-                    <td hidden>{{$dt['average']}}</td>
-                    <td hidden>{{$dt['masterIn']}}</td>
-                    <td hidden>{{$dt['masterOut']}}</td>
-                    <td hidden>{{$dt['periodIn']}}</td>
-                    <td hidden>{{$dt['periodOut']}}</td>
-                    <td hidden>{{$dt['date']}}</td>
                     <td>{{$dt['utility_calc']}}</td>
                     <td>{{$dt['utility_s4f']}}</td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
@@ -270,18 +239,19 @@
 
             <div class="row">
               <div class="col-4">
-                <label for="">UTILITY CALCULATED</label>
+                <label for="">Total Calculated</label>
                 <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
               </div> 
-              <div class="col-4">
-                <label for="">UTILITY S4F</label>
-                <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
-              </div>
+              @if($user_role == 'administrator')
+                <div class="col-4">
+                  <label for="">Total S4F</label>
+                  <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
+                </div>
+              @endif
               <div class="col-4">
                 <div class="row">
                   <div class="col-6">
-                    <label for="">PAYMENT</label>
-
+                    <label for="">Payment Client</label>
                     <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
                   </div>
                   <div class="col-6"><br>
