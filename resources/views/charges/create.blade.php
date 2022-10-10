@@ -4,9 +4,9 @@
 
 <?php
   $machineArray = array();
-  foreach ($data as $key => $d) 
+  foreach ($data as $key => $d)
     $machineArray[$d['machine_id']]=$d['machine_id'];
-  
+
   $user_role = Auth::user()->role->key_value;
 ?>
 
@@ -23,7 +23,7 @@
                 <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi">
                   <option value="" selected disabled>SELECT TYPE</option>
                   @foreach($types as $type)
-                    <option value="{{$type->key_value}}">{{$type->value}}</option>                  
+                    <option value="{{$type->key_value}}">{{$type->value}}</option>
                   @endforeach
                 </select>
               </div>
@@ -241,7 +241,7 @@
               <div class="col-4">
                 <label for="">Total Calculated</label>
                 <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
-              </div> 
+              </div>
               @if($user_role == 'administrator')
                 <div class="col-4">
                   <label for="">Total S4F</label>

@@ -19,7 +19,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Slots4funtx</title>
- 
+
 	<!-- Apple icons -->
 	<link rel="apple-touch-icon" sizes="57x57" href="{{ asset('/favicon/apple-icon-57x57.png') }}" />
 	<link rel="apple-touch-icon" sizes="60x60" href="{{ asset('/favicon/apple-icon-60x60.png') }}" />
@@ -1098,7 +1098,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("percentage").value = '';
 			document.getElementById("name").value ='';
 			document.getElementById("uc").value = '';
-			document.getElementById("us").value = '' ;
+			if(document.getElementById("us"))
+				document.getElementById("us").value = '' ;
 
 
 
@@ -1126,8 +1127,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					average = "0";
 					document.getElementById('avr').setAttribute('hidden','');
 					document.getElementById("uc").value = average ;
-					document.getElementById("us").value = average ;
-					document.getElementById("us").setAttribute('max',average);
+					if(document.getElementById("us")){
+						document.getElementById("us").value = average ;
+						document.getElementById("us").setAttribute('max',average);
+					}
 				}
 
 				document.getElementById("masterin1").value = e.options[e.selectedIndex].getAttribute("data-masterin");
@@ -1144,14 +1147,15 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				}
 
 			}
+			if(document.getElementById('info_numbers')){
+				document.getElementById('info_numbers').innerHTML = "Previous Master Numbers => In= ";
+				document.getElementById('info_numbers').innerHTML += e.options[e.selectedIndex].getAttribute("data-masterin");
+				document.getElementById('info_numbers').innerHTML += " | Out = " + e.options[e.selectedIndex].getAttribute("data-masterout");
+				if(e.options[e.selectedIndex].getAttribute("data-band") == 1)
+					document.getElementById('info_numbers').innerHTML += " | Jackpot Out = " + e.options[e.selectedIndex].getAttribute("data-jackpotout");
 
-			document.getElementById('info_numbers').innerHTML = "Previous Master Numbers => In= ";
-			document.getElementById('info_numbers').innerHTML += e.options[e.selectedIndex].getAttribute("data-masterin");
-			document.getElementById('info_numbers').innerHTML += " | Out = " + e.options[e.selectedIndex].getAttribute("data-masterout");
-			if(e.options[e.selectedIndex].getAttribute("data-band") == 1)
-				document.getElementById('info_numbers').innerHTML += " | Jackpot Out = " + e.options[e.selectedIndex].getAttribute("data-jackpotout");
-
-		}
+				}
+			}
 
 		function dataInpu(e) {
 
@@ -1223,9 +1227,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				t = ((i-o)-j) *p/100 ;
 
 				document.getElementById("uc").value = t ;
-				document.getElementById("us").value = t ;
-
-				document.getElementById("us").setAttribute('max',t);
+				if(document.getElementById("us")){
+					document.getElementById("us").value = t ;
+					document.getElementById("us").setAttribute('max',t);
+				}
 			}
 		}
 
