@@ -62,7 +62,7 @@
                             <option value="all">ALL BUSINESS</option>
                             <option value="-1">NOT ASSIGNED</option>
                               @foreach($business as $tp)
-                                <option value="{{$tp->id}}"  {{ isset($_GET['business']) ? $_GET['business'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->name_address}}</option>
+                                <option value="{{$tp->id}}"  {{ isset($_GET['business']) ? $_GET['business'] == $tp->id ? 'selected' : '' : '' }}>{{$tp->name_client}} - {{$tp->name_address}}</option>
                               @endforeach
                         </select>
 

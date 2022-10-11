@@ -184,10 +184,13 @@
                   </div>
                   @if($user_role == 'administrator')
                     <div class="col-4">
-                      <label for="">S4F</label>
-                      <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
-                    </div>
+                  @else
+                     <div class="col-4" hidden="">
                   @endif
+                    <label for="">S4F</label>
+                    <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
+                  </div>
+                  
                   <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>

@@ -43,7 +43,7 @@ class MachineController extends Controller
         $qry = "select count(*) as total, (select id from machines order by id desc limit 1) as id
                 from machines;";
         $totales =  DB::select($qry)[0];
-        $qry = "select * from addresses where id in (select address_id from machines) order by name_address;";
+        $qry = "select * from (select *,(select name from clients where id=a.client_id) as name_client from addresses a where id in (select address_id from machines) order by name_address) as t order by t.name_client, t.name_address;";
         $business = DB::select($qry);
         return view('machines.index',compact('res','owners','status','brands','games','totales','business'));
     }
