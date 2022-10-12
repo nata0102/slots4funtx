@@ -188,7 +188,7 @@
                      <div class="col-4" hidden="">
                   @endif
                     <label for="">S4F</label>
-                    <input class="form-control" type="number" min="0" max="" value="" name="utility_s4f" id="us" step="any">
+                    <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step="any">
                   </div>
                   
                   <div class="col-4" style="margin-top: 30px">
