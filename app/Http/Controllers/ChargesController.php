@@ -85,11 +85,23 @@ class ChargesController extends Controller
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
         }
-        $machine_ctrl = new MachineController();
-        $machines = $machine_ctrl->getMachinesFlatPercentage();
+        $machines = [];
+        $clients = $this->getClientsWithMachines();
         $types = Lookup::where('type','charge_type')->orderBy('value','desc')->get();
-        return view('charges.create',compact('machines','types','data'));
+        return view('charges.create',compact('machines','types','data','clients'));
 
+    }
+
+    public function getClientsWithMachines(){
+        $machine_ctrl = new MachineController();
+        $qry = "select * from (
+                select c.id,c.name, a.id as address_id,a.business_name,
+                (select count(*) from machines where address_id=a.id and active=1 and id in (select machine_id from percentage_price_machine where lkp_type_id = 45)) as total
+                from clients c, addresses a where c.id = a.client_id and a.active = 1 and c.active = 1) as t where t.total > 0 order by t.name, t.business_name;";
+        $res = DB::select($qry);
+        foreach ($res as &$r) 
+            $r->machines = $machine_ctrl->getMachinesFlatPercentage($r->address_id);
+        return $res;
     }
 
     public function deleteData($key)

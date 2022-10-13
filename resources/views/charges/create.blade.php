@@ -27,6 +27,18 @@
                   @endforeach
                 </select>
               </div>
+              <div class="col-12" hidden="" id="div_cli">
+                <select class="form-control" id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})">
+                  <option value="" selected disabled>SELECT CLIENT-BUSINESS</option>
+                  @foreach($clients as $client)
+                    <option value="{{$client->id}}">{{$client->name}} - {{$client->business_name}}</option>
+                  @endforeach
+                </select>
+              </div>
+              <!--<div class="col-12" hidden="" id="div_mach">
+                <select class="form-control" onchange="disabledForms()" name="type" style="width: 100%;" id="charges_machines">
+                </select>-->
+              </div>
             </div>
           </div>
 
@@ -275,3 +287,44 @@
   </div>
 
 @stop
+
+<script>
+  function loadMachines(index,clients){
+    //console.log(clients);
+    //document.getElementById("machineselect").hidden = false;
+    var type = document.getElementById("fi").value;
+    //console.log(type);
+    var machines = clients[index-1].machines;
+    //console.log(machines);
+
+    $('#charge_machine').empty();
+    $('#charge_machine').append('<option value="" selected disabled>SELECT MACHINE</option>');
+    for(var i=0; i < machines.length; i++){
+      var band = false;
+      if(type == 'initial_numbers'){
+        if(machines[i].master_in == null)
+          band = true;
+      }else{
+        if(machines[i].master_in != null)
+          band = true;
+      }
+      if(band)
+        $('#charge_machine').append('<option value="'+machines[i].id+'">'+machines[i].id+' - '+machines[i].serial+' - '+machines[i].game+'</option>');
+    }
+  }
+
+  
+
+  /*function disabledForms(){
+    var type = document.getElementById("fi").value;
+    document.getElementById("initial-form").hidden = true;
+    document.getElementById("formInputs").hidden = true;
+    if(type == 'initial_numbers')
+      document.getElementById("initial-form").hidden = false;
+    else{
+      if(type  == 'normal_charge')
+        document.getElementById("formInputs").hidden = false;
+        
+    }
+  }*/
+</script>

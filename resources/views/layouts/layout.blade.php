@@ -1157,6 +1157,12 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				}
 			}
 
+		function loadClients(){
+		    document.getElementById("div_cli").hidden = false;
+		    //document.getElementById("machineselect").hidden = true;  
+		    document.getElementById("select_cli").selectedIndex = "0"; 
+		}
+
 		function dataInpu(e) {
 
 			$('#machineselect option').prop('selected', function() {
@@ -1164,6 +1170,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 	    	});
 
 			dataReset();
+
+			this.loadClients();
 
 			if(e.options[e.selectedIndex].getAttribute("value") == 'average_charge' || e.options[e.selectedIndex].getAttribute("value") ==  'normal_charge'){
 				document.getElementById("type").value = e.options[e.selectedIndex].getAttribute("value");
