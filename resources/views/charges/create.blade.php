@@ -17,57 +17,35 @@
         <div class="card" id="card-section">
 
 
-          <div class="row" id="typeselect">
-            <div class="">
-              <div class="col-12">
-                <select class="form-control" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi">
-                  <option value="" selected disabled>SELECT TYPE</option>
+          <div class="row" id="typeselect">            
+              <div class="col-12 col-sm-3">
+                <select class="form-control selectpicker" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi" data-live-search="true">
+                  <option value="" selected disabled>-- Select Type --</option>
                   @foreach($types as $type)
                     <option value="{{$type->key_value}}">{{$type->value}}</option>
                   @endforeach
                 </select>
               </div>
-              <div class="col-12" hidden="" id="div_cli">
-                <select class="form-control" id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})">
-                  <option value="" selected disabled>SELECT CLIENT-BUSINESS</option>
+              <div class="col-12 col-sm-4" hidden="" id="div_cli"">
+                <select class="form-control selectpicker" id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})" data-live-search="true">
+                  <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients as $client)
                     <option value="{{$client->id}}">{{$client->name}} - {{$client->business_name}}</option>
                   @endforeach
                 </select>
               </div>
-              <!--<div class="col-12" hidden="" id="div_mach">
-                <select class="form-control" onchange="disabledForms()" name="type" style="width: 100%;" id="charges_machines">
-                </select>-->
+              <div clas="col-12 col-sm-4">
+                <div class="row" id="machineselect" hidden>
+                  <div class="col-12">
+                    <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
+                    </select>
+                  </div>
+                </div>                
               </div>
-            </div>
           </div>
 
 
-          <div style="margin-top: 10px" class="row" id="machineselect" hidden>
-            <div class="col-4">
-              <select class="form-control" name="" id="charge_machine" onchange="dataCharge(this)">
-                <option value="0" selected disabled>SELECT MACHINE</option>
-
-                @foreach($machines as $machine)
-                  @if(!array_key_exists($machine->id, $machineArray))
-                  <option
-                  value="{{$machine->id}} - {{$machine->serial}} - {{$machine->game}}"
-                  class="{{$machine->master_in == "" ? 'initial' : 'charge' }}" value=""
-                  data-id="{{$machine->id}}"
-                  data-masterin="{{$machine->master_in}}"
-                  data-masterout="{{$machine->master_out}}"
-                  data-jackpotout="{{$machine->jackpot_out}}"
-                  data-average="{{$machine->average}}"
-                  data-band="{{$machine->band_jackpot}}"
-                  data-percentage="{{$machine->percentage}}"
-                  >
-                  {{$machine->id}} - {{$machine->serial}} - {{$machine->game}}</option>
-                  @endif
-                @endforeach
-              </select>
-            </div>
-          </div>
-
+          
           <br>
 
           <div class="" id="initial-form" hidden>
@@ -192,7 +170,7 @@
                 <div class="row">
                   <div class="col-4">
                     <label for="">Calculated</label>
-                    <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step="any">
+                    <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step=".01">
                   </div>
                   @if($user_role == 'administrator')
                     <div class="col-4">
@@ -200,7 +178,7 @@
                      <div class="col-4" hidden="">
                   @endif
                     <label for="">S4F</label>
-                    <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step="any">
+                    <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
                   
                   <div class="col-4" style="margin-top: 30px">
@@ -290,15 +268,11 @@
 
 <script>
   function loadMachines(index,clients){
-    //console.log(clients);
-    //document.getElementById("machineselect").hidden = false;
     var type = document.getElementById("fi").value;
-    //console.log(type);
+    document.getElementById("machineselect").hidden =false;
     var machines = clients[index-1].machines;
-    //console.log(machines);
 
     $('#charge_machine').empty();
-    $('#charge_machine').append('<option value="" selected disabled>SELECT MACHINE</option>');
     for(var i=0; i < machines.length; i++){
       var band = false;
       if(type == 'initial_numbers'){
@@ -309,22 +283,8 @@
           band = true;
       }
       if(band)
-        $('#charge_machine').append('<option value="'+machines[i].id+'">'+machines[i].id+' - '+machines[i].serial+' - '+machines[i].game+'</option>');
+        $('#charge_machine').append('<option data-id="'+machines[i].id+'" data-masterin="'+machines[i].master_in+'" data-masterout="'+machines[i].master_out+'" data-jackpotout="'+machines[i].jackpot_out+'" data-average="'+machines[i].average+'" data-band="'+machines[i].band_jackpot+'" data-percentage="'+machines[i].percentage+'"  value="'+machines[i].id+'">'+machines[i].id+' - '+machines[i].serial+' - '+machines[i].game+'</option>');
     }
+    $('#charge_machine').selectpicker('refresh');
   }
-
-  
-
-  /*function disabledForms(){
-    var type = document.getElementById("fi").value;
-    document.getElementById("initial-form").hidden = true;
-    document.getElementById("formInputs").hidden = true;
-    if(type == 'initial_numbers')
-      document.getElementById("initial-form").hidden = false;
-    else{
-      if(type  == 'normal_charge')
-        document.getElementById("formInputs").hidden = false;
-        
-    }
-  }*/
 </script>

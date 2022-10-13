@@ -1101,9 +1101,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			if(document.getElementById("us"))
 				document.getElementById("us").value = '' ;
 
-
-
-			if(e.options[e.selectedIndex].getAttribute("data-masterin") == ""){
+			//Cuando es Initial numbers
+			if(e.options[e.selectedIndex].getAttribute("data-masterin") == "null"){
 				jackpotout = e.options[e.selectedIndex].getAttribute("data-jackpotout");
 				if(e.options[e.selectedIndex].getAttribute("data-band") == "1"){
 					document.getElementById("jackpotinitial").removeAttribute('hidden');
@@ -1124,7 +1123,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				band = e.options[e.selectedIndex].getAttribute("data-band");
 
 				if(document.getElementById("fi").value == "average_charge"){
-					average = "0";
+					average = parseFloat(average).toFixed(2);
 					document.getElementById('avr').setAttribute('hidden','');
 					document.getElementById("uc").value = average ;
 					if(document.getElementById("us")){
@@ -1141,6 +1140,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
 				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");
 
+				document.getElementById("jackpot").setAttribute('hidden','');
 				if(e.options[e.selectedIndex].getAttribute("data-band") == "1"){
 					document.getElementById("jackpot").removeAttribute('hidden');
 					document.getElementById("jackpotout").setAttribute('required','');
@@ -1159,15 +1159,16 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 		function loadClients(){
 		    document.getElementById("div_cli").hidden = false;
-		    //document.getElementById("machineselect").hidden = true;  
 		    document.getElementById("select_cli").selectedIndex = "0"; 
+   		    document.getElementById("machineselect").hidden = true;
+
 		}
 
 		function dataInpu(e) {
 
 			$('#machineselect option').prop('selected', function() {
 	        return this.defaultSelected;
-	    	});
+	    	});   
 
 			dataReset();
 
@@ -1212,7 +1213,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("jackpotout").removeAttribute('required');
 			}
 
-			document.getElementById("machineselect").removeAttribute('hidden');
+			//document.getElementById("machineselect").removeAttribute('hidden');
 		}
 
 		function calculate(){
