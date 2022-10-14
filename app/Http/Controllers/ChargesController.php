@@ -13,9 +13,7 @@ class ChargesController extends Controller
 {
 
     public function __construct(){
-
-    if(!\Session::has('data')) \Session::put('data', array());
-
+        if(!\Session::has('data')) \Session::put('data', array());
     }
 
     /**
@@ -27,23 +25,26 @@ class ChargesController extends Controller
     {
         \Session::forget('data');
         $res = null;
+        $clients = null;
         switch ($request->option) {
             case 'average':
                 return $this->getAverage($request->all());
             break;
             default:
                 $res = $this->getList($request->all());
+                $clients = $this->getClientsWithCharges();
             break;
         }
-        return view('charges.index',compact('res'));
+        return view('charges.index',compact('res','clients'));
     }
 
     public function getList($params){
-        $qry = "select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
-            (select concat(m.serial,' - ',g.name)
-            from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
-            ifnull((select cl.name  from users u, clients cl where u.client_id=cl.id
-            and u.id=c.user_id),'S4F') as client_name
+        $qry = "select * from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
+            (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
+            (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
+            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m 
+            where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business,
+            (select address_id from machines where id = c.machine_id) as address_id 
             from charges c where c.type != 'initial_numbers' ";
         if (array_key_exists('date_ini', $params))
             if($params['date_ini'] != null)
@@ -54,7 +55,10 @@ class ChargesController extends Controller
         if (array_key_exists('band_paid_out', $params))
             if($params['band_paid_out'] != 2)
                 $qry.= " and band_paid_out = ".$params['band_paid_out'];
-        $qry .= "  order by created_at desc limit 20;";
+        $qry .= "  order by created_at desc limit 20 ) as t ";
+        if (array_key_exists('clients_id', $params))
+            if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
+                $qry.= " where t.address_id in (".implode(',',$params['clients_id']).")";
         return DB::select($qry);
     /*    $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
         $res = DB::select($qry);
@@ -90,6 +94,16 @@ class ChargesController extends Controller
         $types = Lookup::where('type','charge_type')->orderBy('value','desc')->get();
         return view('charges.create',compact('machines','types','data','clients'));
 
+    }
+
+    public function getClientsWithCharges(){
+        $qry = "select * from(
+                select a.id, concat(c.name,' - ', a.business_name) as name
+                from clients c, addresses a, machines m 
+                where c.id = a.client_id and a.active = 1 and c.active = 1
+                and m.active=1 and m.address_id = a.id and m.id in (select machine_id from charges)
+                ) as t group by t.id,t.name order by t.name;";
+        return DB::select($qry);
     }
 
     public function getClientsWithMachines(){
