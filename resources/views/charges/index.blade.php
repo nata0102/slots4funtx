@@ -114,10 +114,8 @@
       var ids = document.getElementById("client");
       for (var i = 1; i < len; i++) {
         opt = sel.options[i];
-        if (opt.selected){
-          console.log(opt.value);
+        if (opt.selected)
             opts.push(opt.value);
-          }
       }//for
       ids.value = opts.toString();   
     }
