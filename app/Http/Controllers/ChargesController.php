@@ -239,7 +239,19 @@ class ChargesController extends Controller
      */
     public function edit($id)
     {
-        //
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+        }
+        $qry = "select c.*,
+        (select format(avg(utility_s4f),2) from charges where machine_id =m.id and utility_s4f is not null order by id desc limit 5) as average,
+        (select value from lookups where id=m.lkp_owner_id) as owner,
+        (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl 
+        where a.client_id = cl.id and a.id=m.address_id) as client_business,
+        (select name from game_catalog where id=m.game_catalog_id) as game
+        from machines m, charges c where m.id=c.machine_id and c.id=".$id.";";
+        $charge = DB::select($qry)[0];  
+        return view('charges.edit',compact('charge'));   
     }
 
     /**
@@ -251,7 +263,36 @@ class ChargesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            $transaction = DB::transaction(function() use($request,$id){
+                $charge = Charge::findOrFail($id);
+                $params = $request->only('utility_s4f','utility_calc','payment_client');
+                if($params['utility_s4f']==$params['payment_client'])
+                    $params['band_paid_out'] = 1;
+                $charge->update($params);
+                $charge->save();
+                if ($charge) {
+                    $notification = array(
+                      'message' => 'Successful!!',
+                      'alert-type' => 'success'
+                    );
+                }else {
+                    $notification = array(
+                      'message' => 'Oops! there was an error, please try again later.',
+                      'alert-type' => 'error'
+                    );
+                }
+                return $notification;
+            });
+            return redirect()->action('ChargesController@index')->with($transaction);
+        }catch(\Exception $e){
+            $cad = 'Oops! there was an error, please try again later.:';
+            $transaction = array(
+                'message' => $cad,
+                'alert-type' => 'error'
+            );
+        }
+        return back()->with($transaction)->withInput($request->all());
     }
 
     /**

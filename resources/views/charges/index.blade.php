@@ -78,6 +78,9 @@
                             <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->utility_s4f}}</td>
                             <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->payment_client}}</td>
                             <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">
+                            <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
+                                    <a href="{{action('ChargesController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                            </div>
                                 <!--<div class="row" style="margin-right: 0; margin-left: 0;">
                                   <div class="col-4" style="padding: 0;">
                                     <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
@@ -85,9 +88,7 @@
                                   <div class="col-4" style="padding: 0;">
                                    <a href="#" class="btn btn-link qr {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0" data-toggle="modal" data-action="slots4funtx/{{$r->id}}" data-id="ID: {{$r->id}}" data-target="#modalqr"><i class="fas fa-qrcode"></i></a>
                                  </div>
-                                  <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <a href="{{action('MachineController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
-                                  </div>
+                                 
                                   <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
                                     <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
                                   </div>
