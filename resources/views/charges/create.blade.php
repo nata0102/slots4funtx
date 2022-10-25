@@ -242,7 +242,7 @@
                 $max += $dt['utility_s4f'];
                 $max2 += $dt['utility_calc'];
               }
-
+  
             ?>
 
             <div class="row">
