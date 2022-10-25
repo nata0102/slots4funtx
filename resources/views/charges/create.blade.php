@@ -17,7 +17,7 @@
         <div class="card" id="card-section">
 
 
-          <div class="row" id="typeselect">            
+          <div class="row" id="typeselect">
               <div class="col-12 col-sm-3">
                 <select class="form-control selectpicker" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi" data-live-search="true">
                   <option value="" selected disabled>-- Select Type --</option>
@@ -40,12 +40,12 @@
                     <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
                     </select>
                   </div>
-                </div>                
+                </div>
               </div>
           </div>
 
 
-          
+
           <br>
 
           <div class="" id="initial-form" hidden>
@@ -91,6 +91,13 @@
                     <input class="form-control" type="date" name="period_date" value="">
                   </div>
                 </div>
+
+                <h4>Invoice?</h4>
+                <div>
+                  <input type="hidden" name="invoice" value="0">
+                  <input type="checkbox" class="form-control" name="invoice" value="1">
+                </div>
+
 
                 <hr>
                 <div class="form-group">
@@ -180,13 +187,21 @@
                     <label for="">S4F</label>
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
-                  
+
                   <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
                 </div>
                 <hr>
               </div>
+
+              <h4>Invoice?</h4>
+              <div>
+                <input type="hidden" name="invoice" value="0">
+                <input type="checkbox" class="form-control" name="invoice" value="1">
+              </div>
+
+
             </form>
           </div>
         </div>
@@ -254,6 +269,10 @@
                 </div>
 
               </div>
+                <div class="col-4">
+                  <label for="">Discount</label>
+                  <input class="form-control" type="number" value="" name="discount">
+                </div>
             </div>
 
 

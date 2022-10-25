@@ -10,16 +10,24 @@ use DB;
 use App\Models\Lookup;
 use Illuminate\Support\Facades\Mail;
 
+use App\Mail\Prueba;
+
 class MainController extends Controller
 {
 
   public function index(){
+
+
     if(Auth::guest()){
       return view('main.login');
     }
     else {
 
+
+
       return view('main.index');
+
+
     }
   }
 
@@ -29,11 +37,16 @@ class MainController extends Controller
   }
 
   public function login(Request $request){
+
     $password = $request->password;
     if(str_contains($request->email, '@')){
       $email = $request->email;
       $user = User::where('email', $request->email)->first();
       if($user){
+
+          //$mailable = new Prueba($user);
+          //Mail::to("rodrigo.pescina.91@gmail.com")->send($mailable);
+
         if ($user->active == 0) {
           return back() -> withErrors(['email'=>'No se ha encontrado un usuario con esa dirección de correo o número teléfonico.']);
         }
