@@ -48,67 +48,62 @@
                         </button>
                     </div>
                 </form>
-
-
-                <div class="table-responsive table-striped table-bordered">
-                <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
-                    <thead>
-                        <tr>
-                          <th style="width:80px; text-align: center;">Machine ID <i class="fa fa-sort"></i></th>
-                          <th class="not-sortable" style="width:200px; text-align: center;">Client - Business</th>
-                          <th class="not-sortable" style="width:200px; text-align: center;">Serial - Game Title</th>
-                          <th class="not-sortable" style="width:100px; text-align: center;">User Registered
-                        </th>
-                          <th class="not-sortable" style="width:100px; text-align: center;">Date</th>
-                          <th class="not-sortable" style="width:100px; text-align: center;">Utility Calculated</th>
-                          <th class="not-sortable" style="width:100px; text-align: center;">Utility S4F</th>
-                          <th class="not-sortable" style="width:100px; text-align: center;">Payment Client</th>
-                           <th class="not-sortable" style="width:100px; text-align: center;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    	@foreach($res as $r)
-                    	<tr>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->machine_id}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->client_business}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->name_machine}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->user_add}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->date}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->utility_calc}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->utility_s4f}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">{{$r->payment_client}}</td>
-                            <td style="background-color: {{$r->band_paid_out == 1 ? '#B1FEAB' :'#FEB4AB'}}">
-                            <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <a href="{{action('ChargesController@edit',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
-                            </div>
-                                <!--<div class="row" style="margin-right: 0; margin-left: 0;">
-                                  <div class="col-4" style="padding: 0;">
-                                    <a href="{{action('MachineController@show',$r->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-eye"></i></a>
-                                  </div>
-                                  <div class="col-4" style="padding: 0;">
-                                   <a href="#" class="btn btn-link qr {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; margin: 0" data-toggle="modal" data-action="slots4funtx/{{$r->id}}" data-id="ID: {{$r->id}}" data-target="#modalqr"><i class="fas fa-qrcode"></i></a>
-                                 </div>
-                                 
-                                  <div {{ isset($_GET['active']) ? $_GET['active'] == 0 ? 'hidden' : '' : '' }} class="col-4 active" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="1" data-table="#table" data-message1="You won't be able to revert this!" data-message2="Deleted!" data-message3="Your file has been deleted." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button>
-                                  </div>
-
-                                  <div {{ isset($_GET['active']) ? $_GET['active'] == 1 ? 'hidden' : '' : 'hidden' }} class="col-8 inactive" style="padding: 0;">
-                                    <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="0" data-table="#table" data-message1="Are you sure to activate this machine?" data-message2="Activated" data-message3="Activated machine." data-method="DELETE" data-action="{{action('MachineController@destroy',$r->id)}}" style="width:40px; margin: 0; padding: 0"><i class="fas fa-check"></i></button>
-                                  </div>
-                                </div>-->
-                            </td>
-                        </tr>
-
-                        @endforeach
-                    </tbody>
-                </table>
-                </div>
-                </div>
+                
+                @foreach($res as $r)
+                <div style="border: 1px solid gray">
+                  <div onclick="disabledDiv('{{$r->date_charge}}')" style="padding: 5px;">
+                    <p style="float: left; width: 95%; padding: 5px">{{$r->date_charge}}</p>
+                    <a href="#" align="right" class="btn btn-success" style="width:40px; height: 35px;"><i class="fas fa-arrow-down"></i></a>
+                  </div>
+                  <div style="margin-top: -100px !important;" id="{{$r->date_charge}}" hidden="">
+                    <!-- Charges -->
+                    @if(count($r->charges)>0)                        
+                    <div class="table-responsive table-striped table-bordered" style="background: blue;">
+                      <table id="table" class="table tablesorter" style="width: 96%; table-layout: fixed;font-size:14px;margin-left: 5px">
+                          <tr>
+                            <th style="width:30%; text-align: center;">Machine<i class="fa fa-sort"></i></th>
+                            <th class="not-sortable" style="width:30%; text-align: center;">Client - Business</th>
+                            
+                            <th class="not-sortable" style="width:30%; text-align: center;">User Registered
+                            </th>                                
+                            <th class="not-sortable" style="width:30%; text-align: center;">Utility Calculated</th>
+                            <th class="not-sortable" style="width:30%; text-align: center;">Utility S4F</th>
+                            <th class="not-sortable" style="width:30%; text-align: center;">Payment Client</th>                       <th class="not-sortable" style="width:10%; text-align: center;"></th>
+                          </tr>
+                          @foreach($r->charges as $charge)
+                          <tr height="20px">
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->id}} - {{$charge->name_machine}}</td>
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->client_business}}</td>                             
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->user_add}}</td>                             
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->utility_calc}}</td>
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->utility_s4f}}</td>
+                             <td style="background-color: {{$charge->row_color}}">{{$charge->payment_client}}</td>
+                             <td style="background-color:{{$charge->row_color}}">
+                              <div class="col-4 active" style="padding: 0;">
+                                 <a href="{{action('ChargesController@edit',$charge->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                              </div>                                
+                             </td>
+                          </tr>
+                          @endforeach
+                      </table>
+                    </div>
+                    @endif
+                  </div>                
+                </div>  
+                @endforeach              
+            </div>
             </div>
         </div>
     </div>
 <script>
+  function disabledDiv(id){
+    var control = document.getElementById(id);
+    if(control.hidden)
+      control.hidden = false;
+    else
+      control.hidden = true;
+  }
+
   function getSelectedOptions(sel) {
       var opts = [],opt;
       var len = sel.options.length;

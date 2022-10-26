@@ -31,11 +31,76 @@ class ChargesController extends Controller
                 return $this->getAverage($request->all());
             break;
             default:
-                $res = $this->getList($request->all());
+$res = $this->getList2($request->all());
+                //$res = $this->getList($request->all());
                 $clients = $this->getClientsWithCharges();
             break;
         }
         return view('charges.index',compact('res','clients'));
+    }
+
+    public function getList2($params){
+        $role = Auth::user()->role->key_value;
+        $user_id = Auth::id();
+        $qry = "select t.date_charge, group_concat(t.id) as charges_ids,group_concat(address_id) as addresses_ids
+        from (select id, date(c.created_at) as date_charge,
+        (select address_id from machines where id = c.machine_id) as address_id
+        from charges c where c.type != 'initial_numbers' ";
+        switch($role){
+            case 'administrator':
+            break;
+            case 'employee':
+                $qry .= " and user_id = " . $user_id;
+            break;
+            case 'client':
+            break;
+        }
+        if (array_key_exists('date_ini', $params))
+            if($params['date_ini'] != null)
+                $qry .= " and date(c.created_at) >= '".$params['date_ini']."'";
+        if (array_key_exists('date_fin', $params))
+            if($params['date_fin'] != null)
+                $qry .= " and date(c.created_at) <= '".$params['date_fin']."'";
+        if (array_key_exists('band_paid_out', $params))
+            if($params['band_paid_out'] != 2)
+                $qry .= " and c.band_paid_out = ".$params['band_paid_out'];
+
+        $qry .= " order by c.created_at desc ) as t ";
+        if (array_key_exists('clients_id', $params))
+            if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
+                $qry .= " where t.addresses_ids in (".implode(',',$params['clients_id']).") ";
+        $qry .= " group by t.date_charge ";    
+        if (!array_key_exists('date_ini', $params) && !array_key_exists('date_fin', $params))
+            $qry .= " limit 10";
+        //echo $qry_final;
+        $res = DB::select($qry);
+
+        foreach ($res as &$r) {
+            $r->invoices = [];
+            $r->charges = [];
+            $r = $this->getListInvoicesCharges($r);
+        }
+        return $res;
+    }
+
+    public function getListInvoicesCharges($row){
+        $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
+        $rows = DB::select($qry);
+        if(count($rows)>0)
+            $row->invoices = array_merge($row->invoices, $rows);
+        
+        $qry = "select *,if(t.band_paid_out = 1, '#B1FEAB', '#FEB4AB') as row_color
+            from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
+            (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,
+            date(c.created_at) as date,
+            (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
+            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m 
+            where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business
+            from charges c where id in (".$row->charges_ids.") and id not in (select charge_id from invoices_details)) as t;";
+        $rows = DB::select($qry);
+        if(count($rows)>0)
+            $row->charges = array_merge($row->charges, $rows);
+        return $row;
     }
 
     public function getList($params){
