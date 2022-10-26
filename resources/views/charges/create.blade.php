@@ -220,6 +220,14 @@
               </thead>
               <tbody>
                 @foreach($data as $key => $dt)
+
+                <?php
+                    $total = 0;
+                    if($dt['invoice'] == 1)
+                    {
+                      $total += $dt['utility_calc'];
+                    }
+                 ?>
                   <tr>
                     <td>{{$dt['name']}}</td>
                     <td>{{$dt['utility_calc']}}</td>
@@ -242,7 +250,7 @@
                 $max += $dt['utility_s4f'];
                 $max2 += $dt['utility_calc'];
               }
-  
+
             ?>
 
             <div class="row">
@@ -269,15 +277,22 @@
                 </div>
 
               </div>
-                <div class="col-4">
-                  <label for="">Discount</label>
-                  <input class="form-control" type="number" value="" name="discount">
-                </div>
+              <div class="col-4">
+                <label for="">Discount</label>
+                <input class="form-control" type="number" value="" name="discount">
+              </div>
+              <div class="col-4">
+                <label for="">Total a facturar</label>
+                <input class="form-control" type="number" value="{{$total}}" name="total" readonly>
+              </div>
             </div>
 
 
           </form>
           @endif
+
+
+
         </div>
       </div>
     </div>
@@ -306,4 +321,6 @@
     }
     $('#charge_machine').selectpicker('refresh');
   }
+
+
 </script>
