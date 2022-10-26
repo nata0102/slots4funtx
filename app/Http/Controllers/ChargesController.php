@@ -69,21 +69,19 @@ $res = $this->getList2($request->all());
         if (array_key_exists('clients_id', $params))
             if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
                 $qry .= " where t.addresses_ids in (".implode(',',$params['clients_id']).") ";
-        $qry .= " group by t.date_charge ";    
+        $qry .= " group by t.date_charge order by t.date_charge desc ";    
         if (!array_key_exists('date_ini', $params) && !array_key_exists('date_fin', $params))
             $qry .= " limit 10";
-        //echo $qry_final;
         $res = DB::select($qry);
 
-        foreach ($res as &$r) {
-            $r->invoices = [];
-            $r->charges = [];
+        foreach ($res as &$r)          
             $r = $this->getListInvoicesCharges($r);
-        }
         return $res;
     }
 
     public function getListInvoicesCharges($row){
+        $row->invoices = [];
+        $row->charges = [];
         $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
         $rows = DB::select($qry);
         if(count($rows)>0)
