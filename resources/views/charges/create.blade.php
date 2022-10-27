@@ -92,11 +92,11 @@
                   </div>
                 </div>
 
-                <h4>Invoice?</h4>
+                <!--<h4>Invoice?</h4>
                 <div>
                   <input type="hidden" name="invoice" value="0">
                   <input type="checkbox" class="form-control" name="invoice" value="1">
-                </div>
+                </div>-->
 
 
                 <hr>
@@ -195,11 +195,13 @@
                 <hr>
               </div>
 
-              <h4>Invoice?</h4>
+              <input type="hidden" name="band_invoice" value="1">
+
+              <!--<h4>Invoice?</h4>
               <div>
                 <input type="hidden" name="invoice" value="0">
                 <input type="checkbox" class="form-control" name="invoice" value="1">
-              </div>
+              </div>-->
 
 
             </form>
@@ -215,6 +217,7 @@
                   <th>Machine</th>
                   <th>Utility Calculated</th>
                   <th>Utility S4F</th>
+                  <th>Invoice</th>
                   <th></th>
                 </tr>
               </thead>
@@ -223,15 +226,22 @@
 
                 <?php
                     $total = 0;
-                    if($dt['invoice'] == 1)
+                    /*if($dt['invoice'] == 1)
                     {
                       $total += $dt['utility_calc'];
-                    }
+                    }*/
                  ?>
                   <tr>
                     <td>{{$dt['name']}}</td>
                     <td>{{$dt['utility_calc']}}</td>
                     <td>{{$dt['utility_s4f']}}</td>
+                    <td>
+                      @if($dt['band_invoice']==1)
+                      <div>
+                        <input type="checkbox" onchange="changeBandInvoice({{$data}})" checked="true" name="invoice" value="1">
+                      </div>                      
+                      @endif
+                    </td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
                   </tr>
                 @endforeach
@@ -301,6 +311,13 @@
 @stop
 
 <script>
+
+  function changeBandInvoice(machine_id, band_invoice) {
+    
+    console.log(machine_id);
+    console.log(band_invoice);
+  }
+
   function loadMachines(index,clients){
     var type = document.getElementById("fi").value;
     document.getElementById("machineselect").hidden =false;
