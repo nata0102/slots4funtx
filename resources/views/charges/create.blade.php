@@ -92,12 +92,19 @@
                   </div>
                 </div>
 
+
                 <!--<h4>Invoice?</h4>
                 <div>
                   <input type="hidden" name="invoice" value="0">
                   <input type="checkbox" class="form-control" name="invoice" value="1">
                 </div>-->
 
+                <div class="row">
+                  <div class="col-2">
+                    <input type="hidden" name="invoice" value="0">
+                    <input type="checkbox" class="form-control" name="invoice" value="1">
+                  </div>
+                </div>
 
                 <hr>
                 <div class="form-group">
@@ -188,12 +195,22 @@
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
 
+
+                </div>
+                <hr>
+                <h4>Invoice?</h4>
+                <div class="row">
+                  <div class="col-2">
+                    <input type="hidden" name="invoice" value="0">
+                    <input type="checkbox" class="form-control" name="invoice" value="1">
+                  </div>
                   <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
+
                 </div>
-                <hr>
               </div>
+
 
               <input type="hidden" name="band_invoice" value="1">
 
@@ -202,7 +219,6 @@
                 <input type="hidden" name="invoice" value="0">
                 <input type="checkbox" class="form-control" name="invoice" value="1">
               </div>-->
-
 
             </form>
           </div>
