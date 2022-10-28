@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth','web']], function() {
   Route::resource("image_part_brand",'ImagePartBrandController');
   Route::resource("users","UserController");
   Route::resource("charges","ChargesController");
+  Route::post("charges/update_data/{key?}","ChargesController@updateInvoice");
   Route::post("charges/store_data","ChargesController@storeData");
   Route::post("charges/store_initial_numbers","ChargesController@storeInitialNumbers");
   Route::get('/charges/delete/{key}', 'ChargesController@deleteData');

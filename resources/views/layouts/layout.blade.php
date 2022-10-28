@@ -1159,8 +1159,22 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 		function loadClients(){
 		    document.getElementById("div_cli").hidden = false;
-		    document.getElementById("select_cli").selectedIndex = "0"; 
-   		    document.getElementById("machineselect").hidden = true;
+
+				if(document.getElementById("select_cli").selectedIndex != 0)
+				{
+					index = document.getElementById("select_cli").selectedIndex;
+
+					document.getElementById("select_cli").onchange();
+
+					document.getElementById("machineselect").hidden = false;
+				}
+				else {
+					document.getElementById("select_cli").selectedIndex = 0;
+					document.getElementById("machineselect").hidden = true;
+					$('#select_cli').selectpicker('refresh');
+				}
+
+
 
 		}
 
@@ -1168,7 +1182,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 			$('#machineselect option').prop('selected', function() {
 	        return this.defaultSelected;
-	    	});   
+	    	});
 
 			dataReset();
 
@@ -1240,7 +1254,20 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					document.getElementById("us").value = t ;
 					document.getElementById("us").setAttribute('max',t);
 				}
+
+
 			}
+		}
+
+		function totalDiscount(){
+			console.log('cAMBIO');
+			discount = document.getElementById('discount').value;
+			total_invoice = document.getElementById('total_invoice').value;
+
+			total = total_invoice - total_invoice*(discount/100)
+
+			document.getElementById('total_discount').value = total.toFixed(2);
+
 		}
 
 

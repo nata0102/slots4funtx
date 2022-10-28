@@ -13,7 +13,8 @@ class ChargesController extends Controller
 {
 
     public function __construct(){
-        if(!\Session::has('data')) \Session::put('data', array());
+      if(!\Session::has('data')) \Session::put('data', array());
+      if(!\Session::has('client_id'));
     }
 
     /**
@@ -23,7 +24,8 @@ class ChargesController extends Controller
      */
     public function index(Request $request)
     {
-        \Session::forget('data');
+      \Session::forget('data');
+        \Session::forget('client_id');
         $res = null;
         $clients = null;
         switch ($request->option) {
@@ -38,6 +40,27 @@ $res = $this->getList2($request->all());
         }
         return view('charges.index',compact('res','clients'));
     }
+
+
+    public function updateInvoice($key)
+    {
+      $dt = \Session::get('data');
+      $data = $dt[$key];
+
+      if($data['band_invoice'] == 1){
+        $data['band_invoice'] = 0;
+      }
+      else {
+        $data['band_invoice'] = 1;
+      }
+
+      $dt[$key] = $data;
+
+      \Session::put('data', $dt);
+
+      return response()->json('200');
+    }
+
 
     public function getList2($params){
         $role = Auth::user()->role->key_value;
@@ -69,12 +92,12 @@ $res = $this->getList2($request->all());
         if (array_key_exists('clients_id', $params))
             if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
                 $qry .= " where t.addresses_ids in (".implode(',',$params['clients_id']).") ";
-        $qry .= " group by t.date_charge order by t.date_charge desc ";    
+        $qry .= " group by t.date_charge order by t.date_charge desc ";
         if (!array_key_exists('date_ini', $params) && !array_key_exists('date_fin', $params))
             $qry .= " limit 10";
         $res = DB::select($qry);
 
-        foreach ($res as &$r)          
+        foreach ($res as &$r)
             $r = $this->getListInvoicesCharges($r);
         return $res;
     }
@@ -86,13 +109,13 @@ $res = $this->getList2($request->all());
         $rows = DB::select($qry);
         if(count($rows)>0)
             $row->invoices = array_merge($row->invoices, $rows);
-        
+
         $qry = "select *,if(t.band_paid_out = 1, '#B1FEAB', '#FEB4AB') as row_color
             from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
             (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,
             date(c.created_at) as date,
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
-            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m 
+            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
             where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business
             from charges c where id in (".$row->charges_ids.") and id not in (select charge_id from invoices_details)) as t;";
         $rows = DB::select($qry);
@@ -105,9 +128,9 @@ $res = $this->getList2($request->all());
         $qry = "select * from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
             (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
-            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m 
+            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
             where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business,
-            (select address_id from machines where id = c.machine_id) as address_id 
+            (select address_id from machines where id = c.machine_id) as address_id
             from charges c where c.type != 'initial_numbers' ";
         if (array_key_exists('date_ini', $params))
             if($params['date_ini'] != null)
@@ -147,7 +170,13 @@ $res = $this->getList2($request->all());
      */
     public function create()
     {
+        //$data = \Session::forget('data');
         $data = \Session::get('data');
+        $client_id = \Session::get('client_id');
+        if(count($data) == 0){
+          \Session::forget('client_id');
+        }
+
         if( url()->previous() != url()->current() ){
             session()->forget('urlBack');
             session(['urlBack' => url()->previous()]);
@@ -155,14 +184,14 @@ $res = $this->getList2($request->all());
         $machines = [];
         $clients = $this->getClientsWithMachines();
         $types = Lookup::where('type','charge_type')->orderBy('value','desc')->get();
-        return view('charges.create',compact('machines','types','data','clients'));
+        return view('charges.create',compact('machines','types','data','clients','client_id'));
 
     }
 
     public function getClientsWithCharges(){
         $qry = "select * from(
                 select a.id, concat(c.name,' - ', a.business_name) as name
-                from clients c, addresses a, machines m 
+                from clients c, addresses a, machines m
                 where c.id = a.client_id and a.active = 1 and c.active = 1
                 and m.active=1 and m.address_id = a.id and m.id in (select machine_id from charges)
                 ) as t group by t.id,t.name order by t.name;";
@@ -176,7 +205,7 @@ $res = $this->getList2($request->all());
                 (select count(*) from machines where address_id=a.id and active=1 and id in (select machine_id from percentage_price_machine where lkp_type_id = 45)) as total
                 from clients c, addresses a where c.id = a.client_id and a.active = 1 and c.active = 1) as t where t.total > 0 order by t.name, t.business_name;";
         $res = DB::select($qry);
-        foreach ($res as &$r) 
+        foreach ($res as &$r)
             $r->machines = $machine_ctrl->getMachinesFlatPercentage($r->address_id);
         return $res;
     }
@@ -187,13 +216,25 @@ $res = $this->getList2($request->all());
       unset($dt[$key]);
       \Session::put('data', $dt);
 
+      if(count($dt) == 0)
+        \Session::forget('client_id');
       return back();
     }
 
     public function storeData(Request $request){
+      //dd($request);
         $data = \Session::get('data');
+
+        if(count($data) == 0){
+          $client = \Session::get('client_id');
+          \Session::put('client_id', $request->client);
+        }
+
         $data[] = $request->all();
         \Session::put('data', $data);
+
+
+
         return redirect()->action('ChargesController@create');
     }
 
@@ -232,7 +273,8 @@ $res = $this->getList2($request->all());
     {
       try{
             $transaction = DB::transaction(function() use($request){
-                $res = \Session::get('data');
+              $res = \Session::get('data');
+                $client_id = \Session::get('client_id');
                 $payment_client = (float)$request->total;
                 foreach ($res as &$row){
                     $aux = [];
@@ -267,6 +309,7 @@ $res = $this->getList2($request->all());
                       'alert-type' => 'success'
                 );
                 \Session::forget('data');
+                \Session::forget('client');
 
                 return $notification;
             });
@@ -309,12 +352,12 @@ $res = $this->getList2($request->all());
         $qry = "select c.*,
         (select format(avg(utility_s4f),2) from charges where machine_id =m.id and utility_s4f is not null order by id desc limit 5) as average,
         (select value from lookups where id=m.lkp_owner_id) as owner,
-        (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl 
+        (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl
         where a.client_id = cl.id and a.id=m.address_id) as client_business,
         (select name from game_catalog where id=m.game_catalog_id) as game
         from machines m, charges c where m.id=c.machine_id and c.id=".$id.";";
-        $charge = DB::select($qry)[0];  
-        return view('charges.edit',compact('charge'));   
+        $charge = DB::select($qry)[0];
+        return view('charges.edit',compact('charge'));
     }
 
     /**

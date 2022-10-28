@@ -7,7 +7,9 @@
   foreach ($data as $key => $d)
     $machineArray[$d['machine_id']]=$d['machine_id'];
 
+
   $user_role = Auth::user()->role->key_value;
+
 ?>
 
 
@@ -26,11 +28,11 @@
                   @endforeach
                 </select>
               </div>
-              <div class="col-12 col-sm-4" hidden="" id="div_cli"">
+              <div class="col-12 col-sm-4" hidden="" id="div_cli">
                 <select class="form-control selectpicker" id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})" data-live-search="true">
                   <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients as $client)
-                    <option value="{{$client->id}}">{{$client->name}} - {{$client->business_name}}</option>
+                    <option value="{{$client->id}}" {{$client->id == $client_id ? 'selected' : ''}}>{{$client->name}} - {{$client->business_name}}</option>
                   @endforeach
                 </select>
               </div>
@@ -99,12 +101,12 @@
                   <input type="checkbox" class="form-control" name="invoice" value="1">
                 </div>-->
 
-                <div class="row">
+                <!--div class="row">
                   <div class="col-2">
                     <input type="hidden" name="invoice" value="0">
                     <input type="checkbox" class="form-control" name="invoice" value="1">
                   </div>
-                </div>
+                </div-->
 
                 <hr>
                 <div class="form-group">
@@ -118,6 +120,8 @@
 
             <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
             @csrf
+
+            <input type="hidden" name="client" value="" id="input_client">
 
               <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
@@ -145,17 +149,17 @@
                   <div class="row">
                     <div class="col-4">
                       <label for="">In <span style="color:red">*</span></label>
-                      <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()">
+                      <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()" onkeyup="this.onchange();">
                     </div>
                     <div class="col-4">
                       <label for="">Out <span style="color:red">*</span></label>
-                      <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()">
+                      <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()" onkeyup="this.onchange();">
                     </div>
                     <div class="col-4">
                       <!-- if jackpot -->
                       <div class="" hidden id="jackpot">
                         <label for="">Jackpot Out <span style="color:red">*</span></label>
-                        <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()">
+                        <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()" onkeyup="this.onchange();">
                       </div>
                     </div>
                   </div>
@@ -198,12 +202,12 @@
 
                 </div>
                 <hr>
-                <h4>Invoice?</h4>
+                <!--h4>Invoice?</h4-->
                 <div class="row">
-                  <div class="col-2">
+                  <!--div class="col-2">
                     <input type="hidden" name="invoice" value="0">
                     <input type="checkbox" class="form-control" name="invoice" value="1">
-                  </div>
+                  </div-->
                   <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
@@ -254,8 +258,12 @@
                     <td>
                       @if($dt['band_invoice']==1)
                       <div>
-                        <input type="checkbox" onchange="changeBandInvoice({{$data}})" checked="true" name="invoice" value="1">
-                      </div>                      
+                        <input type="checkbox" onchange="changeBandInvoice({{$key}})" checked="checked" name="invoice" value="1">
+                      </div>
+                      @else
+                      <div>
+                        <input type="checkbox" onchange="changeBandInvoice({{$key}})" name="invoice" value="0">
+                      </div>
                       @endif
                     </td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
@@ -265,56 +273,78 @@
             </table>
           </div>
           <hr>
+          <div id="cobro">
+
+
           <form class="" action="{{action('ChargesController@store')}}" method="post">
             @csrf
 
-            <?php
+              <?php
 
-            $max = 0;
-              $max2 = 0;
-              foreach ($data as $key => $dt) {
-                $max += $dt['utility_s4f'];
-                $max2 += $dt['utility_calc'];
-              }
+              $max = 0;
+                $max2 = 0;
+                foreach ($data as $key => $dt) {
+                  $max += $dt['utility_s4f'];
+                  $max2 += $dt['utility_calc'];
+                }
 
-            ?>
+              ?>
 
-            <div class="row">
-              <div class="col-4">
-                <label for="">Total Calculated</label>
-                <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly >
-              </div>
-              @if($user_role == 'administrator')
+              <div class="row">
                 <div class="col-4">
-                  <label for="">Total S4F</label>
-                  <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
+                  <label for="">Total Calculated</label>
+                  <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly id="total_calculated">
                 </div>
-              @endif
-              <div class="col-4">
-                <div class="row">
-                  <div class="col-6">
-                    <label for="">Payment Client</label>
-                    <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
+                @if($user_role == 'administrator')
+                  <div class="col-4">
+                    <label for="">Total S4F</label>
+                    <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
                   </div>
+                @endif
+                <div class="col-4">
+                      <label for="">Payment Client</label>
+                      <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
+
+                </div>
+
+                <?php
+
+
+                  $totalInvoice = 0;
+                  foreach ($data as $key => $dt) {
+                    if($dt['band_invoice'] == 1)
+                    $totalInvoice += $dt['utility_calc'];
+                  }
+
+                ?>
+
+
+                <div class="col-4">
+                  <label for="">Total a facturar</label>
+                  <input class="form-control" type="number" value="{{$totalInvoice}}" name="total" readonly id="total_invoice">
+                </div>
+
+                <div class="col-4">
+                  <label for="">Discount %</label>
+                  <input class="form-control" type="number" value="0" min="0" max="100" name="discount" id="discount" onchange="totalDiscount(this)" onkeyup="this.onchange();">
+                </div>
+
+                <div class="col-4">
+                  <label for="">Total con descuento</label>
+                  <input class="form-control" type="number" value="{{$max2}}" name="total_discount" readonly id="total_discount">
+                </div>
+
+                <div class="col-4">
+
                   <div class="col-6"><br>
-                      <button type="submit" name="button" class="btn btn-success" style="position: absolute; bottom: 0;">SAVE</button>
-
+                      <button type="submit" name="button" class="btn btn-success" style="">SAVE</button>
                   </div>
                 </div>
-
               </div>
-              <div class="col-4">
-                <label for="">Discount</label>
-                <input class="form-control" type="number" value="" name="discount">
-              </div>
-              <div class="col-4">
-                <label for="">Total a facturar</label>
-                <input class="form-control" type="number" value="{{$total}}" name="total" readonly>
-              </div>
-            </div>
 
 
-          </form>
+            </form>
+          </div>
           @endif
 
 
@@ -323,18 +353,41 @@
       </div>
     </div>
   </div>
+  <br>
+
 
 @stop
 
 <script>
 
-  function changeBandInvoice(machine_id, band_invoice) {
-    
+  function changeBandInvoice(machine_id) {
+
     console.log(machine_id);
-    console.log(band_invoice);
+
+    url = "{{action('ChargesController@index')}}"+"/update_data/"+ machine_id;
+    console.log(url);
+
+    $.ajax({
+      dataType: 'json',
+      type:'POST',
+      url: url,
+      cache: false,
+      data: {'key' : machine_id,'_token':"{{ csrf_token() }}"},
+      success: function(){
+        toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
+        $("#cobro").load(" #cobro");
+      },
+      error: function(){
+        toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
+      }
+    });
+
   }
 
   function loadMachines(index,clients){
+    client_id = clients[index-1].id;
+    document.getElementById("input_client").value = client_id;
+
     var type = document.getElementById("fi").value;
     document.getElementById("machineselect").hidden =false;
     var machines = clients[index-1].machines;
