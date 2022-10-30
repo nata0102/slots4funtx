@@ -1145,17 +1145,23 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					document.getElementById("jackpot").removeAttribute('hidden');
 					document.getElementById("jackpotout").setAttribute('required','');
 				}
-
 			}
-			if(document.getElementById('info_numbers')){
+			if(document.getElementById('ant_in')){
+				document.getElementById('ant_in').innerHTML = "("+e.options[e.selectedIndex].getAttribute("data-masterin")+")";
+				document.getElementById('ant_out').innerHTML = "(" + e.options[e.selectedIndex].getAttribute("data-masterout")+")";
+				if(e.options[e.selectedIndex].getAttribute("data-band") == 1)
+					document.getElementById('ant_jackpot').innerHTML = "(" + e.options[e.selectedIndex].getAttribute("data-jackpotout")+")";
+			}
+			/*if(document.getElementById('info_numbers')){
+
 				document.getElementById('info_numbers').innerHTML = "Previous Master Numbers => In= ";
 				document.getElementById('info_numbers').innerHTML += e.options[e.selectedIndex].getAttribute("data-masterin");
 				document.getElementById('info_numbers').innerHTML += " | Out = " + e.options[e.selectedIndex].getAttribute("data-masterout");
 				if(e.options[e.selectedIndex].getAttribute("data-band") == 1)
 					document.getElementById('info_numbers').innerHTML += " | Jackpot Out = " + e.options[e.selectedIndex].getAttribute("data-jackpotout");
 
-				}
-			}
+			}*/
+		}
 
 		function loadClients(){
 		    document.getElementById("div_cli").hidden = false;

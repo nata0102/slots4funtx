@@ -138,27 +138,27 @@
               <div class="card">
                 <div id="avr">
                   @if($user_role == 'administrator')
-                    <div class="row">
+                    <!--<div class="row">
                       <div class="col-10">
                         <label id="info_numbers"></label>
                       </div>
-                    </div>
+                    </div>-->
                   @endif
 
                   <h4>Master Numbers:</h4>
                   <div class="row">
                     <div class="col-4">
-                      <label for="">In <span style="color:red">*</span></label>
+                      <label for="">In  @if($user_role == 'administrator')<span id="ant_in"></span> @endif<span style="color:red">*</span></label>
                       <input class="form-control" type="number" value="" name="masterIn" id="masterin" required onchange="calculate()" onkeyup="this.onchange();">
                     </div>
                     <div class="col-4">
-                      <label for="">Out <span style="color:red">*</span></label>
+                      <label for="">Out @if($user_role == 'administrator')<span id="ant_out"></span> @endif<span style="color:red">*</span></label>
                       <input class="form-control" type="number" value="" name="masterOut" id="masterout" required onchange="calculate()" onkeyup="this.onchange();">
                     </div>
                     <div class="col-4">
                       <!-- if jackpot -->
                       <div class="" hidden id="jackpot">
-                        <label for="">Jackpot Out <span style="color:red">*</span></label>
+                        <label for="">Jackpot Out @if($user_role == 'administrator')<span id="ant_jackpot"></span> @endif<span style="color:red">*</span></label>
                         <input class="form-control" type="number" value="" name="jackpotout" id="jackpotout" onchange="calculate()" onkeyup="this.onchange();">
                       </div>
                     </div>

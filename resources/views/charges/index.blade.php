@@ -16,7 +16,7 @@
 
                 <form method="GET" action="{{action('ChargesController@index')}}">
                     <div class="input-group mb-5">
-                          <div style="width: 30%">
+                          <div style="width: 30%;">
 
                           <input type="hidden" class="form-control @error('client') is-invalid @enderror input100" name="client" id="client" value="{{old('client')}}">
 
@@ -51,27 +51,27 @@
 
 
                 @foreach($res as $r)                
-                  <div style="border: 1px solid gray;padding: 5px" onclick="disabledDiv('{{$r->date_charge}}')" style="padding: 5px;">
+                  <div style="border: 1px solid gray;padding: 5px;border-radius: 10px" onclick="disabledDiv('{{$r->date_charge}}')" style="padding: 5px;">
                     <p style="float: left; width: 95%; padding: 5px">{{$r->date_charge}}</p>
                     <a href="#" align="right" class="btn btn-success" style="width:40px; height: 35px;"><i class="fas fa-arrow-down"></i></a>
                   </div>
                   <div id="{{$r->date_charge}}" hidden="">
 
                     <!-- Invoices -->
-                    @if(count($r->invoices)>0)
-                    <div>
-                      @foreach($r->invoice as $invoice)
-                        <p style="float: left;">{{$invoice->folio}}</p>
-                        <button style="margin-left: 10px" class="btn btn-info">Factura</button>
-                      @endforeach
-                    </div>
+                    @if(count($r->invoices)>0)                    
+                      @foreach($r->invoices as $invoice)
+                      <div style="margin-left: 17px;margin-top: 5px;border: 1px solid gray;border-radius: 5px;width: 96%;padding: 5px">
+                        <p style="float: left;">Folio:{{$invoice->folio}} <span style="margin-left: 30px">{{$invoice->client_name}}</span></p>
+                        <a href="{{action('InvoiceController@show',$invoice->invoice_id)}}" align="right" class="btn btn-info" style="width:40px; height: 35px;margin-left:50px;"><i class="fas fa-file-invoice-dollar"></i></a>
+                      </div>                       
+                      @endforeach                    
                     @endif
                  
                     
                     <!-- Charges -->
                     @if(count($r->charges)>0)                        
                     <div class="table-responsive table-striped table-bordered">
-                      <table id="table" class="table tablesorter" style="width: 96%; table-layout: fixed;font-size:14px;margin-top: -30px ">
+                      <table id="table" class="table tablesorter" style="width: 96%; table-layout: fixed;font-size:14px;margin-top: -20px;margin-left: 20px ">
                           <tr>
                             <th style="width:50%; text-align: center;">Machine<i class="fa fa-sort"></i></th>
                             <th class="not-sortable" style="width:50%; text-align: center;">Client - Business</th>

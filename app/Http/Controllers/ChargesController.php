@@ -33,8 +33,8 @@ class ChargesController extends Controller
                 return $this->getAverage($request->all());
             break;
             default:
-$res = $this->getList2($request->all());
-                //$res = $this->getList($request->all());
+                $res = $this->getList($request->all());
+                //$res = $this->getList2($request->all());
                 $clients = $this->getClientsWithCharges();
             break;
         }
@@ -62,7 +62,7 @@ $res = $this->getList2($request->all());
     }
 
 
-    public function getList2($params){
+    public function getList($params){
         $role = Auth::user()->role->key_value;
         $user_id = Auth::id();
         $qry = "select t.date_charge, group_concat(t.id) as charges_ids,group_concat(address_id) as addresses_ids
@@ -105,7 +105,8 @@ $res = $this->getList2($request->all());
     public function getListInvoicesCharges($row){
         $row->invoices = [];
         $row->charges = [];
-        $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
+        $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio,
+        (select c.name from clients c, invoices inv where inv.id=i.invoice_id and c.id=inv.client_id) as client_name from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
         $rows = DB::select($qry);
         if(count($rows)>0)
             $row->invoices = array_merge($row->invoices, $rows);
@@ -124,7 +125,7 @@ $res = $this->getList2($request->all());
         return $row;
     }
 
-    public function getList($params){
+   /* public function getList2($params){
         $qry = "select * from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
             (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
@@ -156,7 +157,7 @@ $res = $this->getList2($request->all());
             $r->charges = DB::select($qry);
         }
         return $res;*/
-    }
+   // }
 
     public function getAverage($params){
         return Charge::where("machine_id", $params['machine_id'])->whereNotNull('utility_s4f')
@@ -273,9 +274,13 @@ $res = $this->getList2($request->all());
     {
       try{
             $transaction = DB::transaction(function() use($request){
-              $res = \Session::get('data');
-                $client_id = \Session::get('client_id');
+                $res = \Session::get('data');
+                //$client_id = \Session::get('client_id');
                 $payment_client = (float)$request->total;
+                $charges_ids = [];
+                $client_id = null;
+                $invoice_ctrl = new InvoiceController();
+
                 foreach ($res as &$row){
                     $aux = [];
                     $aux['user_id'] = Auth::id();
@@ -293,6 +298,7 @@ $res = $this->getList2($request->all());
                     $aux['type'] = $row['type'];
                     $aux['utility_calc'] = $row['utility_calc'];
                     $aux['utility_s4f'] = $row['utility_s4f'];
+                    $client_id = $row['client'];
 
                     if($payment_client > 0){
                         $aux['payment_client'] = $payment_client;
@@ -302,8 +308,14 @@ $res = $this->getList2($request->all());
                             $aux['payment_client'] = $aux['utility_s4f'];
                         }
                     }
-                    Charge::create($aux);
+                    $charge = Charge::create($aux);
+                    if($row['band_invoice'] == "1")
+                        array_push($charges_ids, $charge->id);                    
                 }
+                $params = $request->all();
+                $params['client_id'] = $client_id;
+                $invoice_ctrl->createInvoiceDetails($charges_ids,$params,"C");                
+
                 $notification = array(
                       'message' => 'Successful!!',
                       'alert-type' => 'success'
@@ -315,7 +327,7 @@ $res = $this->getList2($request->all());
             });
             return redirect()->action('ChargesController@index')->with($transaction);
         }catch(\Exception $e){
-            $cad = 'Oops! there was an error, please try again later.';
+            $cad = 'Oops! there was an error, please try again later.'.$e->getMessage();
             $transaction = array(
                 'message' => $cad,
                 'alert-type' => 'error'
@@ -325,6 +337,7 @@ $res = $this->getList2($request->all());
 
         return back()->with($transaction)->withInput($request->all());
     }
+
 
     /**
      * Display the specified resource.
