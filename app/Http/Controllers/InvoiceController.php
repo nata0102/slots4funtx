@@ -13,6 +13,24 @@ use PDF;
 
 class InvoiceController extends Controller
 {
+	public function index(Request $request){
+		$res = [];
+		switch($request->option){
+			default:
+				$res = $this->getList($request->all());
+			break;
+		}
+		return view('invoices.index',compact('res'));
+	}
+
+	public function getList($params){
+		$qry = "select i.*,
+		(select value from lookups where type='invoices_type' and key_value=i.type limit 1) as type_value,
+		(select name from clients where id=i.client_id) as client_name
+		from invoices i;";
+		return DB::select($qry);
+	}
+
     public function getFolio($type){
     	$invoice = Invoice::where('folio', 'like', '%'.$type.'%')->orderBy('id','desc')->first();
         $folio = "0001";
@@ -56,6 +74,13 @@ class InvoiceController extends Controller
    		}
    		return $pdf;
    	}
+
+   	public function destroy($id) {
+   		$invoice = Invoice::findOrFail($id);
+   		$invoice->band_cancel = 1;
+   		$invoice->save();
+   		return $invoice;
+    }
 
    	public function getChargesPDF($invoice){
    		$res = [];

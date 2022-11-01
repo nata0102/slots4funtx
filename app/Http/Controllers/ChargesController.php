@@ -106,6 +106,7 @@ class ChargesController extends Controller
         $row->invoices = [];
         $row->charges = [];
         $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio,
+        (select band_cancel from invoices where id=i.invoice_id) as band_cancel,
         (select c.name from clients c, invoices inv where inv.id=i.invoice_id and c.id=inv.client_id) as client_name from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
         $rows = DB::select($qry);
         if(count($rows)>0)
@@ -118,7 +119,8 @@ class ChargesController extends Controller
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
             (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
             where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business
-            from charges c where id in (".$row->charges_ids.") and id not in (select charge_id from invoices_details)) as t;";
+            from charges c where id in (".$row->charges_ids.") and id not in (select inv_d.charge_id from invoices_details inv_d, invoices i 
+            where inv_d.invoice_id=i.id and i.band_cancel = 0)) as t;";
         $rows = DB::select($qry);
         if(count($rows)>0)
             $row->charges = array_merge($row->charges, $rows);

@@ -62,7 +62,10 @@
                       @foreach($r->invoices as $invoice)
                       <div style="margin-left: 17px;margin-top: 5px;border: 1px solid gray;border-radius: 5px;width: 96%;padding: 5px">
                         <p style="float: left;">Folio:{{$invoice->folio}} <span style="margin-left: 30px">{{$invoice->client_name}}</span></p>
-                        <a href="{{action('InvoiceController@show',$invoice->invoice_id)}}" target="_blank" align="right" class="btn btn-info" style="width:40px; height: 35px;margin-left:50px;"><i class="fas fa-file-invoice-dollar"></i></a>
+                        <a href="{{action('InvoiceController@show',$invoice->invoice_id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 40px;margin-left: 40px;margin-top: -4px;"><i class="fas fa-file-invoice-dollar"></i></a>
+                        @if($invoice->band_cancel == 1)                        
+                        <button disabled="" class="delete-alert btn btn-link" style="width:40px; margin:0; padding: 0;margin-top: -4px;"><i class="fas fa-times"></i></button>
+                        @endif
                       </div>
                       @endforeach
                     @endif
