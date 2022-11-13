@@ -468,11 +468,22 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				}
 			});
 
-if(document.getElementById("select_cli"))
+			if(document.getElementById("select_cli"))
 			if(document.getElementById("select_cli").selectedIndex != 0)
 			{
 				index = document.getElementById("select_cli").selectedIndex;
 				document.getElementById("select_cli").onchange();
+			}
+
+			if(document.getElementById("select_invoice"))
+			if(document.getElementById("select_invoice").selectedIndex != 0)
+			{
+		
+				var e = document.getElementById("select_invoice");
+				var value = e.value;
+				console.log(value);
+				document.getElementById("type_invoice").value  = e.options[e.selectedIndex].text;
+
 			}
 
 		});
