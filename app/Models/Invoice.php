@@ -13,4 +13,8 @@ class Invoice extends Model
     public function client(){
         return $this->hasOne('App\Models\Client', 'id', 'client_id');
     }
+
+    public function address(){
+        return $this->hasOne('App\Models\Address', 'id', 'address_id');
+    }
 }

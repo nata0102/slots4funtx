@@ -46,26 +46,39 @@ class InvoiceController extends Controller
    		if(count($charges_ids) > 0){
             $arr_invoice = [];
             $arr_invoice['folio'] = $type."-".$this->getFolio($type);
-            $arr_invoice['type'] = "charges";
+            /*$arr_invoice['type'] = "charges";
             $arr_invoice['date_invoice'] = date('Y-m-d');
             $arr_invoice['discount'] = $params['discount'];
-            $arr_invoice['total_system'] = $params['total'];
-            $arr_invoice['total_discount'] = $params['total_discount'];
+            $arr_invoice['total_system'] = $params['total_invoice'];
+            $arr_invoice['total_discount'] = $params['total_invoice_modified'];
             $arr_invoice['user_id'] = Auth::id();
             $arr_invoice['client_id'] = $params['client_id'];
             $arr_invoice['payment_client'] = $params['payment_client'];
+            $arr_invoice['address_id'] = $params['client_address_id'];
             $invoice = Invoice::create($arr_invoice);
             if($params['total_invoice_modified'] == $params['payment_client'])
             	$arr_invoice['band_paid_out'] = 1;
             foreach($charges_ids as $charge_id)
-            	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);
+            	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);*/
         }
    	}
 
+   	public function create()
+    {
+        if( url()->previous() != url()->current() ){
+            session()->forget('urlBack');
+            session(['urlBack' => url()->previous()]);
+        }
+        $charges_ctrl = new ChargesController();
+        $clients = $charges_ctrl->getClientsWithMachines();
+        $types = Lookup::where('type','invoices_type')->orderBy('value','desc')->get();
+        return view('invoices.create',compact('types','clients'));
+    }
+
    	public function show($id){
    		$pdf = null;
-   		$invoice = Invoice::with('client')->findOrFail($id);
-   		$invoice->address = Address::with('city','county')->where('client_id',$invoice->client_id)->first();
+   		$invoice = Invoice::with('client','address')->findOrFail($id);
+   		
    		switch ($invoice->type) {
    			case 'charges':
    				$pdf = $this->getChargesPDF($invoice);
@@ -91,10 +104,14 @@ class InvoiceController extends Controller
    		$res['logo'] = null;
    		$res['invoice'] = $invoice;
    		$path_logo = public_path().'/images/logo-black.png';
-        if ( !empty($path_logo) ){
-            $headers = array('Content-Type' => 'application/octet-stream');
+   		$path_logo_cancelled = public_path().'/images/cancelled.jpg';
+		$headers = array('Content-Type' => 'application/octet-stream');
+
+        if ( !empty($path_logo) )
             $res['logo'] = Response::make( base64_encode( file_get_contents($path_logo) ), 200, $headers);
-        }
+         if ( !empty($path_logo_cancelled) )
+            $res['logo_cancelled'] = Response::make( base64_encode( file_get_contents($path_logo_cancelled) ), 200, $headers);
+        
 
    		//$res['details'] = InvoiceDetail::with('charges')->where('invoice_id',$invoice->id)->get();
    		$qry = "select c.*,

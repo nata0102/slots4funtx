@@ -43,8 +43,7 @@
        
   </style>
   </head>
-  <body>    
-
+  <body style="background-image: url({{asset('//images/logo-black.png')}});">   
     <div style="margin-left: 50px;margin-top: 0px">
       <h2>{{$res['invoice']['date_invoice']}}</h2>
       <h2 style="margin-top: 30px">INVOICE</h2>

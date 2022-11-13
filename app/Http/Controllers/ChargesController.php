@@ -129,40 +129,6 @@ class ChargesController extends Controller
         return $row;
     }
 
-   /* public function getList2($params){
-        $qry = "select * from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
-            (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,date(c.created_at) as date,
-            (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
-            (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
-            where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business,
-            (select address_id from machines where id = c.machine_id) as address_id
-            from charges c where c.type != 'initial_numbers' ";
-        if (array_key_exists('date_ini', $params))
-            if($params['date_ini'] != null)
-                $qry.= " and date(created_at) >= '".$params['date_ini']."'";
-        if (array_key_exists('date_fin', $params))
-            if($params['date_fin'] != null)
-                $qry.= " and date(created_at) <= '".$params['date_fin']."'";
-        if (array_key_exists('band_paid_out', $params))
-            if($params['band_paid_out'] != 2)
-                $qry.= " and band_paid_out = ".$params['band_paid_out'];
-        $qry .= "  order by created_at desc limit 20 ) as t ";
-        if (array_key_exists('clients_id', $params))
-            if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
-                $qry.= " where t.address_id in (".implode(',',$params['clients_id']).")";
-        return DB::select($qry);
-    /*    $qry = "select date(created_at) as date_charge from charges group by date(created_at) order by created_at desc;";
-        $res = DB::select($qry);
-        foreach ($res as &$r) {
-            $qry = "select *, (select concat(m.id,' - ',m.serial,' - ',g.name)
-            from machines m,game_catalog g
-            where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
-            from charges c where date(created_at) = '".$r->date_charge."' and c.type != 'initial_numbers';";
-            $r->charges = DB::select($qry);
-        }
-        return $res;*/
-   // }
-
     public function getAverage($params){
         return Charge::where("machine_id", $params['machine_id'])->whereNotNull('utility_s4f')
                 ->orderBy('id','desc')->take(5)->avg('utility_s4f');
@@ -290,17 +256,17 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
-        print_r(\Session::get('data'));
+        //print_r(\Session::get('data'));
+        /*print_r($request->type_invoice);
         print_r($request->all());
-        return true;
-      try{
+        return true;*/
+        try{
             $transaction = DB::transaction(function() use($request){
                 $res = \Session::get('data');
-                //$client_id = \Session::get('client_id');
                 $payment_client = (float)$request->payment_client;
-                $type = $request->type_invoice;
                 $charges_ids = [];
                 $client_id = null;
+                $params = $request->all();
                 $invoice_ctrl = new InvoiceController();
 
                 foreach ($res as &$row){
@@ -331,10 +297,9 @@ class ChargesController extends Controller
                         }
                     }
                     $charge = Charge::create($aux);
-                    if($row['type_invoice'] == "with_invoice")
+                    if($params['type_invoice'] == "with_invoice")
                         array_push($charges_ids, $charge->id);
                 }
-                $params = $request->all();
                 $params['client_id'] = $client_id;
                 $invoice_ctrl->createInvoiceDetails($charges_ids,$params,"C");
 
