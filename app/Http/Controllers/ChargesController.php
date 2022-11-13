@@ -274,11 +274,15 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
+        print_r(\Session::get('data'));
+        print_r($request->all());
+        return true;
       try{
             $transaction = DB::transaction(function() use($request){
                 $res = \Session::get('data');
                 //$client_id = \Session::get('client_id');
-                $payment_client = (float)$request->total;
+                $payment_client = (float)$request->payment_client;
+                $type = $request->type_invoice;
                 $charges_ids = [];
                 $client_id = null;
                 $invoice_ctrl = new InvoiceController();
@@ -311,7 +315,7 @@ class ChargesController extends Controller
                         }
                     }
                     $charge = Charge::create($aux);
-                    if($row['band_invoice'] == "1")
+                    if($row['type_invoice'] == "with_invoice")
                         array_push($charges_ids, $charge->id);                    
                 }
                 $params = $request->all();

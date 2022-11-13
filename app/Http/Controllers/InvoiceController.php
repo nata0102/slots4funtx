@@ -53,7 +53,10 @@ class InvoiceController extends Controller
             $arr_invoice['total_discount'] = $params['total_discount'];
             $arr_invoice['user_id'] = Auth::id();
             $arr_invoice['client_id'] = $params['client_id'];
+            $arr_invoice['payment_client'] = $params['payment_client'];
             $invoice = Invoice::create($arr_invoice);
+            if($params['total_invoice_modified'] == $params['payment_client'])
+            	$arr_invoice['band_paid_out'] = 1;
             foreach($charges_ids as $charge_id)
             	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);
         }

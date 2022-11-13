@@ -7,9 +7,7 @@
   foreach ($data as $key => $d)
     $machineArray[$d['machine_id']]=$d['machine_id'];
 
-
   $user_role = Auth::user()->role->key_value;
-
 ?>
 
 
@@ -18,8 +16,14 @@
       <div class="container-fluid">
         <div class="card" id="card-section">
 
-
           <div class="row" id="typeselect">
+              <div class="col-12 col-sm-3">
+                <select class="form-control selectpicker" id="select_invoice" style="width: 100%;" data-live-search="true" onchange="hiddenFields(this)">
+                  <option value="" selected disabled>-- Invoince/No Invoice --</option>
+                    <option value="with_invoice">WITH INVOICE</option>
+                    <option value="no_invoice">NO INVOICE</option>
+                </select>
+              </div>
               <div class="col-12 col-sm-3">
                 <select class="form-control selectpicker" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi" data-live-search="true">
                   <option value="" selected disabled>-- Select Type --</option>
@@ -36,12 +40,11 @@
                   @endforeach
                 </select>
               </div>
-              <div clas="col-12 col-sm-4">
+              <div clas="col-12 col-sm-4" style="margin-top: 30px">
                 <div class="row" id="machineselect" hidden>
                   <div class="col-12">
                     <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
                     </select>
-                  </div>
                 </div>
               </div>
           </div>
@@ -51,7 +54,6 @@
           <br>
 
           <div class="" id="initial-form" hidden>
-
             <form class="" action="{{action('ChargesController@storeInitialNumbers')}}" method="post" id="initialform">
               @csrf
               <div class="" hidden>
@@ -93,22 +95,6 @@
                     <input class="form-control" type="date" name="period_date" value="">
                   </div>
                 </div>
-
-
-                <!--<h4>Invoice?</h4>
-                <div>
-                  <input type="hidden" name="invoice" value="0">
-                  <input type="checkbox" class="form-control" name="invoice" value="1">
-                </div>-->
-
-                <!--div class="row">
-                  <div class="col-2">
-                    <input type="hidden" name="invoice" value="0">
-                    <input type="checkbox" class="form-control" name="invoice" value="1">
-                  </div>
-                </div-->
-
-                <hr>
                 <div class="form-group">
                   <button type="submit" name="button" class="btn btn-success">SAVE</button>
                 </div>
@@ -137,14 +123,6 @@
 
               <div class="card">
                 <div id="avr">
-                  @if($user_role == 'administrator')
-                    <!--<div class="row">
-                      <div class="col-10">
-                        <label id="info_numbers"></label>
-                      </div>
-                    </div>-->
-                  @endif
-
                   <h4>Master Numbers:</h4>
                   <div class="row">
                     <div class="col-4">
@@ -187,85 +165,46 @@
                 <h4>Machine Utility:</h4>
                 <div class="row">
                   <div class="col-4">
-                    <label for="">Calculated</label>
+                    <label for="">Calculated System</label>
                     <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step=".01">
                   </div>
-                  @if($user_role == 'administrator')
-                    <div class="col-4">
-                  @else
-                     <div class="col-4" hidden="">
-                  @endif
+                  <div class="col-4"  id="div_input_utility_s4f">                       
                     <label for="">S4F</label>
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
-
-
-                </div>
-                <hr>
-                <!--h4>Invoice?</h4-->
-                <div class="row">
-                  <!--div class="col-2">
-                    <input type="hidden" name="invoice" value="0">
-                    <input type="checkbox" class="form-control" name="invoice" value="1">
-                  </div-->
-                  <div class="col-4" style="margin-top: 30px">
-                    <button type="submit" name="button" class="btn btn-info">+</button>
+                  <div class="row">
+                    <div class="col-4" style="margin-top: 30px">
+                      <button type="submit" name="button" class="btn btn-info">+</button>
+                    </div>
                   </div>
-
                 </div>
+                <hr>                
               </div>
-
-
-              <input type="hidden" name="band_invoice" value="1">
-
-              <!--<h4>Invoice?</h4>
-              <div>
-                <input type="hidden" name="invoice" value="0">
-                <input type="checkbox" class="form-control" name="invoice" value="1">
-              </div>-->
-
             </form>
           </div>
         </div>
 
         @if($data)
 
-        <div class="table-responsive table-striped table-bordered">
+        <div style="margin-top: 20px;" class="table-responsive table-striped table-bordered">
         <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
               <thead>
                 <tr style="text-align: center;">
                   <th>Machine</th>
-                  <th>Utility Calculated</th>
+                  <th>Utility System</th>
                   <th>Utility S4F</th>
-                  <th>Invoice</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($data as $key => $dt)
-
-                <?php
+                  <?php
                     $total = 0;
-                    /*if($dt['invoice'] == 1)
-                    {
-                      $total += $dt['utility_calc'];
-                    }*/
-                 ?>
+                  ?>
                   <tr>
                     <td>{{$dt['name']}}</td>
                     <td>{{$dt['utility_calc']}}</td>
                     <td>{{$dt['utility_s4f']}}</td>
-                    <td>
-                      @if($dt['band_invoice']==1)
-                      <div>
-                        <input type="checkbox" onchange="changeBandInvoice({{$key}})" checked="checked" name="invoice" value="1">
-                      </div>
-                      @else
-                      <div>
-                        <input type="checkbox" onchange="changeBandInvoice({{$key}})" name="invoice" value="0">
-                      </div>
-                      @endif
-                    </td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
                   </tr>
                 @endforeach
@@ -277,78 +216,54 @@
 
 
           <form class="" action="{{action('ChargesController@store')}}" method="post">
+            
             @csrf
-
               <?php
-
-              $max = 0;
-                $max2 = 0;
+                $total_system = 0;
+                $total_modified = 0;
+                $total_invoice = 0;
                 foreach ($data as $key => $dt) {
-                  $max += $dt['utility_s4f'];
-                  $max2 += $dt['utility_calc'];
+                  $total_modified += $dt['utility_s4f'];
+                  $total_system += $dt['utility_calc'];
+                  $total_invoice += $dt['utility_calc'];
                 }
-
               ?>
+              <input type="hidden" name="type_invoice" id="type_invoice">
+              <input type="hidden" name="total_invoice" id="total_invoice" value="{{$total_invoice}}">
+              <input type="hidden" name="total_invoice_modified" id="total_invoice_modified" value="{{$total_modified}}">
 
               <div class="row">
                 <div class="col-4">
-                  <label for="">Total Calculated</label>
-                  <input class="form-control" type="number" value="{{$max}}" name="utility"  readonly id="total_calculated">
-                </div>
-                @if($user_role == 'administrator')
-                  <div class="col-4">
-                    <label for="">Total S4F</label>
-                    <input class="form-control" type="number" value="{{$max2}}" name="s4futility"  readonly>
-                  </div>
-                @endif
+                  <label id="label_total" style="font-weight: bold" for="">Total System:</label>
+                  <label>$</label><label id="total_calculated" value="{{$total_system}}" name="utility" value="{{$total_system}}">{{$total_system}}</label>                 
+                </div>                
                 <div class="col-4">
-                      <label for="">Payment Client</label>
-                      <input type="number" min="0" max="{{$max}}" name="total" value="0" class="form-control" id='total' step="any">
-
+                  <label id="label_modified" style="font-weight: bold" for="">Total S4F:</label>
+                  <label>$</label><label value="{{$total_modified}}" id="total_modified">{{$total_modified}}</label>
                 </div>
+              </div>
 
-                <?php
-
-
-                  $totalInvoice = 0;
-                  foreach ($data as $key => $dt) {
-                    if($dt['band_invoice'] == 1)
-                    $totalInvoice += $dt['utility_calc'];
-                  }
-
-                ?>
-
-
-                <div class="col-4">
-                  <label for="">Total a facturar</label>
-                  <input class="form-control" type="number" value="{{$totalInvoice}}" name="total" readonly id="total_invoice">
-                </div>
-
-                <div class="col-4">
+              <div class="row">                
+                <div class="col-4" id="totals_with_invoice">
                   <label for="">Discount %</label>
                   <input class="form-control" type="number" value="0" min="0" max="100" name="discount" id="discount" onchange="totalDiscount(this)" onkeyup="this.onchange();">
                 </div>
-
                 <div class="col-4">
-                  <label for="">Total con descuento</label>
-                  <input class="form-control" type="number" value="{{$max2}}" name="total_discount" readonly id="total_discount">
+                  <label for="">Payment Client</label>
+                  <input type="number" min="0" max="{{$total_modified}}" name="payment_client" value="0" class="form-control" id='payment_client' step="any">
                 </div>
 
-                <div class="col-4">
+                
 
+                <div class="col-4">
                   <div class="col-6"><br>
                       <button type="submit" name="button" class="btn btn-success" style="">SAVE</button>
                   </div>
                 </div>
               </div>
-
-
             </form>
           </div>
           @endif
-
-
-
         </div>
       </div>
     </div>
@@ -360,7 +275,25 @@
 
 <script>
 
-  function changeBandInvoice(machine_id) {
+  function hiddenFields(e){
+    var user_role = {!! json_encode($user_role) !!};
+    var div_input_utility_s4f = false;
+    var totals_with_invoice = true;
+    var label_total = "Total System", label_modified = "Total S4F";
+    if(user_role != 'administrator' || e.options[e.selectedIndex].getAttribute("value") == "with_invoice"){
+      div_input_utility_s4f = true;
+      totals_with_invoice = false;
+      label_total = "Total Invoice:";
+      label_modified = "Total With Discount:";
+    }
+    document.getElementById("div_input_utility_s4f").hidden=div_input_utility_s4f;
+    document.getElementById("totals_with_invoice").hidden=totals_with_invoice;    
+    document.getElementById("type_invoice").value = e.options[e.selectedIndex].getAttribute("value");
+    document.getElementById("label_total").innerHTML=label_total; 
+    document.getElementById("label_modified").innerHTML=label_modified; 
+  }
+
+  /*function changeBandInvoice(machine_id) {
 
     console.log(machine_id);
 
@@ -381,8 +314,7 @@
         toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
       }
     });
-
-  }
+  }*/
 
   function loadMachines(index,clients){
     client_id = clients[index-1].id;

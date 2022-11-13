@@ -87,7 +87,7 @@
                           </tr>
                           @foreach($r->charges as $charge)
                           <tr>
-                            <td style="background-color: {{$charge->row_color}}">{{$charge->id}} - {{$charge->name_machine}}</td>
+                            <td style="background-color: {{$charge->row_color}}">{{$charge->name_machine}}</td>
                             <td style="background-color: {{$charge->row_color}}">{{$charge->client_business}}</td>
                             <td style="background-color: {{$charge->row_color}}">{{$charge->user_add}}</td>
                             <td style="background-color: {{$charge->row_color}}">{{$charge->utility_calc}}</td>

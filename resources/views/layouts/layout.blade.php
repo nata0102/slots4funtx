@@ -1233,6 +1233,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("jackpotout").removeAttribute('required');
 			}
 
+			let element_select_invoice = document.getElementById("select_invoice");
+    		element_select_invoice.value = document.getElementById("type_invoice").value;
+    		element_select_invoice.disabled = true;
+
 			//document.getElementById("machineselect").removeAttribute('hidden');
 		}
 
@@ -1258,7 +1262,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("uc").value = t ;
 				if(document.getElementById("us")){
 					document.getElementById("us").value = t ;
-					document.getElementById("us").setAttribute('max',t);
+					document.getElementById("us").setAttribute('total_system',t);
 				}
 
 
@@ -1266,19 +1270,13 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		}
 
 		function totalDiscount(){
-			console.log('cAMBIO');
-			discount = document.getElementById('discount').value;
+			discount = document.getElementById('discount').value;	
 			total_invoice = document.getElementById('total_invoice').value;
-
-			total = total_invoice - total_invoice*(discount/100)
-
-			document.getElementById('total_discount').value = total.toFixed(2);
-
+			total = total_invoice - total_invoice*(discount/100);
+			document.getElementById('total_modified').value = total.toFixed(2);
+			document.getElementById('total_modified').innerHTML = total.toFixed(2);
+			document.getElementById("total_invoice_modified").value = total.toFixed(2);
 		}
-
-
-
-
 	</script>
 
 
