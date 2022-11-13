@@ -345,6 +345,8 @@
      document.getElementById("client_address_id").value = client_address_id;
 
     var type = document.getElementById("fi").value;
+    if(type)
+    
     document.getElementById("machineselect").hidden =false;
     var machines = clients[index-1].machines;
 
