@@ -60,11 +60,17 @@
                     <!-- Invoices -->
                     @if(count($r->invoices)>0)
                       @foreach($r->invoices as $invoice)
-                      <div style="margin-left: 17px;margin-top: 5px;border: 1px solid gray;border-radius: 5px;width: 96%;padding: 5px">
+                      @if($invoice->band_cancel == 1)
+                        <div style="margin-left: 17px;margin-top: 5px;border: 1px solid gray;border-radius: 5px;width: 96%;padding: 5px;">
+                      @else
+                        <div style="margin-left: 17px;margin-top: 5px;border: 1px solid gray;border-radius: 5px;width: 96%;padding: 5px; background-color:{{$invoice->row_color}}; ">
+                      @endif
                         <p style="float: left;">Folio:{{$invoice->folio}} <span style="margin-left: 30px">{{$invoice->client_name}}</span></p>
-                        <a href="{{action('InvoiceController@show',$invoice->invoice_id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 40px;margin-left: 40px;margin-top: -4px;"><i class="fas fa-file-invoice-dollar"></i></a>
+                        <a href="{{action('InvoiceController@show',$invoice->invoice_id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 40px;margin-left: 40px;margin-top: -4px;float: left;"><i class="fas fa-file-invoice-dollar"></i></a>
                         @if($invoice->band_cancel == 1)                        
-                        <button disabled="" class="delete-alert btn btn-link" style="width:40px; margin:0; padding: 0;margin-top: -4px;"><i class="fas fa-times"></i></button>
+                          <button disabled="" class="delete-alert btn btn-link" style="width:300px; margin:0; padding: 0;margin-top: -4px;"><i class="fas fa-times"></i><span style="color: red;font-weight: bold;margin-left: 20px">CANCELLED</span></button>    
+                        @else
+                          <p style="margin-left: 350px;">${{$invoice->total_due}}</p>
                         @endif
                       </div>
                       @endforeach

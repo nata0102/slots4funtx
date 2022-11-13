@@ -36,7 +36,6 @@ class ChargesController extends Controller
             break;
             default:
                 $res = $this->getList($request->all());
-                //$res = $this->getList2($request->all());
                 $clients = $this->getClientsWithCharges();
             break;
         }
@@ -109,6 +108,8 @@ class ChargesController extends Controller
         $row->charges = [];
         $qry = "select invoice_id, (select folio from invoices where id=i.invoice_id) as folio,
         (select band_cancel from invoices where id=i.invoice_id) as band_cancel,
+        (select total_discount - payment_client from invoices where id=i.invoice_id) as total_due,
+        (select if(band_paid_out,'#B1FEAB', '#FEB4AB') from invoices where id=i.invoice_id) as row_color,
         (select c.name from clients c, invoices inv where inv.id=i.invoice_id and c.id=inv.client_id) as client_name from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
         $rows = DB::select($qry);
         if(count($rows)>0)
