@@ -104,17 +104,15 @@ class InvoiceController extends Controller
 
    		$res['logo'] = null;
    		$res['invoice'] = $invoice;
-   		$path_logo = public_path().'/images/logo-black.png';
+   		/*$path_logo = public_path().'/images/logo-black.png';
    		$path_logo_cancelled = public_path().'/images/cancelled.jpg';
 		$headers = array('Content-Type' => 'application/octet-stream');
 
         if ( !empty($path_logo) )
             $res['logo'] = Response::make( base64_encode( file_get_contents($path_logo) ), 200, $headers);
          if ( !empty($path_logo_cancelled) )
-            $res['logo_cancelled'] = Response::make( base64_encode( file_get_contents($path_logo_cancelled) ), 200, $headers);
+            $res['logo_cancelled'] = Response::make( base64_encode( file_get_contents($path_logo_cancelled) ), 200, $headers);*/
         
-
-   		//$res['details'] = InvoiceDetail::with('charges')->where('invoice_id',$invoice->id)->get();
    		$qry = "select c.*,
 		(select concat(m.id,' - ',m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine 
 		from invoices_details i,charges c where i.charge_id=c.id and invoice_id=".$invoice->id.";";
@@ -123,6 +121,5 @@ class InvoiceController extends Controller
         $view = preg_replace('/>\s+</', '><', $view);
         $pdf = \PDF::loadHTML($view);        
         return $pdf->stream();
-   		//return $details;
    	}
 }
