@@ -43,8 +43,8 @@ class MainController extends Controller
       $email = $request->email;
       $user = User::where('email', $request->email)->first();
       if($user){
- 
-          //$mailable = new Prueba($user);
+
+          $mailable = new Prueba($user);
           //Mail::to("rodrigo.pescina.91@gmail.com")->send($mailable);
 
         if ($user->active == 0) {

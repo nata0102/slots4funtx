@@ -15,6 +15,7 @@ class ChargesController extends Controller
     public function __construct(){
       if(!\Session::has('data')) \Session::put('data', array());
       if(!\Session::has('client_id'));
+      if(!\Session::has('invoiceSelect'));
     }
 
     /**
@@ -25,7 +26,8 @@ class ChargesController extends Controller
     public function index(Request $request)
     {
       \Session::forget('data');
-        \Session::forget('client_id');
+      \Session::forget('client_id');
+        \Session::forget('invoiceSelect');
         $res = null;
         $clients = null;
         switch ($request->option) {
@@ -119,7 +121,7 @@ class ChargesController extends Controller
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
             (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
             where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business
-            from charges c where id in (".$row->charges_ids.") and id not in (select inv_d.charge_id from invoices_details inv_d, invoices i 
+            from charges c where id in (".$row->charges_ids.") and id not in (select inv_d.charge_id from invoices_details inv_d, invoices i
             where inv_d.invoice_id=i.id and i.band_cancel = 0)) as t;";
         $rows = DB::select($qry);
         if(count($rows)>0)
@@ -176,8 +178,10 @@ class ChargesController extends Controller
         //$data = \Session::forget('data');
         $data = \Session::get('data');
         $client_id = \Session::get('client_id');
+        $invoiceSelect = \Session::get('invoiceSelect');
         if(count($data) == 0){
           \Session::forget('client_id');
+          \Session::forget('invoiceSelect');
         }
 
         if( url()->previous() != url()->current() ){
@@ -187,7 +191,15 @@ class ChargesController extends Controller
         $machines = [];
         $clients = $this->getClientsWithMachines();
         $types = Lookup::where('type','charge_type')->orderBy('value','desc')->get();
-        return view('charges.create',compact('machines','types','data','clients','client_id'));
+        $machinesid = "";
+        $c = 0;
+        foreach ($data as $key => $value) {
+          $machinesid .= $value['machine_id'];
+          $c++;
+          if($c<count($data))
+            $machinesid .=",";
+        }
+        return view('charges.create',compact('machinesid','machines','types','data','clients','client_id','invoiceSelect'));
 
     }
 
@@ -219,8 +231,10 @@ class ChargesController extends Controller
       unset($dt[$key]);
       \Session::put('data', $dt);
 
-      if(count($dt) == 0)
+      if(count($dt) == 0){
         \Session::forget('client_id');
+        \Session::forget('invoiceSelect');
+      }
       return back();
     }
 
@@ -231,6 +245,8 @@ class ChargesController extends Controller
         if(count($data) == 0){
           $client = \Session::get('client_id');
           \Session::put('client_id', $request->client);
+          $invoiceSelect = \Session::get('invoiceSelect');
+          \Session::put('invoiceSelect', $request->invoice_select);
         }
 
         $data[] = $request->all();
@@ -316,11 +332,11 @@ class ChargesController extends Controller
                     }
                     $charge = Charge::create($aux);
                     if($row['type_invoice'] == "with_invoice")
-                        array_push($charges_ids, $charge->id);                    
+                        array_push($charges_ids, $charge->id);
                 }
                 $params = $request->all();
                 $params['client_id'] = $client_id;
-                $invoice_ctrl->createInvoiceDetails($charges_ids,$params,"C");                
+                $invoice_ctrl->createInvoiceDetails($charges_ids,$params,"C");
 
                 $notification = array(
                       'message' => 'Successful!!',

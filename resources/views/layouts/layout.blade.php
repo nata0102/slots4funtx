@@ -467,6 +467,14 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					},
 				}
 			});
+
+if(document.getElementById("select_cli"))
+			if(document.getElementById("select_cli").selectedIndex != 0)
+			{
+				index = document.getElementById("select_cli").selectedIndex;
+				document.getElementById("select_cli").onchange();
+			}
+
 		});
 	</script>
 
@@ -1233,9 +1241,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("jackpotout").removeAttribute('required');
 			}
 
-			let element_select_invoice = document.getElementById("select_invoice");
-    		element_select_invoice.value = document.getElementById("type_invoice").value;
-    		element_select_invoice.disabled = true;
+			//let element_select_invoice = document.getElementById("select_invoice");
+    		//element_select_invoice.value = document.getElementById("type_invoice").value;
+    		//element_select_invoice.disabled = true;
 
 			//document.getElementById("machineselect").removeAttribute('hidden');
 		}
@@ -1270,7 +1278,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		}
 
 		function totalDiscount(){
-			discount = document.getElementById('discount').value;	
+			discount = document.getElementById('discount').value;
 			total_invoice = document.getElementById('total_invoice').value;
 			total = total_invoice - total_invoice*(discount/100);
 			document.getElementById('total_modified').value = total.toFixed(2);

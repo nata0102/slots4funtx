@@ -14,50 +14,51 @@
   <div class="main-content">
     <div class="section__content section__content--p30">
       <div class="container-fluid">
+
         <div class="card" id="card-section">
-
-          <div class="row" id="typeselect">
-              <div class="col-12 col-sm-3">
-                <select class="form-control selectpicker" id="select_invoice" style="width: 100%;" data-live-search="true" onchange="hiddenFields(this)">
-                  <option value="" selected disabled>-- Invoince/No Invoice --</option>
-                    <option value="with_invoice">WITH INVOICE</option>
-                    <option value="no_invoice">NO INVOICE</option>
-                </select>
-              </div>
-              <div class="col-12 col-sm-3">
-                <select class="form-control selectpicker" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi" data-live-search="true">
-                  <option value="" selected disabled>-- Select Type --</option>
-                  @foreach($types as $type)
-                    <option value="{{$type->key_value}}">{{$type->value}}</option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="col-12 col-sm-4" hidden="" id="div_cli">
-                <select class="form-control selectpicker" id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})" data-live-search="true">
-                  <option value="" selected disabled>-- Select Client-Business --</option>
-                  @foreach($clients as $client)
-                    <option value="{{$client->id}}" {{$client->id == $client_id ? 'selected' : ''}}>{{$client->name}} - {{$client->business_name}}</option>
-                  @endforeach
-                </select>
-              </div>
-              <div clas="col-12 col-sm-4" style="margin-top: 30px">
-                <div class="row" id="machineselect" hidden>
-                  <div class="col-12">
-                    <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
-                    </select>
+          <div id="typeselect">
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                  <select class="form-control selectpicker" {{$invoiceSelect != "" ? 'disabled' : '' }} id="select_invoice" style="width: 100%;" data-live-search="true" onchange="hiddenFields(this)">
+                    <option value="" selected disabled>-- Invoince/No Invoice --</option>
+                      <option value="with_invoice" {{$invoiceSelect == 'with_invoice' ? 'selected' : ''}}>WITH INVOICE</option>
+                      <option value="no_invoice" {{$invoiceSelect == 'no_invoice' ? 'selected' : ''}}>NO INVOICE</option>
+                  </select>
                 </div>
-              </div>
+                <div class="col-12 col-sm-4">
+                  <select class="form-control selectpicker" name="type" style="width: 100%;" onchange="dataInpu(this)" id="fi" data-live-search="true">
+                    <option value="" selected disabled>-- Select Type --</option>
+                    @foreach($types as $type)
+                      <option value="{{$type->key_value}}">{{$type->value}}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-12 col-sm-4" hidden="" id="div_cli">
+                  <select class="form-control selectpicker" {{$client_id != "" ? 'disabled' : '' }} id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})" data-live-search="true">
+                    <option value="" selected disabled>-- Select Client-Business --</option>
+                    @foreach($clients as $client)
+                      <option value="{{$client->id}}" {{$client->id == $client_id ? 'selected' : ''}}>{{$client->name}} - {{$client->business_name}}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-12 col-sm-4 mx-auto" id="machineselect" hidden style="margin-top: 1rem;">
+                      <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
+                      </select>
+                </div>
+
+            </div>
           </div>
-
-
 
           <br>
 
           <div class="" id="initial-form" hidden>
             <form class="" action="{{action('ChargesController@storeInitialNumbers')}}" method="post" id="initialform">
               @csrf
+
+              <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect1">f
               <div class="" hidden>
                 <input class="form-control" type="text" id="type2" name="type" value="">
+                <input class="form-control" type="text" name="invoice_select" value="" id="invoiceSelect1">
                 <input class="form-control" type="text" name="machine_id" value="" id="machineidinitial">
               </div>
               <div class="card">
@@ -105,9 +106,10 @@
           <div id="formInputs" hidden>
 
             <form class="" action="{{action('ChargesController@storeData')}}" method="post" id="chargeform">
-            @csrf
+              @csrf
 
-            <input type="hidden" name="client" value="" id="input_client">
+              <input type="hidden" name="client" value="" id="input_client">
+              <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect2">
 
               <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
@@ -168,7 +170,7 @@
                     <label for="">Calculated System</label>
                     <input class="form-control" type="number" value="" name="utility_calc" id="uc" readonly step=".01">
                   </div>
-                  <div class="col-4"  id="div_input_utility_s4f">                       
+                  <div class="col-4"  id="div_input_utility_s4f">
                     <label for="">S4F</label>
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
@@ -178,7 +180,7 @@
                     </div>
                   </div>
                 </div>
-                <hr>                
+                <hr>
               </div>
             </form>
           </div>
@@ -186,8 +188,8 @@
 
         @if($data)
 
-        <div style="margin-top: 20px;" class="table-responsive table-striped table-bordered">
-        <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
+          <div style="margin-top: 20px;" class="table-responsive table-striped table-bordered">
+          <table id="table" class="table tablesorter" style="width: 100%; table-layout: fixed;font-size:16px;">
               <thead>
                 <tr style="text-align: center;">
                   <th>Machine</th>
@@ -216,7 +218,7 @@
 
 
           <form class="" action="{{action('ChargesController@store')}}" method="post">
-            
+
             @csrf
               <?php
                 $total_system = 0;
@@ -231,19 +233,20 @@
               <input type="hidden" name="type_invoice" id="type_invoice">
               <input type="hidden" name="total_invoice" id="total_invoice" value="{{$total_invoice}}">
               <input type="hidden" name="total_invoice_modified" id="total_invoice_modified" value="{{$total_modified}}">
+              <input type="hidden" name="client_address_id" value="" id="client_address_id">
 
               <div class="row">
                 <div class="col-4">
                   <label id="label_total" style="font-weight: bold" for="">Total System:</label>
-                  <label>$</label><label id="total_calculated" value="{{$total_system}}" name="utility" value="{{$total_system}}">{{$total_system}}</label>                 
-                </div>                
+                  <label>$</label><label id="total_calculated" value="{{$total_system}}" name="utility" value="{{$total_system}}">{{$total_system}}</label>
+                </div>
                 <div class="col-4">
                   <label id="label_modified" style="font-weight: bold" for="">Total S4F:</label>
                   <label>$</label><label value="{{$total_modified}}" id="total_modified">{{$total_modified}}</label>
                 </div>
               </div>
 
-              <div class="row">                
+              <div class="row">
                 <div class="col-4" id="totals_with_invoice">
                   <label for="">Discount %</label>
                   <input class="form-control" type="number" value="0" min="0" max="100" name="discount" id="discount" onchange="totalDiscount(this)" onkeyup="this.onchange();">
@@ -253,7 +256,8 @@
                   <input type="number" min="0" max="{{$total_modified}}" name="payment_client" value="0" class="form-control" id='payment_client' step="any">
                 </div>
 
-                
+
+
 
                 <div class="col-4">
                   <div class="col-6"><br>
@@ -263,9 +267,10 @@
               </div>
             </form>
           </div>
-          @endif
         </div>
-      </div>
+
+        @endif
+
     </div>
   </div>
   <br>
@@ -286,11 +291,22 @@
       label_total = "Total Invoice:";
       label_modified = "Total With Discount:";
     }
-    document.getElementById("div_input_utility_s4f").hidden=div_input_utility_s4f;
-    document.getElementById("totals_with_invoice").hidden=totals_with_invoice;    
+
+    document.getElementById("invoiceSelect1").value = e.options[e.selectedIndex].getAttribute("value");
+    document.getElementById("invoiceSelect2").value = e.options[e.selectedIndex].getAttribute("value");
+    if(document.getElementById("type_invoice"))
     document.getElementById("type_invoice").value = e.options[e.selectedIndex].getAttribute("value");
-    document.getElementById("label_total").innerHTML=label_total; 
-    document.getElementById("label_modified").innerHTML=label_modified; 
+
+    if(document.getElementById("div_input_utility_s4f"))
+    document.getElementById("div_input_utility_s4f").hidden=div_input_utility_s4f;
+    if(document.getElementById("totals_with_invoice"))
+    document.getElementById("totals_with_invoice").hidden=totals_with_invoice;
+    if(document.getElementById("type_invoice"))
+    document.getElementById("type_invoice").value = e.options[e.selectedIndex].getAttribute("value");
+    if(document.getElementById("label_total"))
+    document.getElementById("label_total").innerHTML=label_total;
+    if(document.getElementById("label_modified"))
+    document.getElementById("label_modified").innerHTML=label_modified;
   }
 
   /*function changeBandInvoice(machine_id) {
@@ -316,13 +332,24 @@
     });
   }*/
 
+
+
+
+
   function loadMachines(index,clients){
     client_id = clients[index-1].id;
+    client_address_id = clients[index-1].address_id;
+    console.log(client_address_id);
     document.getElementById("input_client").value = client_id;
+    if(  document.getElementById("client_address_id"))
+     document.getElementById("client_address_id").value = client_address_id;
 
     var type = document.getElementById("fi").value;
     document.getElementById("machineselect").hidden =false;
     var machines = clients[index-1].machines;
+
+    machinesList = "{{$machinesid}}";
+    machinesList = machinesList.split(",");
 
     $('#charge_machine').empty();
     for(var i=0; i < machines.length; i++){
@@ -334,11 +361,15 @@
         if(machines[i].master_in != null)
           band = true;
       }
-      if(band)
-        $('#charge_machine').append('<option data-id="'+machines[i].id+'" data-masterin="'+machines[i].master_in+'" data-masterout="'+machines[i].master_out+'" data-jackpotout="'+machines[i].jackpot_out+'" data-average="'+machines[i].average+'" data-band="'+machines[i].band_jackpot+'" data-percentage="'+machines[i].percentage+'"  value="'+machines[i].id+'">'+machines[i].id+' - '+machines[i].serial+' - '+machines[i].game+'</option>');
+      if(band){
+        x = machines[i].id.toString() ;
+        if( machinesList.includes(x ) == false)
+          $('#charge_machine').append('<option data-id="'+machines[i].id+'" data-masterin="'+machines[i].master_in+'" data-masterout="'+machines[i].master_out+'" data-jackpotout="'+machines[i].jackpot_out+'" data-average="'+machines[i].average+'" data-band="'+machines[i].band_jackpot+'" data-percentage="'+machines[i].percentage+'"  value="'+machines[i].id+'">'+machines[i].id+' - '+machines[i].serial+' - '+machines[i].game+'</option>');
+      }
     }
     $('#charge_machine').selectpicker('refresh');
   }
+
 
 
 </script>
