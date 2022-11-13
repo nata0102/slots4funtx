@@ -46,7 +46,7 @@ class InvoiceController extends Controller
    		if(count($charges_ids) > 0){
             $arr_invoice = [];
             $arr_invoice['folio'] = $type."-".$this->getFolio($type);
-            /*$arr_invoice['type'] = "charges";
+            $arr_invoice['type'] = "charges";
             $arr_invoice['date_invoice'] = date('Y-m-d');
             $arr_invoice['discount'] = $params['discount'];
             $arr_invoice['total_system'] = $params['total_invoice'];
@@ -59,7 +59,7 @@ class InvoiceController extends Controller
             if($params['total_invoice_modified'] == $params['payment_client'])
             	$arr_invoice['band_paid_out'] = 1;
             foreach($charges_ids as $charge_id)
-            	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);*/
+            	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);
         }
    	}
 
