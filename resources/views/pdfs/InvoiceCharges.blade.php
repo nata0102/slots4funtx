@@ -6,7 +6,7 @@
     <style>
         body {
             font-family:"Trebuchet MS", Helvetica, sans-serif;
-            font-size: 14px;
+            font-size: 14px;            
         }
         table {
             width: 100%;
@@ -43,14 +43,18 @@
        
   </style>
   </head>
-  <body style="background-image: url({{asset('//images/logo-black.png')}});">   
+  @if($res['invoice']['band_cancel'] == 0)
+    <body>
+  @else
+    <body style="background-image: url('../public/images/cancelled.jpg');background-size: 100%;">  
+  @endif 
     <div style="margin-left: 50px;margin-top: 0px">
       <h2>{{$res['invoice']['date_invoice']}}</h2>
       <h2 style="margin-top: 30px">INVOICE</h2>
     </div>
 
      <div style="margin-top:-200px;" align="right">  
-        <img align="right" src="{{ "data:image/jpeg;base64,". $res['logo']->getOriginalContent()}}"  style="margin-top:-35px; padding: 0px; width: 200px; margin-left:500px;" />
+        <img align="right" src="../public/images/logo-black.png"  style="margin-top:-35px; padding: 0px; width: 200px; margin-left:500px;" />
       </div>     
 
     <div style="margin-left: 0px;">
@@ -61,7 +65,7 @@
       <p><span class="bold">PERSON IN CHARGE:</span> EDUARDO GUTIERREZ NAJERA</p>
     </div>
 
-    <div class="table-responsive col-md-12" style="padding: 10px;font-size: 14px; margin-left: -20px">
+    <div class="table-responsive col-md-12" style="padding: 10px;font-size: 14px; margin-left: -20px;">
         <table class="table table-bordered table-striped table-condensed mb-none" >
         <thead>
         <tr class="active">
