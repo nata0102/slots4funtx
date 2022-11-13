@@ -256,6 +256,8 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
+        //$invoice_ctrl =  new InvoiceController();
+        //return $invoice_ctrl->getFolio('C');
         //print_r(\Session::get('data'));
         /*print_r($request->type_invoice);
         print_r($request->all());

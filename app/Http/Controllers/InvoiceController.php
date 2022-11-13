@@ -36,7 +36,8 @@ class InvoiceController extends Controller
         $folio = "0001";
         if($invoice != null){
         	$arr = explode('-', $invoice->folio);
-        	$folio = $type."-".intval($arr[1])+1;
+        	$num = intval($arr[1])+1;
+        	$folio = $type."-000".$num;
         }
         return $folio;
     }
@@ -45,7 +46,7 @@ class InvoiceController extends Controller
    	public function createInvoiceDetails($charges_ids,$params,$type){
    		if(count($charges_ids) > 0){
             $arr_invoice = [];
-            $arr_invoice['folio'] = $type."-".$this->getFolio($type);
+            $arr_invoice['folio'] = $this->getFolio($type);
             $arr_invoice['type'] = "charges";
             $arr_invoice['date_invoice'] = date('Y-m-d');
             $arr_invoice['discount'] = $params['discount'];
@@ -54,10 +55,10 @@ class InvoiceController extends Controller
             $arr_invoice['user_id'] = Auth::id();
             $arr_invoice['client_id'] = $params['client_id'];
             $arr_invoice['payment_client'] = $params['payment_client'];
-            $arr_invoice['address_id'] = $params['client_address_id'];
-            $invoice = Invoice::create($arr_invoice);
+            $arr_invoice['address_id'] = $params['client_address_id'];            
             if($params['total_invoice_modified'] == $params['payment_client'])
             	$arr_invoice['band_paid_out'] = 1;
+            $invoice = Invoice::create($arr_invoice);
             foreach($charges_ids as $charge_id)
             	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);
         }
