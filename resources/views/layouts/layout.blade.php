@@ -473,6 +473,10 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			{
 				index = document.getElementById("select_cli").selectedIndex;
 				document.getElementById("select_cli").onchange();
+
+				discount = document.getElementById('discount').value;
+				if(discount>0)
+				totalDiscount();
 			}
 
 			if(document.getElementById("select_invoice"))
@@ -481,7 +485,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 				var e = document.getElementById("select_invoice");
 				var value = e.value;
-				console.log(value);
 				document.getElementById("type_invoice").value  = e.options[e.selectedIndex].value;
 
 			}
@@ -548,7 +551,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			var value = $(this).attr("data-value");
 			var type = $(this).attr("data-type");
 			var city = $(this).attr("data-city");
-			console.log(city);
 
 			$(document.getElementById("update-lookup")).attr("action",url);
 			$(document.getElementById("lookup-value")).attr("value",value);
@@ -557,10 +559,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			$(document.getElementById("city-div")).attr("hidden",'');
 			document.getElementById("city-select").removeAttribute("name");
 			document.getElementById("city-select").removeAttribute("required");
-
-
-
-
 
 			if(city){
 				document.getElementById("city-div").removeAttribute("hidden");
@@ -1129,6 +1127,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				}
 				document.getElementById("initial-form").removeAttribute('hidden');
 				document.getElementById("machineidinitial").value = e.options[e.selectedIndex].getAttribute("data-id");
+
 			}
 			else {
 				document.getElementById("formInputs").removeAttribute('hidden');
@@ -1157,7 +1156,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("average").value = average
 				document.getElementById("machineid").value = e.options[e.selectedIndex].getAttribute("data-id");
 				document.getElementById("percentage").value = e.options[e.selectedIndex].getAttribute("data-percentage");
-				document.getElementById("name").value = e.options[e.selectedIndex].getAttribute("value");
+				document.getElementById("machinename").value = e.options[e.selectedIndex].text;
+
 
 				document.getElementById("jackpot").setAttribute('hidden','');
 				if(e.options[e.selectedIndex].getAttribute("data-band") == "1"){

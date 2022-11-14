@@ -45,7 +45,6 @@
                       <select class="form-control selectpicker" name="" id="charge_machine" onchange="dataCharge(this)" data-live-search="true" title="-- Select Machine --">
                       </select>
                 </div>
-
             </div>
           </div>
 
@@ -55,11 +54,12 @@
             <form class="" action="{{action('ChargesController@storeInitialNumbers')}}" method="post" id="initialform">
               @csrf
 
-              <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect1">f
+              <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect1">
               <div class="" hidden>
                 <input class="form-control" type="text" id="type2" name="type" value="">
                 <input class="form-control" type="text" name="invoice_select" value="" id="invoiceSelect1">
                 <input class="form-control" type="text" name="machine_id" value="" id="machineidinitial">
+
               </div>
               <div class="card">
                 <h4>Master Numbers:</h4>
@@ -110,7 +110,6 @@
 
               <input type="hidden" name="client" value="" id="input_client">
               <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect2">
-
               <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
                 <input class="form-control" type="text" name="average" value="" id="average">
@@ -120,6 +119,8 @@
                 <input class="form-control" type="text" value="" name="jackpotout1" id="jackpotout1">
                 <input class="form-control" type="text" value="" name="percentage" id="percentage">
                 <input class="form-control" type="text" value="" name="name" id="name">
+                <input class="form-control" type="text" name="machine_name" value="" id="machinename">
+
               </div>
 
 
@@ -203,7 +204,7 @@
                     $total = 0;
                   ?>
                   <tr>
-                    <td>{{$dt['name']}}</td>
+                    <td>{{$dt['machine_name']}}</td>
                     <td>{{$dt['utility_calc']}}</td>
                     <td>{{$dt['utility_s4f']}}</td>
                     <td> <a href="{{action('ChargesController@deleteData',$key)}}"><i class="far fa-trash-alt"></i></a> </td>
@@ -338,14 +339,13 @@
   function loadMachines(index,clients){
     client_id = clients[index-1].id;
     client_address_id = clients[index-1].address_id;
-    console.log(client_address_id);
     document.getElementById("input_client").value = client_id;
     if(  document.getElementById("client_address_id"))
      document.getElementById("client_address_id").value = client_address_id;
 
     var type = document.getElementById("fi").value;
     if(type)
-    
+
     document.getElementById("machineselect").hidden =false;
     var machines = clients[index-1].machines;
 
