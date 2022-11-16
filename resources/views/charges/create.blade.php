@@ -175,10 +175,8 @@
                     <label for="">S4F</label>
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
-                  <div class="row">
-                    <div class="col-4" style="margin-top: 30px">
-                      <button type="submit" name="button" class="btn btn-info">+</button>
-                    </div>
+                  <div class="col-12" style="margin-top: 30px">
+                    <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
                 </div>
               </div>
@@ -259,19 +257,18 @@
 
 
 
-                <div class="col-4">
                   <div class="col-6"><br>
                       <button type="submit" name="button" class="btn btn-success" style="">SAVE</button>
                   </div>
-                </div>
               </div>
             </form>
           </div>
-        </div>
+
 
         @endif
 
     </div>
+  </div>
   </div>
   <br>
 

@@ -60,4 +60,5 @@ Route::group(['middleware' => ['auth','web']], function() {
   Route::get('/roles-configuration/{rol?}', 'RoleConfigurationController@index');
   Route::post('/roles-configuration-save', 'RoleConfigurationController@rolesConfigurationSave');
   Route::resource("invoices","InvoiceController");
+  Route::post("invoices/machines","InvoiceController@machines");
 });
