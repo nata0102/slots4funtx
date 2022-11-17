@@ -53,14 +53,12 @@
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
                 <div class="" id="machines">
-
-
                   <div class="" id="select_content" hidden>
                     <label for="">Machines</label>
                     <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machine_id[]" id="charge_machine" title="SELECT - MACHINES" >
                       <option value="">ALL</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}">{{$machine->name_machine}}</option>
+                        <option value="{{$machine->id}}">{{$machine->id}} {{$machine->date_charge}} {{$machine->name_machine}}</option>
                       @endforeach
                     </select>
                   </div>
