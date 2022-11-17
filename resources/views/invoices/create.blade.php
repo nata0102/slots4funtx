@@ -26,12 +26,13 @@
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
                 <label for="">Client:</label>
-                <select class="form-control selectpicker" id="client" name="client" style="width: 100%;" data-live-search="true" required>
+                <select class="form-control selectpicker" id="client" name="client" style="width: 100%;" data-live-search="true" required onchange="address(this)">
                   <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients as $client)
-                    <option value="{{$client->id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
+                    <option value="{{$client->id}}" data-address_id="{{$client->address_id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
                   @endforeach
                 </select>
+                <input type="hidden" name="address_id" value="" id="address_id">
               </div>
             </div>
 
@@ -101,6 +102,13 @@
   store = "{{action('InvoiceController@store')}}";
   div_refresh = "machines";
   form_id = "form";
+
+  function address(e){
+    document.getElementById("address_id").value = e.options[e.selectedIndex].getAttribute("data-address_id");
+
+  }
+
+
 
 
 
