@@ -75,12 +75,12 @@
               <div class="row">
                 <div class="col-4">
                   <label id="label_total" style="font-weight: bold" for="">Total System:</label>
-                  <label>$</label><label id="total_calculated_label" name="utility"></label>
+                  <label>$</label><label id="total_calculated_label" name="utility">0.00</label>
                   <input type="hidden" name="total_invoice" value="" id="total_calculated">
                 </div>
                 <div class="col-4">
                   <label id="label_modified" style="font-weight: bold" for="">Total S4F:</label>
-                  <label>$</label><label value="" id="total_modified_label"></label>
+                  <label>$</label><label value="" id="total_modified_label">0.00</label>
 
                   <input type="hidden" value="" id="total_modified_aux">
                   <input type="hidden" name="total_invoice_modified" value="" id="total_modified">
