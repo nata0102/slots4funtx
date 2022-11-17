@@ -177,11 +177,11 @@
     //console.log(selectedKeyValue);
     //console.log(arrayOfSelecedIDs);
 
-    document.getElementById("total_calculated").setAttribute('value',calc);
-    document.getElementById("total_modified_aux").setAttribute('value',s4f);
+    document.getElementById("total_calculated").setAttribute('value',calc.toFixed(2));
+    document.getElementById("total_modified_aux").setAttribute('value',s4f.toFixed(2));
 
-    document.getElementById("total_calculated_label").innerHTML = calc;
-    document.getElementById("total_modified_label").innerHTML = s4f;
+    document.getElementById("total_calculated_label").innerHTML = calc.toFixed(2);
+    document.getElementById("total_modified_label").innerHTML = s4f.toFixed(2);
 
     totalDiscountF();
 
