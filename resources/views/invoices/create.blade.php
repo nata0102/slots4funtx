@@ -49,35 +49,43 @@
               </div>
             </div>
 
-            <div class="row" id="machines">
-              <div class="col-12 col-sm-4 form-group">
-                <label for="">Machines</label>
-                <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machine_id[]" id="charge_machine" title="SELECT - MACHINES" >
-                  <option value="">ALL</option>
-                  @foreach($machines as $machine)
-                    <option value="{{$machine->id}}">{{$machine->name_machine}}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-
-            @if(count($data)>0)
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
-                <label for="">Discount:</label>
-                <input class="form-control" type="number" name="discount" value="" required>
-              </div>
+                <div class="" id="machines">
 
-              <div class="col-12 col-sm-4 form-group">
-                <label for="">Payment Client:</label>
-                <input class="form-control" type="number" name="payment_client" value="" required>
-              </div>
 
-              <div class="col-12 form-group">
-                <button type="button" class="btn btn-success" id="save" onclick='saveF()'>Save</button>
+                  <div class="" id="select_content" hidden>
+                    <label for="">Machines</label>
+                    <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machine_id[]" id="charge_machine" title="SELECT - MACHINES" >
+                      <option value="">ALL</option>
+                      @foreach($machines as $machine)
+                        <option value="{{$machine->id}}">{{$machine->name_machine}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+
+                </div>
+
               </div>
             </div>
-              @endif
+
+            <div class="row" id="input" hidden>
+
+                <div class="col-12 col-sm-4 form-group">
+                  <label for="">Discount:</label>
+                  <input class="form-control" id="discount" type="number" name="discount" value="" required style="width: 100%;">
+                </div>
+
+                <div class="col-12 col-sm-4 form-group">
+                  <label for="">Payment Client:</label>
+                  <input class="form-control" id="payment_client" type="number" name="payment_client" value="" required style="width: 100%;">
+                </div>
+
+                <div class="col-12 form-group">
+                  <button type="button" class="btn btn-success" id="save" onclick='saveF()'>Save</button>
+                </div>
+
+            </div>
           </div>
         </form>
       </div>
@@ -91,8 +99,17 @@
 
   search = "{{action('InvoiceController@machines')}}";
   store = "{{action('InvoiceController@store')}}";
+  div_refresh = "machines";
+  form_id = "form";
+
+
+
 
   function saveF(){
+    document.getElementById("discount").setAttribute('required','');
+    document.getElementById("payment_client").setAttribute('required','');
+
+
       document.getElementById("form").setAttribute('action',store);
       if (document.getElementById("form").checkValidity()) {
         document.getElementById("form").submit();
@@ -103,13 +120,37 @@
   }
 
   function searchF(){
+
+    document.getElementById("discount").removeAttribute('required');
+    document.getElementById("payment_client").removeAttribute('required');
     document.getElementById("form").setAttribute('action',search);
-    if (document.getElementById("form").checkValidity()) {
-      document.getElementById("form").submit();
-    }
-    else{
-      alert("Completa los campos.");
-    }
+    document.getElementById("input").setAttribute('hidden','');
+
+
+    var dataString = $('#'+form_id).serialize();
+    $.ajax({
+      dataType: 'json',
+      type:'POST',
+      url: search,
+      cache: false,
+      data: dataString,
+      success: function(){
+        toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
+        $("#"+div_refresh).load(" #"+div_refresh);
+      },
+      error: function(){
+        toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
+      }
+    });
+
+
+    setTimeout(() => {
+      document.getElementById("select_content").removeAttribute('hidden');
+      $('.selectpicker').selectpicker('refresh');
+
+      document.getElementById("input").removeAttribute('hidden');
+    }, 1000);
+
   }
 
 </script>

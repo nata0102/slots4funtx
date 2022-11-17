@@ -110,6 +110,7 @@ class InvoiceController extends Controller
 			$data['from'] = $request->from;
 			$data['machines'] = $machines;
 			\Session::put('data', $data);
+			return response (200);
 			return redirect()->action('InvoiceController@create');
 
 		}
