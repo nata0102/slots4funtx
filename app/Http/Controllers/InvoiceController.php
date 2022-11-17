@@ -70,6 +70,21 @@ class InvoiceController extends Controller
         }
    	}
 
+   	public function  getClientsWithChargesNotInvoice(){
+        $qry = "select * from (select  a.id as address_id,a.business_name,a.client_id as id,
+		(select name from clients where id=a.client_id) as name,
+		(select active from clients where id=a.client_id) as client_active
+		from addresses a where a.active=1 and a.id in 
+		(
+			select m.address_id
+			from charges ch,machines m
+			where ch.machine_id=m.id and ch.type != 'initial_numbers'
+			and ch.id not in (select charge_id from invoices_details where invoice_id in 
+			(select id from invoices where band_cancel is false))
+		)) as t1 where t1.client_active=1";
+        return DB::select($qry);
+    }
+
    	public function create()
     {
         if( url()->previous() != url()->current() ){
@@ -77,43 +92,34 @@ class InvoiceController extends Controller
             session(['urlBack' => url()->previous()]);
         }
 
-				$data = \Session::get('data');
-        $charges_ctrl = new ChargesController();
-        $clients = $charges_ctrl->getClientsWithMachines();
+		$data = \Session::get('data');
+        $clients = $this->getClientsWithChargesNotInvoice();
         $types = Lookup::where('type','invoices_type')->orderBy('value','desc')->get();
-
-				if(count($data)==0)
-					$machines = array();
-				else
-					$machines = $data['machines'];
-
-				 \Session::forget('data');
-
+		if(count($data)==0)
+			$machines = array();
+		else
+			$machines = $data['machines'];
+		\Session::forget('data');
         return view('invoices.create',compact('types','clients','machines','data'));
     }
 
-		public function machines(Request $request){
-			$qry = "select *,
-			(select concat(m.id,' - ',m.serial,' - ',g.name)
-			from machines m,game_catalog g
-			where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
-			from charges c
-			where c.id not in (select charge_id from invoices_details ind, invoices i
-			where ind.invoice_id = i.id and i.band_cancel is false)
-			and c.type != 'initial_numbers' and c.machine_id in
-			(select id from machines where address_id = 1)
-			and date(created_at)>='".$request->from."' and date(created_at)<='".$request->to."';";
-			$machines = DB::select($qry);
-			$data['type'] = $request->type;
-			$data['client'] = $request->client;
-			$data['to'] = $request->to;
-			$data['from'] = $request->from;
-			$data['machines'] = $machines;
-			\Session::put('data', $data);
-			return response (200);
-			return redirect()->action('InvoiceController@create');
-
-		}
+	public function machines(Request $request){
+		$qry = "select m.address_id,
+			concat(m.id,' - ',m.serial,' - ', (select g.name from game_catalog g where id = m.game_catalog_id)) as game
+			from charges ch,machines m
+			where ch.machine_id=m.id and ch.type != 'initial_numbers'
+			and ch.id not in (select charge_id from invoices_details where invoice_id in 
+			(select id from invoices where band_cancel is false)) and m.address_id = ".$request->address_id." and date(ch.created_at)>='".$request->from."' and date(ch.created_at)<='".$request->to."'";
+		$machines = DB::select($qry);
+return $machines;
+		$data['type'] = $request->type;
+		$data['client'] = $request->client;
+		$data['to'] = $request->to;
+		$data['from'] = $request->from;
+		$data['machines'] = $machines;
+		\Session::put('data', $data);
+		return response (200);
+	}
 
    	public function show($id){
    		$pdf = null;
