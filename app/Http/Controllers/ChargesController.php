@@ -25,8 +25,8 @@ class ChargesController extends Controller
      */
     public function index(Request $request)
     {
-      \Session::forget('data');
-      \Session::forget('client_id');
+        \Session::forget('data');
+        \Session::forget('client_id');
         \Session::forget('invoiceSelect');
         $res = null;
         $clients = null;
@@ -110,7 +110,9 @@ class ChargesController extends Controller
         (select band_cancel from invoices where id=i.invoice_id) as band_cancel,
         (select total_discount - payment_client from invoices where id=i.invoice_id) as total_due,
         (select if(band_paid_out,'#B1FEAB', '#FEB4AB') from invoices where id=i.invoice_id) as row_color,
-        (select c.name from clients c, invoices inv where inv.id=i.invoice_id and c.id=inv.client_id) as client_name from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
+        (select c.name from clients c, invoices inv where inv.id=i.invoice_id and c.id=inv.client_id) as client_name,
+        (select a.business_name from addresses a, invoices inv where inv.id=i.invoice_id and a.id=inv.address_id) as business_name
+        from invoices_details i where charge_id in (".$row->charges_ids.") group by invoice_id;";
         $rows = DB::select($qry);
         if(count($rows)>0)
             $row->invoices = array_merge($row->invoices, $rows);
