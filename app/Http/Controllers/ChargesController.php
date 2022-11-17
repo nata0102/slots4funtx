@@ -35,8 +35,9 @@ class ChargesController extends Controller
                 return $this->getAverage($request->all());
             break;
             default:
+            //return $request->all();
                 $res = $this->getList($request->all());
-       //         return $res;
+               // return $res;
                 $clients = $this->getClientsWithCharges();
             break;
         }
@@ -67,8 +68,38 @@ class ChargesController extends Controller
     public function getList($params){
         $role = Auth::user()->role->key_value;
         $user_id = Auth::id();
+        $qry = "select * from (
+                select date(created_at) as date_charge,
+                group_concat((select address_id from machines where id=c.machine_id)) as addresses_ids,
+                group_concat(c.id) as charges_ids 
+                from charges c where type!='initial_numbers' ";
+        switch($role){
+            case 'employee': $qry .= " and c.user_id = " . $user_id;  break;
+            case 'client': break;
+        };
+        if (array_key_exists('date_ini', $params))
+            if($params['date_ini'] != null)
+                $qry .= " and date(c.created_at) >= '".$params['date_ini']."'";
+        if (array_key_exists('date_fin', $params))
+            if($params['date_fin'] != null)
+                $qry .= " and date(c.created_at) <= '".$params['date_fin']."'";
+
+        $qry .= "group by date(created_at) order by date(created_at) desc) as t1 ";
+
+        if (array_key_exists('clients_ids', $params)){
+            if($params['clients_ids'] != "" && $params['clients_ids'] != null /*&& !in_array("null", $params['clients_ids'])*/){
+                if(!in_array(null, $params['clients_ids']))
+                    $qry .= " where t1.addresses_ids in (".implode(',',$params['clients_ids']).") ";
+            }
+        }
+//return $qry;
+
+
+
+     /*   
         $qry = "select * from (select t.date_charge, group_concat(t.id) as charges_ids,group_concat(address_id) as addresses_ids
-        from (select id, date(c.created_at) as date_charge,
+        from (
+        select id, date(c.created_at) as date_charge,
         (select address_id from machines where id = c.machine_id) as address_id
         from charges c where c.type != 'initial_numbers' ";
         switch($role){
@@ -94,7 +125,7 @@ class ChargesController extends Controller
             if($params['clients_ids'] != "" && $params['clients_ids'] != null && in_array("null", $params)){
                 $qry .= " where t2.addresses_ids in (".implode(',',$params['clients_ids']).") ";
             }
-        }
+        }*/
         if (!array_key_exists('date_ini', $params) && !array_key_exists('date_fin', $params))
             $qry .= " limit 10";
         $res = DB::select($qry);
@@ -260,10 +291,7 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
-        //$invoice_ctrl =  new InvoiceController();
-        //return $invoice_ctrl->getFolio('C');
-        //print_r(\Session::get('data'));
-        /*print_r($request->type_invoice);
+        /*print_r(\Session::get('data'));
         print_r($request->all());
         return true;*/
         try{
