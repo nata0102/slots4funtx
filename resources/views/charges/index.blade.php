@@ -40,7 +40,8 @@
                         </div>
 
                         	<select class="form-control" name="band_paid_out">
-	                            <option value="2" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 2 ? 'selected' : '' : ''}}>ALL</option>
+	                            <option value="-1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == -1 ? 'selected' : '' : ''}}>ALL</option>
+                              <option value="2" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 2 ? 'selected' : '' : ''}}>CANCELLED INVOICES</option>
 	                            <option value="1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 1 ? 'selected' : '' : ''}}>PAID</option>
 	                            <option value="0" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 0 ? 'selected' : '' : ''}}>WITHOUT PAYING</option>
 	                        </select>
