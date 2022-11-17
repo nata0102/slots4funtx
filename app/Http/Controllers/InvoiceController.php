@@ -133,8 +133,7 @@ class InvoiceController extends Controller
 
 	public function machines(Request $request){
 		$qry = "select m.address_id,
-			concat(m.id,' - ',m.serial,' - ', (select g.name from game_catalog g where id = m.game_catalog_id)) as name_machine, ch.id, date(ch.created_at) as date_charge,
-			ch.utility_calc,ch.utility_s4f 
+			concat(m.id,' - ',m.serial,' - ', (select g.name from game_catalog g where id = m.game_catalog_id)) as name_machine, ch.id, date(ch.created_at) as date_charge,ch.utility_calc,ch.utility_s4f 
 			from charges ch,machines m
 			where ch.machine_id=m.id and ch.type != 'initial_numbers'
 			and ch.id not in (select charge_id from invoices_details where invoice_id in 

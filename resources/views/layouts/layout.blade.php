@@ -1251,12 +1251,6 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 				document.getElementById("masterout").removeAttribute('required');
 				document.getElementById("jackpotout").removeAttribute('required');
 			}
-
-			//let element_select_invoice = document.getElementById("select_invoice");
-    		//element_select_invoice.value = document.getElementById("type_invoice").value;
-    		//element_select_invoice.disabled = true;
-
-			//document.getElementById("machineselect").removeAttribute('hidden');
 		}
 
 		function calculate(){

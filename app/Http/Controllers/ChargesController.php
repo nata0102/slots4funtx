@@ -36,6 +36,7 @@ class ChargesController extends Controller
             break;
             default:
                 $res = $this->getList($request->all());
+       //         return $res;
                 $clients = $this->getClientsWithCharges();
             break;
         }
@@ -66,7 +67,7 @@ class ChargesController extends Controller
     public function getList($params){
         $role = Auth::user()->role->key_value;
         $user_id = Auth::id();
-        $qry = "select t.date_charge, group_concat(t.id) as charges_ids,group_concat(address_id) as addresses_ids
+        $qry = "select * from (select t.date_charge, group_concat(t.id) as charges_ids,group_concat(address_id) as addresses_ids
         from (select id, date(c.created_at) as date_charge,
         (select address_id from machines where id = c.machine_id) as address_id
         from charges c where c.type != 'initial_numbers' ";
@@ -88,12 +89,12 @@ class ChargesController extends Controller
         if (array_key_exists('band_paid_out', $params))
             if($params['band_paid_out'] != 2)
                 $qry .= " and c.band_paid_out = ".$params['band_paid_out'];
-
-        $qry .= " order by c.created_at desc ) as t ";
-        if (array_key_exists('clients_id', $params))
-            if($params['clients_id'] != "" && $params['clients_id'] != null && in_array("null", $params))
-                $qry .= " where t.addresses_ids in (".implode(',',$params['clients_id']).") ";
-        $qry .= " group by t.date_charge order by t.date_charge desc ";
+        $qry .= " order by c.created_at desc ) as t  group by t.date_charge order by t.date_charge desc) as t2";
+        if (array_key_exists('clients_ids', $params)){
+            if($params['clients_ids'] != "" && $params['clients_ids'] != null && in_array("null", $params)){
+                $qry .= " where t2.addresses_ids in (".implode(',',$params['clients_ids']).") ";
+            }
+        }
         if (!array_key_exists('date_ini', $params) && !array_key_exists('date_fin', $params))
             $qry .= " limit 10";
         $res = DB::select($qry);

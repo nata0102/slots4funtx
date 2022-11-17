@@ -58,7 +58,7 @@
                     <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="charges_ids[]" id="charge_machine" title="SELECT - MACHINES" onchange="calculateF(this.id)">
                       <option value="">ALL</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}" data-s4f="{{$machine->utility_s4f}}" data-calc="{{$machine->utility_calc}}">{{$machine->id}} {{$machine->date_charge}} {{$machine->name_machine}}</option>
+                        <option value="{{$machine->id}}" data-s4f="{{$machine->utility_s4f}}" data-calc="{{$machine->utility_calc}}">ID:{{$machine->id}} | DATE:{{$machine->date_charge}} | M:{{$machine->name_machine}} | UC:{{$machine->utility_calc}} | US4F:{{$machine->utility_s4f}}</option>
                       @endforeach
                     </select>
                   </div>
