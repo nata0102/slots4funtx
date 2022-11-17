@@ -111,7 +111,6 @@ class InvoiceController extends Controller
 			and ch.id not in (select charge_id from invoices_details where invoice_id in 
 			(select id from invoices where band_cancel is false)) and m.address_id = ".$request->address_id." and date(ch.created_at)>='".$request->from."' and date(ch.created_at)<='".$request->to."'";
 		$machines = DB::select($qry);
-return $machines;
 		$data['type'] = $request->type;
 		$data['client'] = $request->client;
 		$data['to'] = $request->to;
