@@ -32,7 +32,7 @@
                     <option value="{{$client->id}}" data-address_id="{{$client->address_id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
                   @endforeach
                 </select>
-                <input type="hidden" name="address_id" value="" id="address_id">
+                <input type="hidden" name="client_address_id" value="" id="address_id">
               </div>
             </div>
 
@@ -55,10 +55,10 @@
                 <div class="" id="machines">
                   <div class="" id="select_content" hidden>
                     <label for="">Machines</label>
-                    <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machine_id[]" id="charge_machine" title="SELECT - MACHINES" >
+                    <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="charges_ids[]" id="charge_machine" title="SELECT - MACHINES" onchange="calculateF(this.id)">
                       <option value="">ALL</option>
                       @foreach($machines as $machine)
-                        <option value="{{$machine->id}}">{{$machine->id}} {{$machine->date_charge}} {{$machine->name_machine}}</option>
+                        <option value="{{$machine->id}}" data-s4f="{{$machine->utility_s4f}}" data-calc="{{$machine->utility_calc}}">{{$machine->id}} {{$machine->date_charge}} {{$machine->name_machine}}</option>
                       @endforeach
                     </select>
                   </div>
@@ -68,23 +68,47 @@
               </div>
             </div>
 
-            <div class="row" id="input" hidden>
+            <div class="" id="input" hidden>
+
+
+
+              <div class="row">
+                <div class="col-4">
+                  <label id="label_total" style="font-weight: bold" for="">Total System:</label>
+                  <label>$</label><label id="total_calculated_label" name="utility"></label>
+                  <input type="hidden" name="total_invoice" value="" id="total_calculated">
+                </div>
+                <div class="col-4">
+                  <label id="label_modified" style="font-weight: bold" for="">Total S4F:</label>
+                  <label>$</label><label value="" id="total_modified_label"></label>
+
+                  <input type="hidden" value="" id="total_modified_aux">
+                  <input type="hidden" name="total_invoice_modified" value="" id="total_modified">
+                </div>
+              </div>
+
+              <div class="row" >
 
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Discount:</label>
-                  <input class="form-control" id="discount" type="number" name="discount" value="" required style="width: 100%;">
+                  <input class="form-control" id="discount" type="number" name="discount" value="0" required style="width: 100%;" onchange="totalDiscountF(this)" onkeyup="this.onchange();">
                 </div>
 
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Payment Client:</label>
-                  <input class="form-control" id="payment_client" type="number" name="payment_client" value="" required style="width: 100%;">
+                  <input class="form-control" id="payment_client" type="number" name="payment_client" value="0" required style="width: 100%;">
                 </div>
 
                 <div class="col-12 form-group">
                   <button type="button" class="btn btn-success" id="save" onclick='saveF()'>Save</button>
                 </div>
 
+              </div>
             </div>
+
+
+
+
           </div>
         </form>
       </div>
@@ -106,9 +130,62 @@
 
   }
 
+  function totalDiscountF(){
+    discount = document.getElementById('discount').value;
+    total_invoice = document.getElementById('total_modified_aux').value;
+    total = total_invoice - total_invoice*(discount/100);
+    document.getElementById('total_modified').value = total.toFixed(2);
+
+    document.getElementById("total_modified_label").innerHTML = total.toFixed(2);
+  }
 
 
+  function calculateF(fieldID){
 
+  // fieldID is id set on select field
+    calc = 0;
+    s4f = 0;
+
+    // get the select element
+    var elements = document.getElementById(fieldID).childNodes;
+
+    // if we want to use key=>value of selected element we will set this object
+    var selectedKeyValue = {};
+
+    // if we want to use only array of selected values we will set this array
+    var arrayOfSelecedIDs=[];
+
+    // loop over option values
+    for(i=0;i<elements.length;i++){
+
+      // if option is select then push it to object or array
+      if(elements[i].selected){
+        //push it to object as selected key->value
+        selectedKeyValue[elements[i].value]=elements[i].textContent;
+        //push to array of selected values
+        arrayOfSelecedIDs.push(elements[i].value)
+
+        calc += parseFloat(elements[i].getAttribute('data-calc'));
+        s4f += parseFloat(elements[i].getAttribute('data-s4f'));
+
+      }
+
+    }
+
+    // output or do seomething else with these values :)
+    // check your console log
+    //console.log(selectedKeyValue);
+    //console.log(arrayOfSelecedIDs);
+
+    document.getElementById("total_calculated").setAttribute('value',calc);
+    document.getElementById("total_modified_aux").setAttribute('value',s4f);
+
+    document.getElementById("total_calculated_label").innerHTML = calc;
+    document.getElementById("total_modified_label").innerHTML = s4f;
+
+    totalDiscountF();
+
+  }
 
 
   function saveF(){
@@ -141,7 +218,7 @@
       cache: false,
       data: dataString,
       success: function(){
-        toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
+        //toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
         $("#"+div_refresh).load(" #"+div_refresh);
       },
       error: function(){
