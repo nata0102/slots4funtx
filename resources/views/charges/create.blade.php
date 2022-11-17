@@ -175,7 +175,7 @@
                     <label for="">S4F</label>
                     <input class="form-control" type="number" min="" max="" value="" name="utility_s4f" id="us" step=".01">
                   </div>
-                  <div class="col-12" style="margin-top: 30px">
+                  <div class="col-4" style="margin-top: 30px">
                     <button type="submit" name="button" class="btn btn-info">+</button>
                   </div>
                 </div>
