@@ -278,14 +278,8 @@
 <script>
 
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  var combo = document.getElementById("select_invoice");
-  var selected = combo.options[combo.selectedIndex].value;
-  if(selected == "no_invoice")
-    totals_with_invoice = true;
-  if(document.getElementById("totals_with_invoice"))
-  document.getElementById("totals_with_invoice").setAttribute('hidden',totals_with_invoice);
-});
+
+
 
   function hiddenFields(e){
     var user_role = {!! json_encode($user_role) !!};
@@ -308,14 +302,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById("div_input_utility_s4f").hidden=div_input_utility_s4f;
 
     if(document.getElementById("totals_with_invoice"))
-    document.getElementById("totals_with_invoice").setAttribute('hidden',totals_with_invoice);
+    document.getElementById("totals_with_invoice").hidden = totals_with_invoice;
 
     if(document.getElementById("type_invoice"))
     document.getElementById("type_invoice").value = e.options[e.selectedIndex].getAttribute("value");
 
     if(document.getElementById("label_total"))
     document.getElementById("label_total").innerHTML=label_total;
-    
+
     if(document.getElementById("label_modified"))
     document.getElementById("label_modified").innerHTML=label_modified;
   }
