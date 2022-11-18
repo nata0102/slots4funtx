@@ -14,7 +14,7 @@
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
                 <label for="">Type:</label>
-                <select class="form-control selectpicker" name="type" style="width: 100%;" id="type" data-live-search="true" required>
+                <select class="form-control selectpicker" name="type" style="width: 100%;" id="type" data-live-search="true" required onchange="charge(this)">
                   <option value="" selected disabled>-- Select Type --</option>
                   @foreach($types as $type)
                     <option value="{{$type->key_value}}" {{ $data ? $data["type"] == $type->key_value ? "selected":"" : ''}}>{{$type->value}}</option>
@@ -39,11 +39,11 @@
             <div class="row">
               <div class="col-12 col-sm-3 form-group">
                 <label for="">from:</label>
-                <input class="form-control" type="date" name="from" value="{{ $data ? $data['from'] : ''}}" required>
+                <input class="form-control" type="date" name="from" value="{{ $data ? $data['from'] : ''}}" required id="from">
               </div>
               <div class="col-12 col-sm-3 form-group">
                 <label for="">to:</label>
-                <input class="form-control" type="date" name="to" value="{{ $data ? $data['to'] : ''}}" required>
+                <input class="form-control" type="date" name="to" value="{{ $data ? $data['to'] : ''}}" required id="to">
               </div>
               <div class="col-12 col-sm-1 form-group">
                 <button type="button" class="btn" style="margin-top: 37px;" id="search" onclick='searchF()'><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -56,7 +56,6 @@
                   <div class="" id="select_content" hidden>
                     <label for="">Machines</label>
                     <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="charges_ids[]" id="charge_machine" title="SELECT - MACHINES" onchange="calculateF(this.id)">
-                      <option value="">ALL</option>
                       @foreach($machines as $machine)
                         <option value="{{$machine->id}}" data-s4f="{{$machine->utility_s4f}}" data-calc="{{$machine->utility_calc}}">ID:{{$machine->id}} | DATE:{{$machine->date_charge}} | M:{{$machine->name_machine}} | UC:{{$machine->utility_calc}} | US4F:{{$machine->utility_s4f}}</option>
                       @endforeach
@@ -87,7 +86,7 @@
                 </div>
               </div>
 
-              <div class="row" >
+              <div class="row">
 
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Discount:</label>
@@ -125,7 +124,26 @@
   div_refresh = "machines";
   form_id = "form";
 
+  function reset(){
+    $('.selectpicker').selectpicker('refresh');
+
+    document.getElementById("input").setAttribute('hidden','');
+    document.getElementById("from").value='';
+    document.getElementById("to").value='';
+    document.getElementById("select_content").setAttribute('hidden','');
+    document.getElementById("total_calculated").setAttribute('value',"");
+    document.getElementById("total_modified_aux").setAttribute('value',"");
+    document.getElementById("total_calculated_label").innerHTML = "0.00";
+    document.getElementById("total_modified_label").innerHTML = "0.00";
+  }
+
+  function charge(){
+    $('.client').selectpicker('refresh');
+    reset();
+  }
+
   function address(e){
+    reset();
     document.getElementById("address_id").value = e.options[e.selectedIndex].getAttribute("data-address_id");
 
   }
@@ -204,36 +222,40 @@
 
   function searchF(){
 
-    document.getElementById("discount").removeAttribute('required');
-    document.getElementById("payment_client").removeAttribute('required');
-    document.getElementById("form").setAttribute('action',search);
-    document.getElementById("input").setAttribute('hidden','');
+    if(document.getElementById("type").value != "" && document.getElementById("client").value != "" && document.getElementById("from").value != "" && document.getElementById("to").value != "")
+    {
+
+      document.getElementById("discount").removeAttribute('required');
+      document.getElementById("payment_client").removeAttribute('required');
+      document.getElementById("form").setAttribute('action',search);
+      document.getElementById("input").setAttribute('hidden','');
 
 
-    var dataString = $('#'+form_id).serialize();
-    $.ajax({
-      dataType: 'json',
-      type:'POST',
-      url: search,
-      cache: false,
-      data: dataString,
-      success: function(){
-        //toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
-        $("#"+div_refresh).load(" #"+div_refresh);
-      },
-      error: function(){
-        toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
-      }
-    });
+      var dataString = $('#'+form_id).serialize();
+      $.ajax({
+        dataType: 'json',
+        type:'POST',
+        url: search,
+        cache: false,
+        data: dataString,
+        success: function(){
+          //toastr.success('Información actualizada correctamente.', '', {timeOut: 3000});
+          $("#"+div_refresh).load(" #"+div_refresh);
+        },
+        error: function(){
+          toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
+        }
+      });
 
 
-    setTimeout(() => {
-      document.getElementById("select_content").removeAttribute('hidden');
-      $('.selectpicker').selectpicker('refresh');
+      setTimeout(() => {
+        document.getElementById("select_content").removeAttribute('hidden');
+        $('.selectpicker').selectpicker('refresh');
 
-      document.getElementById("input").removeAttribute('hidden');
-    }, 1000);
+        document.getElementById("input").removeAttribute('hidden');
+      }, 1000);
 
+    }
   }
 
 </script>
