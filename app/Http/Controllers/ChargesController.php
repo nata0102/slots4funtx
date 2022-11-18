@@ -15,6 +15,7 @@ class ChargesController extends Controller
     public function __construct(){
       if(!\Session::has('data')) \Session::put('data', array());
       if(!\Session::has('client_id'));
+      if(!\Session::has('address_id'));
       if(!\Session::has('invoiceSelect'));
     }
 
@@ -27,6 +28,7 @@ class ChargesController extends Controller
     {
         \Session::forget('data');
         \Session::forget('client_id');
+        \Session::forget('address_id');
         \Session::forget('invoiceSelect');
         $res = null;
         $clients = null;
@@ -67,7 +69,7 @@ class ChargesController extends Controller
         $role = Auth::user()->role->key_value;
         $user_id = Auth::id();
         $qry = "select date(created_at) as date_charge,
-                group_concat(c.id) as charges_ids 
+                group_concat(c.id) as charges_ids
                 from charges c where type!='initial_numbers' ";
         switch($role){
             case 'employee': $qry .= " and c.user_id = " . $user_id;  break;
@@ -154,9 +156,11 @@ class ChargesController extends Controller
         //$data = \Session::forget('data');
         $data = \Session::get('data');
         $client_id = \Session::get('client_id');
+        $address_id = \Session::get('address_id');
         $invoiceSelect = \Session::get('invoiceSelect');
         if(count($data) == 0){
           \Session::forget('client_id');
+          \Session::forget('address_id');
           \Session::forget('invoiceSelect');
         }
 
@@ -175,7 +179,7 @@ class ChargesController extends Controller
           if($c<count($data))
             $machinesid .=",";
         }
-        return view('charges.create',compact('machinesid','machines','types','data','clients','client_id','invoiceSelect'));
+        return view('charges.create',compact('machinesid','machines','types','data','clients','client_id','invoiceSelect','address_id'));
 
     }
 
@@ -209,6 +213,7 @@ class ChargesController extends Controller
 
       if(count($dt) == 0){
         \Session::forget('client_id');
+        \Session::forget('address_id');
         \Session::forget('invoiceSelect');
       }
       return back();
@@ -221,6 +226,10 @@ class ChargesController extends Controller
         if(count($data) == 0){
           $client = \Session::get('client_id');
           \Session::put('client_id', $request->client);
+
+          $address = \Session::get('address_id');
+          \Session::put('address_id', $request->address_id);
+
           $invoiceSelect = \Session::get('invoiceSelect');
           \Session::put('invoiceSelect', $request->invoice_select);
         }

@@ -37,7 +37,7 @@
                   <select class="form-control selectpicker" {{$client_id != "" ? 'disabled' : '' }} id="select_cli" name="type" style="width: 100%;" onchange="loadMachines(this.selectedIndex, {{@json_encode($clients)}})" data-live-search="true">
                     <option value="" selected disabled>-- Select Client-Business --</option>
                     @foreach($clients as $client)
-                      <option value="{{$client->id}}" {{$client->id == $client_id ? 'selected' : ''}}>{{$client->name}} - {{$client->business_name}}</option>
+                      <option value="{{$client->address_id}}" {{$client->address_id == $address_id ? 'selected' : ''}}>{{$client->name}} - {{$client->business_name}}</option>
                     @endforeach
                   </select>
                 </div>
@@ -109,6 +109,7 @@
               @csrf
 
               <input type="hidden" name="client" value="" id="input_client">
+              <input type="hidden" name="address_id" value="" id="input_address">
               <input class="form-control" type="hidden" name="invoice_select" value="" id="invoiceSelect2">
               <div class="form-group" hidden>
                 <input class="form-control" type="text" name="machine_id" value="" id="machineid">
@@ -271,7 +272,20 @@
 
 @stop
 
+
+
+
 <script>
+
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  var combo = document.getElementById("select_invoice");
+  var selected = combo.options[combo.selectedIndex].value;
+  if(selected == "no_invoice")
+    totals_with_invoice = true;
+  if(document.getElementById("totals_with_invoice"))
+  document.getElementById("totals_with_invoice").setAttribute('hidden',totals_with_invoice);
+});
 
   function hiddenFields(e){
     var user_role = {!! json_encode($user_role) !!};
@@ -292,12 +306,16 @@
 
     if(document.getElementById("div_input_utility_s4f"))
     document.getElementById("div_input_utility_s4f").hidden=div_input_utility_s4f;
+
     if(document.getElementById("totals_with_invoice"))
-    document.getElementById("totals_with_invoice").hidden=totals_with_invoice;
+    document.getElementById("totals_with_invoice").setAttribute('hidden',totals_with_invoice);
+
     if(document.getElementById("type_invoice"))
     document.getElementById("type_invoice").value = e.options[e.selectedIndex].getAttribute("value");
+
     if(document.getElementById("label_total"))
     document.getElementById("label_total").innerHTML=label_total;
+    
     if(document.getElementById("label_modified"))
     document.getElementById("label_modified").innerHTML=label_modified;
   }
@@ -333,6 +351,7 @@
     client_id = clients[index-1].id;
     client_address_id = clients[index-1].address_id;
     document.getElementById("input_client").value = client_id;
+    document.getElementById("input_address").value = client_address_id;
     if(  document.getElementById("client_address_id"))
      document.getElementById("client_address_id").value = client_address_id;
 

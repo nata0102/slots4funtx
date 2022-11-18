@@ -1280,6 +1280,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 
 
 			}
+
+
+			
 		}
 
 		function totalDiscount(){
