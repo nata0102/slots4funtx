@@ -26,7 +26,7 @@
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
                 <label for="">Client:</label>
-                <select class="form-control selectpicker" id="client" name="client" style="width: 100%;" data-live-search="true" required onchange="address(this)">
+                <select class="form-control selectpicker" id="client" name="client_id" style="width: 100%;" data-live-search="true" required onchange="address(this)">
                   <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients as $client)
                     <option value="{{$client->id}}" data-address_id="{{$client->address_id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
