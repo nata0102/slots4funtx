@@ -80,7 +80,7 @@ class ChargesController extends Controller
 
         if (array_key_exists('clients_ids', $params)){
             if($params['clients_ids'] != "" && $params['clients_ids'] != null){
-                if(!in_array(null, $params['clients_ids']))
+                if(!in_array("all", $params['clients_ids']))
                     $qry .= " and c.machine_id in (select id from machines where address_id in (".implode(',',$params['clients_ids']).")) ";
             }
         }

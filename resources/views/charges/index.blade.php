@@ -20,8 +20,9 @@
 
                           <input type="hidden" class="form-control @error('client') is-invalid @enderror input100" name="client" id="client" value="{{old('client')}}">
 
+
                           <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="clients_ids[]" id="clients_ids" title="SELECT CLIENT - BUSINESS"  onChange="getSelectedOptions(this)">
-                          <option value="">ALL</option>
+                          <option value="all">ALL</option>
                           @foreach($clients as $tp)
                             <option value="{{$tp->id}}"  {{ isset($_GET['client']) ? $_GET['client'] == $tp->id ? 'selected' : '' : ''}}>{{$tp->name}}</option>
                           @endforeach
@@ -124,18 +125,25 @@
   }
 
   function getSelectedOptions(sel) {
+    console.log(sel);
       var opts = [],opt;
       var len = sel.options.length;
       var ids = document.getElementById("client");
-      for (var i = 1; i < len; i++) {
-        opt = sel.options[i];
-        if (opt.selected)
-            opts.push(opt.value);
-      }//for
-      ids.value = opts.toString();
+      opt = sel.options[0];
+      if (opt.selected){
+        ids.value = "";
+      }else{
+          for (var i = 0; i < len; i++) {
+            opt = sel.options[i];
+            if (opt.selected)
+                opts.push(opt.value);
+          }
+          ids.value = opts.toString();
+      }
     }
 
     function fillClients(ids){
+      console.log(ids);
         var arr = ids.split(",");
         $.each(arr, function(i,e){
             $("#clients_ids option[value='" + e + "']").prop("selected", true);
