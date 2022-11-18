@@ -1295,16 +1295,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("payment_client").max = total.toFixed(2);
 		}
 
-		$( document ).ready( function() {
-		  var combo = document.getElementById("select_invoice");
-		  var selected = combo.options[combo.selectedIndex].value;
-		  totals_with_invoice = false;
-		  if(selected == "no_invoice"){
-		    totals_with_invoice = true;
-		  }
-		  if(document.getElementById("totals_with_invoice"))
-		  document.getElementById("totals_with_invoice").hidden = totals_with_invoice;
-		} )
+		
 	</script>
 
 
