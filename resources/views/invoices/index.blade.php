@@ -14,6 +14,36 @@
           </div>
 
           <form method="GET" action="{{action('InvoiceController@index')}}">
+            <div class="input-group mb-5">   
+              <select style="margin-top: 25px" class="form-control" name="type" onchange="fillClients(this.value)">
+                  <option value="all">ALL</option>
+                @foreach($types_clients as $type)
+                  <option value="{{$type->key_value}}" {{ isset($_GET['type']) ? $_GET['type'] == -1 ? 'selected' : '' : ''}}>{{$type->value}}</option>
+                @endforeach
+              </select>    
+              <input type="hidden" class="form-control @error('client') is-invalid @enderror input100" name="client" id="client" value="{{old('client')}}">
+              <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="clients_ids[]" id="clients_ids" title="SELECT CLIENT - BUSINESS"  onChange="getSelectedOptions(this)">
+              </select>      
+              <div style="margin-top: 0px; margin-left: 3px;">
+                <label > Initial:
+                <input style="width: 200px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
+                </label>
+              </div>
+
+              <div style="margin-top: 0px; margin-left: 3px;">
+                <label > Final:
+                <input style="width: 200px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">
+              </div>
+
+              <select style="margin-top: 25px" class="form-control" name="band_paid_out">
+                <option value="-1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == -1 ? 'selected' : '' : ''}}>ALL</option>
+                <option value="2" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 2 ? 'selected' : '' : ''}}>CANCELLED INVOICES</option>
+                <option value="1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 1 ? 'selected' : '' : ''}}>PAID</option>
+                <option value="0" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 0 ? 'selected' : '' : ''}}>WITHOUT PAYING</option>
+              </select>
+              <button style="margin-top: 10px" type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
+              </button>
+            </div>
              
           </form>
 
@@ -26,18 +56,20 @@
                   <th style="width:20%; text-align: center;">Type</th>
                   <th style="width:40%; text-align: center;">Client</th>
                   <th style="width:20%; text-align: center;">Total ($)</th>
+                  <th style="width:20%; text-align: center;">Debit ($)</th>
                 	<th style="width:20%; text-align: center;"></th>
                 </tr>
               </thead>
               <tbody>
               @foreach($res as $invoice)
                 <tr>
-                  <td style="text-align: center;">{{$invoice->folio}}</td>
-                  <td style="text-align: center;">{{$invoice->date_invoice}}</td>
-                  <td style="text-align: center;">{{$invoice->type_value}}</td>
-                  <td style="text-align: center;">{{$invoice->client_name}}</td>
-                  <td style="text-align: right;">{{$invoice->total_discount}}</td>
-                  <td>
+                  <td style="text-align: center;background-color: {{$invoice->row_color}}">{{$invoice->folio}}</td>
+                  <td style="text-align: center;background-color: {{$invoice->row_color}}">{{$invoice->date_invoice}}</td>
+                  <td style="text-align: center;background-color: {{$invoice->row_color}}">{{$invoice->type_value}}</td>
+                  <td style="text-align: center;background-color: {{$invoice->row_color}}">{{$invoice->client_name}} - {{$invoice->business_name}}</td>
+                  <td style="text-align: right; background-color: {{$invoice->row_color}}">{{$invoice->total_discount}}</td>
+                  <td style="text-align: right; background-color: {{$invoice->row_color}}">{{$invoice->debit}}</td>
+                  <td style="background-color: {{$invoice->row_color}}">
                     <div class="row" style="margin-right: 0; margin-left: 0;">
                       <div>                        
                         <a href="{{action('InvoiceController@show',$invoice->id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 35px;"><i class="fas fa-file-invoice-dollar"></i></a>
@@ -60,3 +92,8 @@
   </div>
 
   @stop
+  <script>
+    function fillClients(value){
+      console.log(value);
+    }
+  </script>

@@ -24,16 +24,51 @@ class InvoiceController extends Controller
 		switch($request->option){
 			default:
 				$res = $this->getList($request->all());
+        $types_clients = $this->getTypesClients();
 			break;
 		}
-		return view('invoices.index',compact('res'));
+		return view('invoices.index',compact('res','types_clients'));
 	}
 
+  public function getTypesClients(){
+      $res_final = [];
+      $types = Lookup::where('type','invoices_type')->get();
+      foreach ($types as &$type) {
+        $qry = "select id, business_name, (select name from clients where id=a.client_id) as client_name
+        from addresses a where id in (select address_id from invoices where type='".$type->key_value."')";
+        $type->clients = DB::select($qry);
+        if(count($type->clients) > 0)
+          array_push($res_final,$type);
+      }
+      return $res_final;
+  }
+
 	public function getList($params){
-		$qry = "select i.*,
+    $role = Auth::user()->role->key_value;
+    $user_id = Auth::id();
+
+		$qry = "select i.*,a.business_name,(i.total_discount-i.payment_client) as debit,
+    if(band_cancel,'#C4C4C1', if(band_paid_out,'#B1FEAB', '#FEB4AB')) as row_color,
 		(select value from lookups where type='invoices_type' and key_value=i.type limit 1) as type_value,
 		(select name from clients where id=i.client_id) as client_name
-		from invoices i;";
+		from invoices i, addresses a where a.id=i.address_id ";
+    switch($role){
+      case 'employee': $qry .= " and i.user_id = " . $user_id;  break;
+      case 'client': break;
+    }
+    if (array_key_exists('band_paid_out', $params) && $params['band_paid_out'] != -1){
+      if($params['band_paid_out'] == 2) // Cancelada
+        $qry .= " and band_cancel = 1 ";
+      else
+        $qry .= " and band_paid_out = ".$params['band_paid_out']." and band_cancel = 0 ";
+    }
+    if (array_key_exists('date_ini', $params) && $params['date_ini'] != null)
+      $qry .= " and date(i.created_at) >= '".$params['date_ini']."'";
+    if (array_key_exists('date_fin', $params) && $params['date_fin'] != null)
+      $qry .= " and date(i.created_at) <= '".$params['date_fin']."'";
+    if (array_key_exists('type', $params) && $params['type'] != null && $params['type'] != "all")
+      $qry .= " and type in (".$params['type'].")";
+
 		return DB::select($qry);
 	}
 
@@ -70,15 +105,13 @@ class InvoiceController extends Controller
         }
    	}
 
-   	public function store(Request $request){
-   		return $request->all();
-   		return;
+   	public function store(Request $request){  		
    		try{
             $transaction = DB::transaction(function() use($request){
                 $data = $request->all();
                 switch ($request->type) {
                 	case 'charges':
-                		$this->createInvoiceDetails($request->charges_ids, $request->params,'C');
+                		$this->createInvoiceDetails($request->charges_ids, $request->all(),'C');
                 		break;
                 }
 
@@ -88,7 +121,7 @@ class InvoiceController extends Controller
                 );
                 return $notification;
             });
-            return redirect()->action('ChargesController@create')->with($transaction);
+            return redirect()->action('InvoiceController@index')->with($transaction);
         }catch(\Exception $e){
             $cad = 'Oops! there was an error, please try again later.';
             $transaction = array(
