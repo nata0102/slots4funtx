@@ -90,12 +90,12 @@
 
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Discount:</label>
-                  <input class="form-control" id="discount" type="number" name="discount" value="0" required style="width: 100%;" onchange="totalDiscountF(this)" onkeyup="this.onchange();">
+                  <input class="form-control" id="discount" min="0" step="any" max="100" type="number" name="discount" value="0" required style="width: 100%;" onchange="totalDiscountF(this)" onkeyup="this.onchange();">
                 </div>
 
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Payment Client:</label>
-                  <input class="form-control" id="payment_client" type="number" name="payment_client" value="0" required style="width: 100%;">
+                  <input class="form-control" id="payment_client" step="any" min="0" type="number" name="payment_client" value="0" required style="width: 100%;">
                 </div>
 
                 <div class="col-12 form-group">
@@ -153,6 +153,8 @@
     total_invoice = document.getElementById('total_modified_aux').value;
     total = total_invoice - total_invoice*(discount/100);
     document.getElementById('total_modified').value = total.toFixed(2);
+
+    document.getElementById("payment_client").setAttribute('max',total.toFixed(2));
 
     document.getElementById("total_modified_label").innerHTML = total.toFixed(2);
   }
