@@ -74,13 +74,14 @@ class InvoiceController extends Controller
 
     public function getFolio($type){
     	$invoice = Invoice::where('folio', 'like', '%'.$type.'%')->orderBy('id','desc')->first();
+
         $folio = "0001";
         if($invoice != null){
         	$arr = explode('-', $invoice->folio);
         	$num = intval($arr[1])+1;
-        	$folio = $type."-000".$num;
+        	$folio = "000".$num;
         }
-        return $folio;
+        return $type.'-'.$folio;
     }
 
 
@@ -170,7 +171,11 @@ class InvoiceController extends Controller
 			from charges ch,machines m
 			where ch.machine_id=m.id and ch.type != 'initial_numbers'
 			and ch.id not in (select charge_id from invoices_details where invoice_id in 
-			(select id from invoices where band_cancel is false)) and m.address_id = ".$request->client_address_id." and date(ch.created_at)>='".$request->from."' and date(ch.created_at)<='".$request->to."'";
+			(select id from invoices where band_cancel is false)) and m.address_id = ".$request->client_address_id;
+    if (array_key_exists('from', $request->all()) && $request->all()['from'] != "")
+      $qry .= " and date(ch.created_at)>='".$request->from."' ";
+    if (array_key_exists('to', $request->all()) && $request->all()['to'] != "")
+      $qry .= " and date(ch.created_at)<='".$request->to."'";
 		$machines = DB::select($qry);
 		$data['type'] = $request->type;
 		$data['client'] = $request->client;

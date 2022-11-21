@@ -13,7 +13,7 @@
           <div class="card" id="card-section">
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
-                <label for="">Type:</label>
+                <label for="">Type <span style="color:red">*</span></label>
                 <select class="form-control selectpicker" name="type" style="width: 100%;" id="type" data-live-search="true" required onchange="charge(this)">
                   <option value="" selected disabled>-- Select Type --</option>
                   @foreach($types as $type)
@@ -25,7 +25,7 @@
 
             <div class="row">
               <div class="col-12 col-sm-4 form-group">
-                <label for="">Client:</label>
+                <label for="">Client <span style="color:red">*</span></label>
                 <select class="form-control selectpicker" id="client" name="client_id" style="width: 100%;" data-live-search="true" required onchange="address(this)">
                   <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients as $client)
@@ -38,11 +38,11 @@
 
             <div class="row">
               <div class="col-12 col-sm-3 form-group">
-                <label for="">from:</label>
+                <label for="">From</label>
                 <input class="form-control" type="date" name="from" value="{{ $data ? $data['from'] : ''}}" required id="from">
               </div>
               <div class="col-12 col-sm-3 form-group">
-                <label for="">to:</label>
+                <label for="">To</label>
                 <input class="form-control" type="date" name="to" value="{{ $data ? $data['to'] : ''}}" required id="to">
               </div>
               <div class="col-12 col-sm-1 form-group">
@@ -54,7 +54,7 @@
               <div class="col-12 col-sm-4 form-group">
                 <div class="" id="machines">
                   <div class="" id="select_content" hidden>
-                    <label for="">Machines</label>
+                    <label for="">Machines <span style="color:red">*</span></label>
                     <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="charges_ids[]" id="charge_machine" title="SELECT - MACHINES" onchange="calculateF(this.id)">
                       @foreach($machines as $machine)
                         <option value="{{$machine->id}}" data-s4f="{{$machine->utility_s4f}}" data-calc="{{$machine->utility_calc}}">ID:{{$machine->id}} | DATE:{{$machine->date_charge}} | M:{{$machine->name_machine}} | UC:{{$machine->utility_calc}} | US4F:{{$machine->utility_s4f}}</option>
@@ -89,12 +89,12 @@
               <div class="row">
 
                 <div class="col-12 col-sm-4 form-group">
-                  <label for="">Discount:</label>
+                  <label for="">Discount %</label>
                   <input class="form-control" id="discount" min="0" step="any" max="100" type="number" name="discount" value="0" required style="width: 100%;" onchange="totalDiscountF(this)" onkeyup="this.onchange();">
                 </div>
 
                 <div class="col-12 col-sm-4 form-group">
-                  <label for="">Payment Client:</label>
+                  <label for="">Payment Client</label>
                   <input class="form-control" id="payment_client" step="any" min="0" type="number" name="payment_client" value="0" required style="width: 100%;">
                 </div>
 
@@ -218,13 +218,13 @@
         document.getElementById("form").submit();
       }
       else{
-        alert("Completa los campos.");
+       toastr.error('Complete the fields.', '', {timeOut: 3000});
       }
   }
 
   function searchF(){
 
-    if(document.getElementById("type").value != "" && document.getElementById("client").value != "" && document.getElementById("from").value != "" && document.getElementById("to").value != "")
+    if(document.getElementById("type").value != "" && document.getElementById("client").value != "" /*&& document.getElementById("from").value != "" && document.getElementById("to").value != ""*/)
     {
 
       document.getElementById("discount").removeAttribute('required');
@@ -245,7 +245,7 @@
           $("#"+div_refresh).load(" #"+div_refresh);
         },
         error: function(){
-          toastr.error('Hubo un problema por favor intentalo de nuevo mas tarde.', '', {timeOut: 3000});
+          toastr.error('There was a problem, please try again later.', '', {timeOut: 3000});
         }
       });
 
