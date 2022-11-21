@@ -39,11 +39,11 @@
             <div class="row">
               <div class="col-12 col-sm-3 form-group">
                 <label for="">From</label>
-                <input class="form-control" type="date" name="from" value="{{ $data ? $data['from'] : ''}}" required id="from">
+                <input class="form-control" type="date" name="from" value="{{ $data ? $data['from'] : ''}}" id="from">
               </div>
               <div class="col-12 col-sm-3 form-group">
                 <label for="">To</label>
-                <input class="form-control" type="date" name="to" value="{{ $data ? $data['to'] : ''}}" required id="to">
+                <input class="form-control" type="date" name="to" value="{{ $data ? $data['to'] : ''}}" id="to">
               </div>
               <div class="col-12 col-sm-1 form-group">
                 <button type="button" class="btn" style="margin-top: 37px;" id="search" onclick='searchF()'><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -101,24 +101,15 @@
                 <div class="col-12 form-group">
                   <button type="button" class="btn btn-success" id="save" onclick='saveF()'>Save</button>
                 </div>
-
               </div>
             </div>
-
-
-
-
           </div>
         </form>
       </div>
     </div>
   </div>
-
-
 @stop
-
 <script>
-
   search = "{{action('InvoiceController@machines')}}";
   store = "{{action('InvoiceController@store')}}";
   div_refresh = "machines";
@@ -154,6 +145,8 @@
     total = total_invoice - total_invoice*(discount/100);
     document.getElementById('total_modified').value = total.toFixed(2);
 
+
+    document.getElementById("payment_client").setAttribute('value',total.toFixed(2));
     document.getElementById("payment_client").setAttribute('max',total.toFixed(2));
 
     document.getElementById("total_modified_label").innerHTML = total.toFixed(2);
