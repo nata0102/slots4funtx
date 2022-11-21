@@ -252,7 +252,7 @@
                 </div>
                 <div class="col-4">
                   <label for="">Payment Client</label>
-                  <input type="number" min="0" max="{{$total_modified}}" name="payment_client" value="0" class="form-control" id='payment_client' step="any">
+                  <input type="number" min="0" max="{{$total_modified}}" name="payment_client" value="{{$total_modified}}" class="form-control" id='payment_client' step="any">
                 </div>
                   <div class="col-6"><br>
                       <button type="submit" name="button" class="btn btn-success" style="">SAVE</button>

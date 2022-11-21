@@ -1292,6 +1292,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById('total_modified').value = total.toFixed(2);
 			document.getElementById('total_modified').innerHTML = total.toFixed(2);
 			document.getElementById("total_invoice_modified").value = total.toFixed(2);
+			document.getElementById("payment_client").value = total.toFixed(2);
 			document.getElementById("payment_client").max = total.toFixed(2);
 		}
 
