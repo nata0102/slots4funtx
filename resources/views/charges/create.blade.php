@@ -387,7 +387,7 @@
 		  }
 		  if(document.getElementById("totals_with_invoice"))
 		  document.getElementById("totals_with_invoice").hidden = totals_with_invoice;
-  
+
   });
 
 

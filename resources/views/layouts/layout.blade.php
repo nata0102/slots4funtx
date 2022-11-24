@@ -1104,6 +1104,8 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 		function dataCharge(e) {
 
 			//dataReset();
+			document.getElementById("jackpotinitial").setAttribute('hidden','');
+			document.getElementById("jpinitial").removeAttribute('required');
 
 			document.getElementById("masterin").value = '';
 			document.getElementById("masterout").value = '';
@@ -1296,7 +1298,7 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 			document.getElementById("payment_client").max = total.toFixed(2);
 		}
 
-		
+
 	</script>
 
 

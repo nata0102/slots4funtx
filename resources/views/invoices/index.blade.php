@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style media="screen">
+  .dropdown-toggle {
+    border: 1px solid #ced4da;
+  }
+</style>
+
 <?php
   $menu= DB::select("select m.actions from menu_roles m, lookups l where m.lkp_role_id=".Auth::user()->role->id." and m.lkp_menu_id = l.id and l.key_value='Invoice';");
 ?>
@@ -14,33 +20,38 @@
           </div>
 
           <form method="GET" action="{{action('InvoiceController@index')}}">
-            <div class="input-group mb-5">   
-              <select onchange="fillClients(this.value,{{json_encode($typesClients)}})" style="margin-top: 25px" class="form-control" name="type" id="type">
-                  <option value="all">ALL</option>
-                @foreach($typesClients as $type)
-                  <option value="{{$type->key_value}}" {{ isset($_GET['type']) ? $_GET['type'] == -1 ? 'selected' : '' : ''}}>{{$type->value}}</option>
-                @endforeach
-              </select>  
+            <div class="input-group mb-5">
+
+              <div class="form-group" style="margin-top: 26px;">
+
+                <select onchange="fillClients(this.value,{{json_encode($typesClients)}})" class="form-control" name="type" id="type">
+                    <option value="all">ALL</option>
+                  @foreach($typesClients as $type)
+                    <option value="{{$type->key_value}}" {{ isset($_GET['type']) ? $_GET['type'] == -1 ? 'selected' : '' : ''}}>{{$type->value}}</option>
+                  @endforeach
+                </select>
+              </div>
 
               <input type="hidden" class="form-control @error('client') is-invalid @enderror input100" name="client" id="client" value="{{old('client')}}">
-            
 
-              <select style="margin-top: 40px" class="form-control selectpicker" data-live-search="true" multiple="multiple" name="clients_ids[]" id="clients_ids" title="SELECT CLIENTS - BUSINESS" 
-              onChange="getSelectedOptions(this)">
-              </select>   
+              <div class="form-group" style="margin-top: 26px; margin-left: 3px;">
+                <select class="form-control selectpicker form-control-sp" data-live-search="true" multiple="multiple" name="clients_ids[]" id="clients_ids" title="SELECT CLIENTS - BUSINESS" onChange="getSelectedOptions(this)">
+                </select>
+              </div>
+
 
               <div style="margin-top: 0px; margin-left: 3px;">
                 <label > Initial:
-                <input style="width: 200px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
+                <input style="width: 155px" type="date" class="form-control @error('date_ini') is-invalid @enderror input100" name="date_ini" value="{{ isset($_GET['date_ini']) ? $_GET['date_ini'] : '' }}">
                 </label>
               </div>
 
               <div style="margin-top: 0px; margin-left: 3px;">
                 <label > Final:
-                <input style="width: 200px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">
+                <input style="width: 155px" type="date" class="form-control @error('date_finnal') is-invalid @enderror input100" name="date_fin" value="{{ isset($_GET['date_fin']) ? $_GET['date_fin'] : '' }}">
               </div>
 
-              <select style="margin-top: 25px" class="form-control" name="band_paid_out">
+              <select style="margin-top: 26px; margin-left: 3px;" class="form-control" name="band_paid_out">
                 <option value="-1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == -1 ? 'selected' : '' : ''}}>ALL</option>
                 <option value="2" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 2 ? 'selected' : '' : ''}}>CANCELLED INVOICES</option>
                 <option value="1" {{ isset($_GET['band_paid_out']) ? $_GET['band_paid_out'] == 1 ? 'selected' : '' : ''}}>PAID</option>
@@ -49,7 +60,7 @@
               <button style="margin-top: 10px" type="submit" class="btn btn-default" name="option" value="all"><i class="fas fa-search"></i><span class="glyphicon glyphicon-search"></span>
               </button>
             </div>
-             
+
           </form>
 
           <div class="table-responsive table-striped table-bordered" style="font-size: 14px; padding: 0;">
@@ -76,7 +87,7 @@
                   <td style="text-align: right; background-color: {{$invoice->row_color}}">{{$invoice->debit}}</td>
                   <td style="background-color: {{$invoice->row_color}}">
                     <div class="row" style="margin-right: 0; margin-left: 0;">
-                      <div>                        
+                      <div>
                         <a href="{{action('InvoiceController@show',$invoice->id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 35px;"><i class="fas fa-file-invoice-dollar"></i></a>
                       </div>
 
@@ -96,15 +107,15 @@
     </div>
   </div>
 
-  
+
   <script>
     function fillClients(value, typesClients){
       $('#clients_ids').empty();
       $('#clients_ids').append('<option value="all">ALL CLIENTS</option>');
-      
+
       for(var i = 0; i < typesClients.length; i++){
         if(typesClients[i].key_value == value){
-          for(var j = 0; j < typesClients[i].clients.length; j++ ){ 
+          for(var j = 0; j < typesClients[i].clients.length; j++ ){
             $('#clients_ids').append('<option value="'+typesClients[i].clients[j].id+'">'+typesClients[i].clients[j].client_name+' - '+typesClients[i].clients[j].business_name+'</option>');
           }
           break;
@@ -145,7 +156,7 @@
 
 
     window.onload = function() {
-     if($('#type').val() != ""){        
+     if($('#type').val() != ""){
         @if(isset($_GET['type']))
           selectionType("{{$_GET['type']}}");
           fillClients($('#type').val(), {!!json_encode($typesClients)!!});
