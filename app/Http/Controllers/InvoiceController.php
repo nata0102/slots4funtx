@@ -19,15 +19,16 @@ class InvoiceController extends Controller
 	}
 
 	public function index(Request $request){
+    //return $request->all();
 		\Session::forget('data');
 		$res = [];
 		switch($request->option){
 			default:
 				$res = $this->getList($request->all());
-        $types_clients = $this->getTypesClients();
+        $typesClients = $this->getTypesClients();
 			break;
 		}
-		return view('invoices.index',compact('res','types_clients'));
+		return view('invoices.index',compact('res','typesClients'));
 	}
 
   public function getTypesClients(){
@@ -67,7 +68,11 @@ class InvoiceController extends Controller
     if (array_key_exists('date_fin', $params) && $params['date_fin'] != null)
       $qry .= " and date(i.created_at) <= '".$params['date_fin']."'";
     if (array_key_exists('type', $params) && $params['type'] != null && $params['type'] != "all")
-      $qry .= " and type in (".$params['type'].")";
+      $qry .= " and i.type = '".$params['type']."'";
+    if (array_key_exists('clients_ids', $params) && $params['clients_ids'] != null && $params['clients_ids'] != ""){
+      if(!in_array("all", $params['clients_ids']))
+        $qry .= " and i.address_id in (".implode(',',$params['clients_ids']).") ";
+    }
 
 		return DB::select($qry);
 	}
