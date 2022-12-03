@@ -58,8 +58,8 @@
 	                    <button type="button" id="buttonAdd" onclick="addPaymentToTable()" name="button" class="btn btn-info">+</button>
 	                </div>           
 
-		            @if(count($payments) > 0)
-			             <div style="margin-top: 10px;" class="form-group">
+		            @if(count($payments) == 0)
+			            <div style="margin-top: 10px;" class="form-group">
 			                <h3 style="text-align: center">Payments</h3>
 			                <div style="margin-top: 10px;" class=" table-responsive table-striped table-bordered" >
 			                    <table id="table_components" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
@@ -83,12 +83,11 @@
 				                            	<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button><i onclick="deleteRow(this);" class="far fa-trash-alt"></i></button></div></div>
 				                            </td>
 				                        </tr>
-			                      	@endforeach
-			                       
+			                      	@endforeach			                       
 			                      </tbody>
-			                  </table>
-			                  </div>
-			              </div>
+			                    </table>
+			                </div>
+			            </div>
 			        @endif
             	</div>
             	<div style="margin-top: 10px;" class="col-12">
@@ -104,16 +103,10 @@
   </div>
   <script>
   	function insertRow(cad_id, val1, val2, val3){
-  		console.log(cad_id);
       var table = document.getElementById(cad_id);
-      console.log(table);
       var rowCount = table.rows.length;
-      console.log(rowCount);
-
-      console.log(val1);
-
       
-	  var row = table.insertRow(rowCount);
+	  /*var row = table.insertRow(rowCount);
       row.setAttribute("id", "td_"+rowCount);
       var cell0 = row.insertCell(0);
       var cell1 = row.insertCell(1);
@@ -125,9 +118,10 @@
       cell1.innerHTML = val1;
       cell2.innerHTML = val2;
       cell3.innerHTML = val3;
-      cell4.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>';
+      cell4.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>';*/
 
- 
+       $("#"+cad_id+" tbody").append('<tr><td><input type="hidden" name="tab_id[]"></td><td><input type="hidden" name="tab_type[]">' + val1 + 
+      	'</td><td name="tab_description[]">' + val2 + '</td><td name="tab_amount">'+val3+'</td><td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td></tr>'); 
     }
 
   	function addPaymentToTable(){
@@ -140,7 +134,7 @@
   		console.log(lkp_type_value);
 
   		if(payment_client > 0 && lkp_type_id != ""){ 		
-	  		insertRow("table_components", lkp_type_value, description, payment_client);
+	  		insertRow('table_components', lkp_type_value, description, payment_client);
 	  		//Seteando valores
 	  		var total_faltante = payment_max-payment_client;		  		
 	  		$('#payment_client').attr({"max" : total_faltante});
