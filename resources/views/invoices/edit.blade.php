@@ -72,14 +72,21 @@
 			                          </tr>
 			                      </thead>
 			                      <tbody>
+			                      	<?php 
+			                      		$i = 0;
+			                      	?>
 			                      	@foreach($payments as $payment)
-			                      		<tr>
+			                      		
+			                      		<tr id="td_{{$i}}">
 				                            <td>{{$payment->id}}</td>
 				                            <td>{{$payment->type}}</td>
 				                            <td>{{$payment->description}}</td>
 				                            <td>{{$payment->amount}}</td>
-				                            <td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow(this.index, {{$payment->amount}})" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td>
+				                            <td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow({{$i}}, {{$payment->amount}})" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td>
 				                        </tr>
+				                        <?php
+				                        	$i++;
+				                        ?>
 			                      	@endforeach			                       
 			                      </tbody>
 			                    </table>
@@ -101,20 +108,6 @@
   	function insertRow(cad_id, val1, val2, val3){
       var table = document.getElementById(cad_id);
       var rowCount = table.rows.length;
-      
-	  /*var row = table.insertRow(rowCount);
-      row.setAttribute("id", "td_"+rowCount);
-      var cell0 = row.insertCell(0);
-      var cell1 = row.insertCell(1);
-      var cell2 = row.insertCell(2);
-      var cell3 = row.insertCell(3);
-      var cell4 = row.insertCell(4);
-
-      cell0.innerHTML = "";
-      cell1.innerHTML = val1;
-      cell2.innerHTML = val2;
-      cell3.innerHTML = val3;
-      cell4.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>';*/
 
       var cad='<tr id="td_'+rowCount+'">';
       cad+='<td><input type="hidden" name="tab_id[]" value=""></td>';
@@ -133,8 +126,6 @@
   		var payment_client = $('#payment_client').val(); 
   		var payment_max = $('#payment_client').attr('max');
 
-  		console.log(lkp_type_value);
-
   		if(payment_client > 0 && lkp_type_id != ""){ 		
 	  		insertRow('table_components', lkp_type_value, description, payment_client);
 	  		//Seteando valores
@@ -150,22 +141,14 @@
   	}
 
   	function deleteRow(row_tr, val){
-  		console.log(row_tr);
-  		console.log(val);
-
-  		var td = $(this).parents('tr').attr('id');
-    	alert('fila seleccionada: '+td);
-
-/*  		var element = document.getElementById("td_"+row_tr);
+  		var element = document.getElementById("td_"+row_tr);
       	element.parentNode.removeChild(element);
       	var payment_client = $('#payment_client').val(); 
-      	console.log(payment_client);
       	var total_faltante = parseFloat(val)+parseFloat(payment_client);
-      	console.log(total_faltante);
       	$('#payment_client').attr({"max" : total_faltante});
   		$("#payment_client").val(total_faltante);
   		if(total_faltante > 0)
-			$( "#buttonAdd" ).prop( "disabled", false );*/
+			$( "#buttonAdd" ).prop( "disabled", false );
   	}
   </script>
   @stop
