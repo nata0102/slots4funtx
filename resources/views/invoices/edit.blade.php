@@ -8,15 +8,14 @@
         <div class="card" id="card-section">
 
         	<a href="{{session('urlBack')}}" class="btn btn-info" style="width: 40px; margin-bottom: 10px"><i class="fas fa-long-arrow-alt-left"></i></a>
-
         	   <div class="">
-                  Folio: {{$invoice->folio}} &nbsp; &nbsp; &nbsp; Client - Bussines: {{$invoice->client->name}} - {{$invoice->address->business_name}}
+                  <span style="font-weight: bold;">Folio:</span> {{$invoice->folio}} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="font-weight: bold;">Client - Bussines: </span>{{$invoice->client->name}} - {{$invoice->address->business_name}}
             </div>
           	<form class="" action="{{action('InvoiceController@update',$invoice->id)}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
 
             	@csrf
             	<input type="hidden" name="_method" value="PUT">
-            	<div class="row">
+            	<div style="margin-top: 25px" class="row">
 
 	            	<div class="col-md-2">
 		                <div class="form-group">
@@ -138,7 +137,7 @@
   		var payment_max = $('#payment_client').attr('max');
 
   		if(payment_client > 0 && lkp_type_id != ""){
-	  		insertRow('table_components', lkp_type_value, description, payment_client);
+	  		insertRow('table_components', lkp_type_id, description, payment_client);
 	  		//Seteando valores
 	  		var total_faltante = payment_max-payment_client;
 	  		$('#payment_client').attr({"max" : total_faltante});

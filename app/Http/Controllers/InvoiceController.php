@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Address;
 use App\Models\Lookup;
+use App\Models\InvoicePayment;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -249,15 +250,45 @@ class InvoiceController extends Controller
 
     public function update(Request $request, $id)
     {
-      return $request->all();
       try{
         $transaction = DB::transaction(function() use($request, $id){
+            $params = $request->all();          
+            InvoicePayment::where('invoice_id',$id)->delete();
+            $payment_client = 0;
+            $invoice = Invoice::findOrFail($id);
+
+            if (array_key_exists('tab_id', $params)) {
+              $payment_client = $invoice->payment_client;
+              for($i =0; $i < count($params['tab_id']); $i++){
+                $arr = [];
+                $arr['invoice_id'] = $id;
+                if($params['tab_id'][$i] != null)
+                  $arr['id'] = $params['tab_id'][$i];
+                $arr['lkp_type_id'] = $params['tab_type'][$i];
+                if($params['tab_description'][$i] != null)
+                  $arr['description'] = $params['tab_description'][$i];
+                $arr['amount'] = $params['tab_amount'][$i];
+                $payment_client += $arr['amount'];
+                InvoicePayment::create($arr);
+              }
+            }            
+            if($params['payment_client'] == 0)
+              $invoice->band_paid_out = 1;
+            else
+              $invoice->band_paid_out = 0;
+            $invoice->payment_client = $payment_client;
+            $invoice->save();
+            $notification = array(
+                  'message' => 'Successful!!',
+                  'alert-type' => 'success'
+            );
+            return $notification;
         }); 
         return redirect()->action('InvoiceController@index')->with($transaction);
       }catch(\Exception $e){
           $cad = 'Oops! there was an error, please try again later.';            
           $transaction = array(
-              'message' => $cad,
+              'message' => $cad. $e->getMessage(),
               'alert-type' => 'error' 
           );
       }
