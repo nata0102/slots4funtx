@@ -275,9 +275,6 @@ class ChargesController extends Controller
      */
     public function store(Request $request)
     {
-        /*print_r(\Session::get('data'));
-        print_r($request->all());
-        return true;*/
         try{
             $transaction = DB::transaction(function() use($request){
                 $res = \Session::get('data');

@@ -58,7 +58,6 @@
 	                    <button type="button" id="buttonAdd" onclick="addPaymentToTable()" name="button" class="btn btn-info">+</button>
 	                </div>           
 
-		            @if(count($payments) == 0)
 			            <div style="margin-top: 10px;" class="form-group">
 			                <h3 style="text-align: center">Payments</h3>
 			                <div style="margin-top: 10px;" class=" table-responsive table-striped table-bordered" >
@@ -78,17 +77,14 @@
 				                            <td>{{$payment->id}}</td>
 				                            <td>{{$payment->type}}</td>
 				                            <td>{{$payment->description}}</td>
-				                            <td>{{$type->amount}}</td>
-				                            <td>
-				                            	<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button><i onclick="deleteRow(this);" class="far fa-trash-alt"></i></button></div></div>
-				                            </td>
+				                            <td>{{$payment->amount}}</td>
+				                            <td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow(this.index, {{$payment->amount}})" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td>
 				                        </tr>
 			                      	@endforeach			                       
 			                      </tbody>
 			                    </table>
 			                </div>
 			            </div>
-			        @endif
             	</div>
             	<div style="margin-top: 10px;" class="col-12">
 	                <div class="form-group">
@@ -120,8 +116,14 @@
       cell3.innerHTML = val3;
       cell4.innerHTML = '<div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div>';*/
 
-       $("#"+cad_id+" tbody").append('<tr><td><input type="hidden" name="tab_id[]"></td><td><input type="hidden" name="tab_type[]">' + val1 + 
-      	'</td><td name="tab_description[]">' + val2 + '</td><td name="tab_amount">'+val3+'</td><td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td></tr>'); 
+      var cad='<tr id="td_'+rowCount+'">';
+      cad+='<td><input type="hidden" name="tab_id[]" value=""></td>';
+      cad+='<td><input type="hidden" name="tab_type[]" value="'+val1+'">' + val1 + '</td>'
+      cad+='<td><input type="hidden" name="tab_description[]" value="'+val2+'">' + val2 + '</td>';
+      cad+='<td><input type="hidden" name="tab_amount[]" value="'+val3+'">'+val3+'</td>';
+      cad+='<td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td></tr>';
+
+       $("#"+cad_id+" tbody").append(cad); 
     }
 
   	function addPaymentToTable(){
@@ -148,7 +150,13 @@
   	}
 
   	function deleteRow(row_tr, val){
-  		var element = document.getElementById("td_"+row_tr);
+  		console.log(row_tr);
+  		console.log(val);
+
+  		var td = $(this).parents('tr').attr('id');
+    	alert('fila seleccionada: '+td);
+
+/*  		var element = document.getElementById("td_"+row_tr);
       	element.parentNode.removeChild(element);
       	var payment_client = $('#payment_client').val(); 
       	console.log(payment_client);
@@ -157,7 +165,7 @@
       	$('#payment_client').attr({"max" : total_faltante});
   		$("#payment_client").val(total_faltante);
   		if(total_faltante > 0)
-			$( "#buttonAdd" ).prop( "disabled", false );
+			$( "#buttonAdd" ).prop( "disabled", false );*/
   	}
   </script>
   @stop
