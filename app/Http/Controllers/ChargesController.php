@@ -319,7 +319,7 @@ class ChargesController extends Controller
                         array_push($charges_ids, $charge->id);
                 }
                 $params['client_id'] = $client_id;
-                $invoice_ctrl->createInvoiceDetails($charges_ids,$params,"C");
+                $invoice_ctrl->createInvoiceDetails($charges_ids,$params);
 
                 $notification = array(
                       'message' => 'Successful!!',

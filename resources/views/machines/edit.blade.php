@@ -390,7 +390,9 @@ function addOptionsSelectGames(games_cad){
             checkFillBrand(brand_id);
       }    
       fillTableComponents();
-      if({!!$machine->band_jackpot!!} == 1)
+      var band_jackpot = {!!$machine!!}.band_jackpot;
+      console.log(band_jackpot);
+      if(band_jackpot == true)
       	document.getElementById("band_jackpot").checked = true;
       else
       	document.getElementById("band_jackpot").checked = false;

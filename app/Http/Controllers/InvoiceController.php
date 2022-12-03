@@ -77,23 +77,22 @@ class InvoiceController extends Controller
 		return DB::select($qry);
 	}
 
-    public function getFolio($type){
-    	$invoice = Invoice::where('folio', 'like', '%'.$type.'%')->orderBy('id','desc')->first();
+    public function getFolio(){
+    	$invoice = Invoice::orderBy('id','desc')->first();
 
-        $folio = "0001";
-        if($invoice != null){
-        	$arr = explode('-', $invoice->folio);
-        	$num = intval($arr[1])+1;
-        	$folio = "000".$num;
-        }
-        return $type.'-'.$folio;
+      $folio = "0001";
+      if($invoice != null){
+       	$num = intval($invoice->folio)+1;
+       	$folio = "000".$num;
+      }
+      return $folio;
     }
 
 
-   	public function createInvoiceDetails($charges_ids,$params,$type){
+   	public function createInvoiceDetails($charges_ids,$params){
    		if(count($charges_ids) > 0){
             $arr_invoice = [];
-            $arr_invoice['folio'] = $this->getFolio($type);
+            $arr_invoice['folio'] = $this->getFolio();
             $arr_invoice['type'] = "charges";
             $arr_invoice['date_invoice'] = date('Y-m-d');
             $arr_invoice['discount'] = $params['discount'];
@@ -199,10 +198,6 @@ class InvoiceController extends Controller
    			case 'charges':
    				$pdf = $this->getChargesPDF($invoice);
    				break;
-
-   			default:
-   				# code...
-   				break;
    		}
    		return $pdf;
    	}
@@ -237,4 +232,36 @@ class InvoiceController extends Controller
         $pdf = \PDF::loadHTML($view);
         return $pdf->stream();
    	}
+
+    public function edit($id)
+    {
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
+      $types = Lookup::where('type','invoices_types_payments')->orderBy('value','desc')->get();
+      $invoice = Invoice::with('client','address')->findOrFail($id);
+      $qry = "select *,(select value from lookups where id = ip.lkp_type_id) as type
+              from invoices_payments ip where invoice_id = ".$id.";";
+      $payments = DB::select($qry);
+      return view('invoices.edit',compact('types','invoice','payments'));
+    }
+
+    public function update(Request $request, $id)
+    {
+      return $request->all();
+      try{
+        $transaction = DB::transaction(function() use($request, $id){
+        }); 
+        return redirect()->action('InvoiceController@index')->with($transaction);
+      }catch(\Exception $e){
+          $cad = 'Oops! there was an error, please try again later.';            
+          $transaction = array(
+              'message' => $cad,
+              'alert-type' => 'error' 
+          );
+      }
+
+      return back()->with($transaction)->withInput($request->all());           
+    }
 }
