@@ -20,7 +20,6 @@ class InvoiceController extends Controller
 	}
 
 	public function index(Request $request){
-    //return $request->all();
 		\Session::forget('data');
 		$res = [];
 		switch($request->option){
@@ -152,22 +151,56 @@ class InvoiceController extends Controller
         return DB::select($qry);
     }
 
+    public function getClientsWithFlatRate(){
+      $res = [];
+      $lookup = Lookup::where('type','type_price')->where('key_value','flat_rate')->first();
+      if($lookup != null){
+        $qry = "select * from (
+        select  a.id as address_id,a.business_name,a.client_id as id,
+        (select name from clients where id=a.client_id) as name,
+        (select active from clients where id=a.client_id) as client_active
+        from addresses a where a.active=1 and a.id in 
+          (select m.address_id 
+          from machines m, percentage_price_machine p
+          where m.id = p.machine_id and p.lkp_type_id = ".$lookup->id.")
+        ) as t1 where t1.client_active=1;";
+        $res = DB::select($qry);
+      }
+      return $res;
+    }
+
+    public function getMachinesWithFlatRate(){
+      $res = [];
+      $lookup = Lookup::where('type','type_price')->where('key_value','flat_rate')->first();
+      if($lookup != null){
+        $qry = "select m.id,m.serial,m.address_id,
+        (select name from game_catalog where id=m.game_catalog_id) as name_game,
+        (select value from lookups where id=p.lkp_periodicity_id) as periodicity,
+        p.amount from machines m, percentage_price_machine p
+        where m.id = p.machine_id and p.lkp_type_id = ".$lookup->id."  order by m.address_id;";
+        $res = DB::select($qry);
+      }
+      return $res;
+    }
+
    	public function create()
     {
-        if( url()->previous() != url()->current() ){
-            session()->forget('urlBack');
-            session(['urlBack' => url()->previous()]);
-        }
+      if( url()->previous() != url()->current() ){
+        session()->forget('urlBack');
+        session(['urlBack' => url()->previous()]);
+      }
 
-		$data = \Session::get('data');
-        $clients = $this->getClientsWithChargesNotInvoice();
-        $types = Lookup::where('type','invoices_type')->orderBy('value','desc')->get();
-		if(count($data)==0)
-			$machines = array();
-		else
-			$machines = $data['machines'];
-		\Session::forget('data');
-        return view('invoices.create',compact('types','clients','machines','data'));
+		  $data = \Session::get('data');
+      $clients = $this->getClientsWithChargesNotInvoice();
+      $types = Lookup::where('type','invoices_type')->orderBy('value')->get();
+      $clients_flat_rate = $this->getClientsWithFlatRate();
+	 	  if(count($data)==0)
+			 $machines = array();
+		  else
+			 $machines = $data['machines'];
+		  \Session::forget('data');
+      $machines_flat_rate = $this->getMachinesWithFlatRate();
+      return view('invoices.create',compact('types','clients','machines','data','clients_flat_rate','machines_flat_rate'));
     }
 
 	public function machines(Request $request){
@@ -250,25 +283,25 @@ class InvoiceController extends Controller
 
     public function update(Request $request, $id)
     {
+      //return $request->all();
       try{
         $transaction = DB::transaction(function() use($request, $id){
             $params = $request->all();          
-            InvoicePayment::where('invoice_id',$id)->delete();
-            $payment_client = 0;
+            $sum_payment_client = 0;
             $invoice = Invoice::findOrFail($id);
+            InvoicePayment::where('invoice_id',$id)->delete();
 
-            if (array_key_exists('tab_id', $params)) {
-              $payment_client = $invoice->payment_client;
-              for($i =0; $i < count($params['tab_id']); $i++){
+            if (array_key_exists('tab_type', $params)) {
+              for($i =0; $i < count($params['tab_type']); $i++){
                 $arr = [];
                 $arr['invoice_id'] = $id;
-                if($params['tab_id'][$i] != null)
-                  $arr['id'] = $params['tab_id'][$i];
+                /*if($params['tab_id'][$i] != null)
+                  $arr['id'] = $params['tab_id'][$i];*/
                 $arr['lkp_type_id'] = $params['tab_type'][$i];
                 if($params['tab_description'][$i] != null)
                   $arr['description'] = $params['tab_description'][$i];
                 $arr['amount'] = $params['tab_amount'][$i];
-                $payment_client += $arr['amount'];
+                $sum_payment_client += $arr['amount'];
                 InvoicePayment::create($arr);
               }
             }            
@@ -276,7 +309,7 @@ class InvoiceController extends Controller
               $invoice->band_paid_out = 1;
             else
               $invoice->band_paid_out = 0;
-            $invoice->payment_client = $payment_client;
+            $invoice->payment_client = $sum_payment_client;
             $invoice->save();
             $notification = array(
                   'message' => 'Successful!!',

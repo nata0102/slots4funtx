@@ -63,7 +63,7 @@
 			                    <table id="table_components" class="table" style="width: 100%; table-layout: fixed;font-size:16px;">
 			                      <thead>
 			                          <tr>
-			                            <th>ID</th>
+			                            <!--<th>ID</th>-->
 			                            <th>Type</th>
 			                            <th>Description</th>
 			                            <th>Amount</th>
@@ -75,12 +75,11 @@
 			                      		$i = 0;
 			                      	?>
 			                      	@foreach($payments as $payment)
-
 			                      		<tr id="td_{{$i}}">
-				                            <td>{{$payment->id}}</td>
-				                            <td>{{$payment->type}}</td>
-				                            <td>{{$payment->description}}</td>
-				                            <td>{{$payment->amount}}</td>
+				                            <!--<td><input type="hidden" name="tab_id[]" value="{{$payment->id}}">{{$payment->id}}</td>-->
+				                            <td><input type="hidden" name="tab_type[]" value="{{$payment->lkp_type_id}}">{{$payment->type}}</td>
+				                            <td><input type="hidden" name="tab_description[]" value="{{$payment->description}}">{{$payment->description}}</td>
+				                            <td><input type="hidden" name="tab_amount[]" value="{{$payment->amount}}">{{$payment->amount}}</td>
 				                            <td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow({{$i}}, {{$payment->amount}})" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td>
 				                        </tr>
 				                        <?php
@@ -105,14 +104,14 @@
     </div>
   </div>
   <script>
-  	function insertRow(cad_id, val1, val2, val3){
+  	function insertRow(cad_id, val1, val2, val3, val4){
 
       var table = document.getElementById(cad_id);
       var rowCount = table.rows.length;
 
       var cad='<tr id="td_'+rowCount+'">';
-      cad+='<td><input type="hidden" name="tab_id[]" value=""></td>';
-      cad+='<td><input type="hidden" name="tab_type[]" value="'+val1+'">' + val1 + '</td>'
+      //cad+='<td><input type="hidden" name="tab_id[]" value=""></td>';
+      cad+='<td><input type="hidden" name="tab_type[]" value="'+val1+'">' + val4 + '</td>'
       cad+='<td><input type="hidden" name="tab_description[]" value="'+val2+'">' + val2 + '</td>';
       cad+='<td><input type="hidden" name="tab_amount[]" value="'+val3+'">'+val3+'</td>';
       cad+='<td><div class="row" style="margin-right: 0; margin-left: 0;"><div class="col-4 active" style="padding: 0;"><button onclick="deleteRow('+rowCount+', '+val3+')" class="btn btn-link" style="width:40px; margin: 0; padding: 0;"><i class="far fa-trash-alt"></i></button></div></div></td></tr>';
@@ -137,7 +136,7 @@
   		var payment_max = $('#payment_client').attr('max');
 
   		if(payment_client > 0 && lkp_type_id != ""){
-	  		insertRow('table_components', lkp_type_id, description, payment_client);
+	  		insertRow('table_components', lkp_type_id, description, payment_client, lkp_type_value);
 	  		//Seteando valores
 	  		var total_faltante = payment_max-payment_client;
 	  		$('#payment_client').attr({"max" : total_faltante});
@@ -161,5 +160,15 @@
 			$( "#buttonAdd" ).prop( "disabled", false );
       muestra();
   	}
+
+  	$(document).ready(function() {
+  		var payment = {!! json_encode($invoice) !!};
+  		var total_faltante = payment.total_discount-payment.payment_client;
+
+  		$('#payment_client').attr({"max" : total_faltante});
+	  	$("#payment_client").val(total_faltante);
+  		if(total_faltante > 0)
+			$( "#buttonAdd" ).prop( "disabled", false );
+  	});
   </script>
   @stop
