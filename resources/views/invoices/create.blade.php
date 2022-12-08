@@ -28,7 +28,7 @@
             <div id="div_clients_flat_rate" class="row" hidden="">
               <div class="col-12 col-sm-4 form-group">
                 <label for="">Client <span style="color:red">*</span></label>
-                <select class="form-control selectpicker" id="client_flat_rate" name="client_flat_rate" style="width: 100%;" data-live-search="true" required onchange="fillMachinesFlatRate(this)">
+                <select class="form-control selectpicker" id="client_flat_rate" name="client_flat_rate" style="width: 100%;" data-live-search="true" onchange="fillMachinesFlatRate(this)">
                   <option value="" selected disabled>-- Select Client-Business --</option>
                   @foreach($clients_flat_rate as $client)
                     <option value="{{$client->id}}" data-address_id="{{$client->address_id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
@@ -42,7 +42,7 @@
             <div id="div_machines_flat_rate" class="row" hidden="">
               <div class="col-12 col-sm-4 form-group">
                 <label for="">Machines <span style="color:red">*</span></label>
-                <select class="form-control selectpicker" id="machine_flat_rate" style="width: 100%;" data-live-search="true" multiple="multiple" name="machines_ids[]" onchange="sumMachinesFlatRate()" required>
+                <select class="form-control selectpicker" id="machine_flat_rate" style="width: 100%;" data-live-search="true" multiple="multiple" name="machines_ids[]" onchange="sumMachinesFlatRate()">
                   <option value="" selected disabled>-- Select Machines --</option>
                 </select>
               </div>
@@ -55,7 +55,7 @@
               <div class="row">
                 <div class="col-12 col-sm-4 form-group">
                   <label for="">Client <span style="color:red">*</span></label>
-                  <select class="form-control selectpicker" id="client" name="client_id" style="width: 100%;" data-live-search="true" required onchange="showFieldsCharges(this)">
+                  <select class="form-control selectpicker" id="client" name="client_id" style="width: 100%;" data-live-search="true" onchange="showFieldsCharges(this)">
                     <option value="" selected disabled>-- Select Client-Business --</option>
                     @foreach($clients as $client)
                       <option value="{{$client->id}}" data-address_id="{{$client->address_id}}" {{ $data ? $data["client"] == $client->id ? "selected":"" : ''}}>{{$client->name}} - {{$client->business_name}}</option>
@@ -286,15 +286,27 @@
   function saveF(){
     document.getElementById("discount").setAttribute('required','');
     document.getElementById("payment_client").setAttribute('required','');
+    document.getElementById("form").setAttribute('action',store);
 
-
-      document.getElementById("form").setAttribute('action',store);
-      if (document.getElementById("form").checkValidity()) {
+    if (document.getElementById("form").checkValidity()) {
+      var sum = 0;
+      if(document.getElementById("type").value == "flat_rate_invoice"){
+        //console.log("Valida Flat Rate");
+        $("#machine_flat_rate :selected").map(function(i, el) {
+          sum += 1;      
+        }).get();
+      }else{
+        //console.log("Valida Charges");
+        $("#charge_machine :selected").map(function(i, el) {
+          sum += 1;      
+        }).get();        
+      }
+      if(sum > 0)
         document.getElementById("form").submit();
-      }
-      else{
-       toastr.error('Complete the fields.', '', {timeOut: 3000});
-      }
+      else
+        toastr.error('Complete the fields.', '', {timeOut: 3000});
+    }else
+      toastr.error('Complete the fields.', '', {timeOut: 3000});
   }
 
   function searchF(){

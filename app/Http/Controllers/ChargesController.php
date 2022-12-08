@@ -315,8 +315,12 @@ class ChargesController extends Controller
                     if($params['type_invoice'] == "with_invoice")
                         array_push($charges_ids, $charge->id);
                 }
-                $params['client_id'] = $client_id;
-                $invoice_ctrl->createInvoiceDetails($charges_ids,$params);
+                if(count($charges_ids)){
+                  $params['client_id'] = $client_id;
+                  $params['type'] = 'charges';
+                  $invoice = $invoice_ctrl->createInvoice($params);
+                  $invoice_ctrl->createDetailsCharges($charges_ids, $invoice->id);
+                }
 
                 $notification = array(
                       'message' => 'Successful!!',

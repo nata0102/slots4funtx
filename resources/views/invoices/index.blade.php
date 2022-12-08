@@ -88,14 +88,14 @@
                   <td style="background-color: {{$invoice->row_color}}">
                     <div class="row" style="margin-right: 0; margin-left: 0;">
                       <div>
-                        <a href="{{action('InvoiceController@show',$invoice->id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 35px;"><i class="fas fa-file-invoice-dollar"></i></a>
+                        <a href="{{action('InvoiceController@show',$invoice->id)}}" target="_blank" align="right" class="btn btn-link {{str_contains($menu[0]->actions,'R') ? '' : 'disabled' }}" style="width:40px; height: 35px;"><i class="fas fa-file-invoice"></i></a>
                       </div>
 
                       <div align="right" style="padding: 0; margin-left: 20px">
                         <button class="delete-alert btn btn-link {{str_contains($menu[0]->actions,'D') ? '' : 'disabled' }}" data-reload="0" data-table="#table" data-message1="Are you sure to cancel this Invoice?" data-message2="Activated" data-message3="Activated client." data-method="DELETE" data-action="{{action('InvoiceController@destroy',$invoice->id)}}" style="width:40px; margin:0; padding: 0"><i class="fas fa-times"></i></button>
                       </div>
                       <div class="col-4 active" style="padding: 0;">
-                          <a href="{{action('InvoiceController@edit',$invoice->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="far fa-edit"></i></a>
+                          <a href="{{action('InvoiceController@edit',$invoice->id)}}" class="btn btn-link {{str_contains($menu[0]->actions,'U') ? '' : 'disabled' }}" style="width:40px; margin: 0"><i class="fas fa-money-check-alt"></i></a>
                       </div>
                     </div>
                   </td>

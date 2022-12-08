@@ -88,36 +88,55 @@ class InvoiceController extends Controller
       return $folio;
     }
 
+    public function createInvoice($params){
+      $arr_invoice = [];
+      $arr_invoice['folio'] = $this->getFolio();
+      $arr_invoice['type'] = $params['type'];
+      switch ($params['type']) {
+        case 'charges':
+          $arr_invoice['client_id'] = $params['client_id'];
+        break;        
+        case 'flat_rate_invoice':
+          $arr_invoice['client_id'] = $params['client_flat_rate'];
+        break;
+      }
+      $arr_invoice['date_invoice'] = date('Y-m-d');
+      $arr_invoice['discount'] = $params['discount'];
+      $arr_invoice['total_system'] = $params['total_invoice'];
+      $arr_invoice['total_discount'] = $params['total_invoice_modified'];
+      $arr_invoice['user_id'] = Auth::id();
+      $arr_invoice['payment_client'] = $params['payment_client'];
+      $arr_invoice['address_id'] = $params['client_address_id'];
+      if($params['total_invoice_modified'] == $params['payment_client'])
+        $arr_invoice['band_paid_out'] = 1;
+      return Invoice::create($arr_invoice);
+    }
 
-   	public function createInvoiceDetails($charges_ids,$params){
-   		if(count($charges_ids) > 0){
-            $arr_invoice = [];
-            $arr_invoice['folio'] = $this->getFolio();
-            $arr_invoice['type'] = "charges";
-            $arr_invoice['date_invoice'] = date('Y-m-d');
-            $arr_invoice['discount'] = $params['discount'];
-            $arr_invoice['total_system'] = $params['total_invoice'];
-            $arr_invoice['total_discount'] = $params['total_invoice_modified'];
-            $arr_invoice['user_id'] = Auth::id();
-            $arr_invoice['client_id'] = $params['client_id'];
-            $arr_invoice['payment_client'] = $params['payment_client'];
-            $arr_invoice['address_id'] = $params['client_address_id'];
-            if($params['total_invoice_modified'] == $params['payment_client'])
-            	$arr_invoice['band_paid_out'] = 1;
-            $invoice = Invoice::create($arr_invoice);
-            foreach($charges_ids as $charge_id)
-            	InvoiceDetail::create(['invoice_id'=>$invoice->id,'charge_id'=>$charge_id]);
-        }
+   	public function createDetailsCharges($charges_ids,$invoice_id){
+        foreach($charges_ids as $charge_id)
+         	InvoiceDetail::create(['invoice_id'=>$invoice_id,'charge_id'=>$charge_id]);
    	}
 
-   	public function store(Request $request){  		
+    public function createDetailsFlatRate($machines_ids, $invoice_id){
+      $cad_machines = implode(',', $machines_ids);
+      $qry = "select * from percentage_price_machine where machine_id in (".$cad_machines.");";
+      $rows = DB::select($qry);
+      foreach ($rows as $row) 
+        InvoiceDetail::create(['invoice_id'=>$invoice_id,'machine_id'=>$row->machine_id, 'amount'=>$row->amount]);
+    }
+
+   	public function store(Request $request){  	
    		try{
             $transaction = DB::transaction(function() use($request){
                 $data = $request->all();
-                switch ($request->type) {
+                $invoice = $this->createInvoice($data);
+                switch ($data['type']) {       
                 	case 'charges':
-                		$this->createInvoiceDetails($request->charges_ids, $request->all(),'C');
-                		break;
+                		$this->createDetailsCharges($request->charges_ids, $invoice->id);
+                	break;
+                  case 'flat_rate_invoice':
+                    $this->createDetailsFlatRate($request->machines_ids, $invoice->id);
+                  break;
                 }
 
                 $notification = array(
