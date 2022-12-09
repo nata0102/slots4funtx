@@ -165,7 +165,7 @@ class InvoiceController extends Controller
 			from charges ch,machines m
 			where ch.machine_id=m.id and ch.type != 'initial_numbers'
 			and ch.id not in (select charge_id from invoices_details where invoice_id in 
-			(select id from invoices where band_cancel is false))
+			(select id from invoices where band_cancel is false) and charge_id is not null)
 		)) as t1 where t1.client_active=1";
         return DB::select($qry);
     }
@@ -228,7 +228,7 @@ class InvoiceController extends Controller
 			from charges ch,machines m
 			where ch.machine_id=m.id and ch.type != 'initial_numbers'
 			and ch.id not in (select charge_id from invoices_details where invoice_id in 
-			(select id from invoices where band_cancel is false)) and m.address_id = ".$request->client_address_id;
+			(select id from invoices where band_cancel is false and charge_id is not null)) and m.address_id = ".$request->client_address_id;
     if (array_key_exists('from', $request->all()) && $request->all()['from'] != "")
       $qry .= " and date(ch.created_at)>='".$request->from."' ";
     if (array_key_exists('to', $request->all()) && $request->all()['to'] != "")

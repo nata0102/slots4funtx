@@ -131,7 +131,7 @@ class ChargesController extends Controller
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
             (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
             where a.client_id = cl.id and a.id=m.address_id and m.id=c.machine_id) as client_business
-            from charges c where id in (".$row->charges_ids.") and id not in (select inv_d.charge_id from invoices_details inv_d, invoices i where inv_d.invoice_id=i.id and i.band_cancel = 0)";
+            from charges c where id in (".$row->charges_ids.") and id not in (select inv_d.charge_id from invoices_details inv_d, invoices i where inv_d.invoice_id=i.id and i.band_cancel = 0 and inv_d.charge_id is not null)";
         if (array_key_exists('band_paid_out', $params) && $params['band_paid_out'] != -1)
             $qry.= " and c.band_paid_out = ".$params['band_paid_out'];
         $qry .= ") as t;";
