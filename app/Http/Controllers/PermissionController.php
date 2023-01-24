@@ -227,7 +227,7 @@ class PermissionController extends Controller
           $qry = "select m.*,
           (select value from lookups where id=38) as owner,
           (select name from game_catalog where id=m.game_catalog_id) as game
-          from machines m where m.active = 1 and m.lkp_owner_id = 38 and m.active=1 and m.id not in (select machine_id from permissions where lkp_type_permit_id = ".$permission->lkp_type_permit_id." and machine_id is not null);";
+          from machines m where m.active = 1 and m.lkp_owner_id = 38 and m.active=1 and m.id not in (select machine_id from permissions where lkp_type_permit_id = ".$permission->lkp_type_permit_id." and machine_id is not null and year_permit = ".$permission->year_permit.");";
           $machines = DB::select($qry);
         }
         return view('permissions.edit',compact('types','machines','permission'));
