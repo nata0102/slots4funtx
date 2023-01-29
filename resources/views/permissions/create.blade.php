@@ -104,6 +104,12 @@
 <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 
 <script>
+
+  $('#year_permit').on('input', function() {
+        console.log("entre jquery");
+        changeYear();
+  });
+
   function readQR(){
       let aux = document.getElementById('div_cam');
       aux.removeAttribute("hidden");
@@ -143,6 +149,7 @@
   }
 
   function fillMachines(type){
+    var year = document.getElementById("year_permit").value;
     if(type!="")
         document.getElementById("boton_qr").hidden = false;
     else
@@ -152,7 +159,8 @@
     for(var i=0; i < {!!$machines!!}.length; i++){
           var band = true;
           for(var j=0; j<{!!$machines!!}[i].permission.length;j++){
-             if({!!$machines!!}[i].permission[j].lkp_type_permit_id == type){
+             if({!!$machines!!}[i].permission[j].lkp_type_permit_id == type && 
+              {!!$machines!!}[i].permission[j].year_permit == year){
                 band=false;
                 break;
              }
@@ -167,6 +175,13 @@
           }
     }
     $("#permission_machine").selectpicker("refresh");
+  }
+
+  function changeYear(){
+    console.log()
+    var comp_permit_type = document.getElementById("permit_type");
+    if(comp_permit_type.value !="")
+        fillMachines(comp_permit_type.value);
   }
 
   window.onload = function() {
