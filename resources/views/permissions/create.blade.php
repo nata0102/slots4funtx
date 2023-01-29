@@ -106,8 +106,7 @@
 <script>
 
   $('#year_permit').on('input', function() {
-        console.log("entre jquery");
-        changeYear();
+    changeYear();
   });
 
   function readQR(){
