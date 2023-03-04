@@ -101,6 +101,8 @@
       let games = document.getElementById("games");
       var resume_table = document.getElementById("table_games");
       var arr1 = games.value.split('&$');
+      arr1.sort();
+
       for(var i=0;i < arr1.length; i++){
         if(arr1[i] != ""){
           var arr2 = arr1[i].split('|$');

@@ -34,6 +34,7 @@
                         <select class="form-control selectpicker" id="machine_index" name="machine" data-live-search="true">
                             <option value="" >ALL MACHINES</option>
                             <option value="-1">NOT ASSIGNED (SIN ASIGNAR)</option>
+                            <option value="-2">ASSIGNED (ASIGNADAS)</option>
                             @foreach($machines as $machine)
                                 <option value="{{$machine->id}}" {{ isset($_GET['machine']) ? $_GET['machine'] == $machine->id ? 'selected' : '' : ''}}>{{$machine->id}} - {{$machine->owner}} - {{$machine->game}} - {{$machine->serial}}</option>
                             @endforeach

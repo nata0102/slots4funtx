@@ -62,10 +62,17 @@ class PermissionController extends Controller
             if($params['type'] != "")
                 $qry .= " and tab1.lkp_type_permit_id = ".$params['type'];
             if($params['machine'] != ""){
-                if($params['machine'] != "-1")
-                  $qry .= " and tab1.machine_id = ".$params['machine'];
-                else
-                  $qry .= " and tab1.machine_id is null";
+                switch ($params['machine']) {
+                  case '-1':
+                    $qry .= " and tab1.machine_id is null";                    
+                  break;
+                  case '-2':
+                    $qry .= " and tab1.machine_id is not null ";
+                  break;
+                  default:
+                    $qry .= " and tab1.machine_id = ".$params['machine'];
+                  break;
+                }                  
             }
             if($params['number'] != "")
                 $qry .= " and tab1.permit_number like '%".$params['number']."%'";

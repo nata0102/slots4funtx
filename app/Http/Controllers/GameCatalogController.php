@@ -138,6 +138,7 @@ class GameCatalogController extends Controller
         $brands = MachineBrand::where('lkp_type_id',53)->orderBy('brand')->orderBy('model')->get();
         $game_brands = GameBrand::where('game_catalog_id',$id)->get();
         $brands_ids = [];
+      
         foreach ($game_brands as $b)
             array_push($brands_ids,(string) $b->machine_brand_id);
         return view('game_catalog.edit',compact('brands_ids','res','brands','types'));

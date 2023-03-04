@@ -75,4 +75,10 @@ class Part extends Model
       }
   }
 
+  public function scopeSerial($query, $serial) {
+    if ($serial) {
+      return $query->where('serial','like',"%$serial%");
+    }
+  }
+
 }

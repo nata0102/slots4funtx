@@ -27,6 +27,9 @@
                 <label for="check-active"><input onclick="checkclic();" type="checkbox" class="check-active" value="1" data-id="active" id="check-active"> Inactive</label>
               </div>
               <div style="margin-top: 40px" class="input-group mb-5">
+
+                  <input class="form-control" name="serial" autofocus placeholder="Serial" value="{{ isset($_GET['serial']) ? $_GET['serial'] : '' }}">
+
                   <input type="hidden" class="form-control @error('machine') is-invalid @enderror input100" name="machine" id="machine" value="{{old('machine')}}">
 
                   <select class="form-control selectpicker" data-live-search="true" multiple="multiple" name="machines_ids[]" id="machines_ids" onChange="getSelectedOptions(this)">
