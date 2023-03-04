@@ -294,8 +294,8 @@ class InvoiceController extends Controller
       }
       $types = Lookup::where('type','invoices_types_payments')->orderBy('value','desc')->get();
       $invoice = Invoice::with('client','address')->findOrFail($id);
-      $qry = "select *,(select value from lookups where id = ip.lkp_type_id) as type
-              from invoices_payments ip where invoice_id = ".$id.";";
+      $qry = "select *,(select value from lookups where id = ipt.lkp_type_id) as type
+              from invoices_payments ipt where invoice_id = ".$id.";";
       $payments = DB::select($qry);
       return view('invoices.edit',compact('types','invoice','payments'));
     }
