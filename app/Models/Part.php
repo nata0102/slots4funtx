@@ -81,4 +81,9 @@ class Part extends Model
     }
   }
 
+  public function scopeId($query, $search) {
+        if($search)
+            $query->where('id',$search);
+    }
+
 }

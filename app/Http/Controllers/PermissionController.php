@@ -79,7 +79,7 @@ class PermissionController extends Controller
             if($params['year'] != "")
                 $qry .= " and tab1.year_permit = ".$params['year'];
         }
-        $qry .= " order by tab1.permit_number;";
+        $qry .= " order by tab1.year_permit desc, tab1.permit_number;";
         return DB::select($qry);
     }
 

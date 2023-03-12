@@ -28,6 +28,8 @@
               </div>
               <div style="margin-top: 40px" class="input-group mb-5">
 
+                   <input class="form-control" type="number" name="id" value="{{ isset($_GET['id']) ? $_GET['id'] : '' }}" placeholder="ID">
+
                   <input class="form-control" name="serial" autofocus placeholder="Serial" value="{{ isset($_GET['serial']) ? $_GET['serial'] : '' }}">
 
                   <input type="hidden" class="form-control @error('machine') is-invalid @enderror input100" name="machine" id="machine" value="{{old('machine')}}">

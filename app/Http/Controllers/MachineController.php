@@ -29,9 +29,10 @@ class MachineController extends Controller
                 $res = $this->getMachinesFlatPercentage();
             break;
             default:
-               $res = Machine::with('status','address.client','brand','owner','game')->where('active',1)->orderBy('id')->get();
+               $res = Machine::with('status','address.client','brand','owner','game','permissionActual')->where('active',1)->orderBy('id')->get();
             break;
         }
+
         $games = DB::table('game_catalog')->where('active',1)->orderBy('name')->get();
         $owners =  DB::table('lookups')->where('type','owner_type')->orderBy('value')->get();
         //$status =  DB::table('lookups')->where('type','status_machines')->where('active',1)->orderBy('value')->get();
@@ -101,7 +102,7 @@ class MachineController extends Controller
     }
 
     public function searchWithFilters($params){
-        return Machine::with(['status','game','address.client','brand','owner' ])
+        return Machine::with(['status','game','address.client','brand','owner','permissionActual'])
                ->statussearch($params['status'])->machine($params['game'])->brand($params['brand'])
                ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->address($params['business'])->id($params['id'])
                ->get();

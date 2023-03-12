@@ -45,7 +45,7 @@
                     <div class="form-group">
 
 		                  <label for="">Payment Client <span style="color:red">*</span></label>
-		                  <input class="form-control" id="payment_client" step="any" min="0" type="number" name="payment_client"
+		                  <input class="form-control" id="payment_client" data-format="#.00" step="any" min="0" type="number" name="payment_client" 
 		                  max="{{$invoice->total_discount-$invoice->payment_client}}"
 		                  value="{{$invoice->total_discount-$invoice->payment_client}}" required style="width: 100%;">
 		                </div>
@@ -138,7 +138,7 @@
   		if(payment_client > 0 && lkp_type_id != ""){
 	  		insertRow('table_components', lkp_type_id, description, payment_client, lkp_type_value);
 	  		//Seteando valores
-	  		var total_faltante = payment_max-payment_client;
+	  		var total_faltante = (payment_max-payment_client).toFixed(2);
 	  		$('#payment_client').attr({"max" : total_faltante});
 	  		$("#payment_client").val(total_faltante);
 		    $("#description").val("");
@@ -163,7 +163,7 @@
 
   	$(document).ready(function() {
   		var payment = {!! json_encode($invoice) !!};
-  		var total_faltante = payment.total_discount-payment.payment_client;
+  		var total_faltante = (payment.total_discount-payment.payment_client).toFixed(2);
 
   		$('#payment_client').attr({"max" : total_faltante});
 	  	$("#payment_client").val(total_faltante);

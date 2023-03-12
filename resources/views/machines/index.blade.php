@@ -87,6 +87,7 @@
                           <th class="not-sortable" style="width:100px; text-align: center;">Client</th>
                           <th class="not-sortable" style="width:150px; text-align: center;">Business</th>
                           <th class="not-sortable" style="width:150px; text-align: center;">Status</th>
+                          <th class="not-sortable" style="width:150px; text-align: center;">Permission</th>
                           <th class="not-sortable" style="width:125px; text-align: center;"></th>
                           <!--<th>Active</th>-->
                         </tr>
@@ -122,6 +123,11 @@
                                 <td></td>
                             @else
                                 <td>{{$r->status->value}}</td>
+                            @endif
+                            @if($r->permissionActual ==null)
+                              <td></td>
+                            @else
+                              <td>{{$r->permissionActual->permit_number}}</td>
                             @endif
                             <td>
 

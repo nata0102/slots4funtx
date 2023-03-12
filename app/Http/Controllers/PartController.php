@@ -22,7 +22,7 @@ class PartController extends Controller
      */
     public function index(Request $request)
     {
-      if(!$request->status && !$request->type && !$request->brand && !$request->machine && !$request->serial)
+      if(!$request->status && !$request->type && !$request->brand && !$request->machine && !$request->serial && !$request->id)
         $request->option = null; 
 
       switch($request->option){
@@ -47,12 +47,13 @@ class PartController extends Controller
     }
 
     public function searchWithFilters($params){
-      $res = Part::where('active',$params['active'])
+      $res = Part::where('active',$params['active'])      
       ->status1($params['status'])
       ->serial($params['serial'])
       ->type1($params['type'])
       ->brand($params['brand'])
-      ->machine($params['machine'])->get();
+      ->machine($params['machine'])
+      ->id($params['id'])->get();
       return $res;
     }
 

@@ -38,6 +38,14 @@ class Machine extends Model
         return $this->hasMany('App\Models\Part', 'machine_id', 'id')->orderBy('lkp_type_id');
     }
 
+    public function permissionActual(){
+        return $this->hasOne('App\Models\Permission', 'machine_id', 'id')->where('year_permit',date('Y'));
+        /*->ofMany(
+        function ($query) {
+            return $query->where('year_permit', date('Y'));
+        });*/
+    }
+
     public function scopeStatussearch($query, $status) {
         switch ($status) {
             case 'all':

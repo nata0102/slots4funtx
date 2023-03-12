@@ -277,7 +277,7 @@ class InvoiceController extends Controller
             $res['logo_cancelled'] = Response::make( base64_encode( file_get_contents($path_logo_cancelled) ), 200, $headers);*/
 
    		$qry = "select c.*,
-		(select concat(m.id,' - ',m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
+		(select concat(m.id,' - ',ifnull(m.serial,'NULL'),' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine
 		from invoices_details i,charges c where i.charge_id=c.id and invoice_id=".$invoice->id.";";
    		$res['details'] = DB::select($qry);
    		$view = view('pdfs.InvoiceCharges', compact('res'));

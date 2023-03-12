@@ -126,7 +126,7 @@ class ChargesController extends Controller
 
         $qry = "select *,if(t.band_paid_out = 1, '#B1FEAB', '#FEB4AB') as row_color
             from (select c.id,c.machine_id,c.utility_calc,c.utility_s4f,c.payment_client,c.band_paid_out,c.user_id,
-            (select concat(m.serial,' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,
+            (select concat(m.id,' - ', ifnull(m.serial,'NULL'),' - ',g.name) from machines m,game_catalog g where m.game_catalog_id = g.id and m.id=c.machine_id) as name_machine,
             date(c.created_at) as date,
             (select ifnull(name,'S4F')  from users where id=c.user_id) as user_add,
             (select concat(cl.name,' - ',a.business_name) from addresses a, clients cl, machines m
@@ -274,7 +274,7 @@ class ChargesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {//return $request->all();
         try{
             $transaction = DB::transaction(function() use($request){
                 $res = \Session::get('data');
