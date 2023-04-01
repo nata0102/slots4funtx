@@ -143,11 +143,6 @@
                 <div class="form-group">
                   <label for="">Inventory</label>
                   <input type="text" class="form-control @error('inventory') is-invalid @enderror input100 find-inventory" name="inventory" value="{{old('inventory')}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" >
-                  @error('serial')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
                 </div>
               </div>
 

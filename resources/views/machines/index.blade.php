@@ -25,6 +25,8 @@
 
                         <input class="form-control" type="number" name="id" value="{{ isset($_GET['id']) ? $_GET['id'] : '' }}" placeholder="ID">
 
+                        <input class="form-control" type="text" name="inventory" value="{{ isset($_GET['inventory']) ? $_GET['inventory'] : '' }}" placeholder="Inventory">
+
                         <input class="form-control" type="text" name="serial" value="{{ isset($_GET['serial']) ? $_GET['serial'] : '' }}" placeholder="SERIAL">
 
                         <input type="hidden" class="form-control @error('game') is-invalid @enderror input100" name="game" id="game" value="{{old('game')}}">
@@ -80,6 +82,7 @@
                     <thead>
                         <tr>
                           <th style="width:100px; text-align: center;">ID <i class="fa fa-sort"></i></th>
+                          <th style="width:100px; text-align: center;">Inventory <i class="fa fa-sort"></i></th>
                           <th class="not-sortable" style="width:100px; text-align: center;">Owner Type</th>
                           <th class="not-sortable" style="width:100px; text-align: center;">Brand-Model</th>
                           <th class="not-sortable" style="width:100px; text-align: center;">Game Title</th>
@@ -96,6 +99,7 @@
                     	@foreach($res as $r)
                         <tr>
                             <td>{{$r->id}}</td>
+                            <td>{{$r->inventory}}</td>
                             @if($r->owner == null)
                                 <td></td>
                             @else

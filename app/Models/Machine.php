@@ -93,4 +93,9 @@ class Machine extends Model
                 $query->whereNull('address_id');
         }
     }
+
+    public function scopeInventory($query, $search) {
+        if($search)
+            $query->where('inventory',$search);
+    }
 }

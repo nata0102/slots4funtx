@@ -1227,6 +1227,9 @@ $menus = DB::select('select m.*,l.key_value,l.value from menu_roles m, lookups l
 					ch[i].setAttribute('hidden','');
 				}
 
+				if(document.getElementById("select_invoice").value == "with_invoice")
+					document.getElementById("div_input_utility_s4f").hidden = true;
+
 			}
 			else{
 				document.getElementById("type2").value = e.options[e.selectedIndex].getAttribute("value");

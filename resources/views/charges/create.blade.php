@@ -378,7 +378,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-
 		  var combo = document.getElementById("select_invoice");
 		  var selected = combo.options[combo.selectedIndex].value;
 		  totals_with_invoice = false;

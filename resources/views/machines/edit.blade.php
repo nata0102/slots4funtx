@@ -160,6 +160,13 @@
 		                </div>
 		              </div>
 
+		              <div class="col-12 col-sm-6 col-md-4">
+		                <div class="form-group">
+		                  <label for="">Inventory</label>
+		                  <input type="text" class="form-control @error('inventory') is-invalid @enderror input100 find-inventory" name="inventory" value="{{$machine->inventory}}" style="text-transform:uppercase;" pattern="[A-Za-z0-9]+" >
+		                </div>
+		              </div>
+
 		              <div class="col-12 col-sm-6 col-md-4" id="div_group1">
 		                <div class="form-group">
 		                  <input type="hidden" id="band_jackpot" name="band_jackpot" value="0" />

@@ -104,7 +104,7 @@ class MachineController extends Controller
     public function searchWithFilters($params){
         return Machine::with(['status','game','address.client','brand','owner','permissionActual'])
                ->statussearch($params['status'])->machine($params['game'])->brand($params['brand'])
-               ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->address($params['business'])->id($params['id'])
+               ->owner($params['owner'])->where('active',$params['active'])->serial($params['serial'])->address($params['business'])->id($params['id'])->inventory($params['inventory'])
                ->get();
     }
 
